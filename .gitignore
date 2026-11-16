@@ -218,3 +218,33 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- cs422-VEGA project additions ---
+# Data stays on ml-db under /srv/ml, not in git.
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.parquet
+*.zip
+*.tar
+*.tar.gz
+# Model weights
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.pkl
+*.joblib
+# Figures for the report are allowed
+!results/**/*.png
+!docs/**/*.png
