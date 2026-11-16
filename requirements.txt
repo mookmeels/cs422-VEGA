@@ -1,0 +1,2 @@
+# Python packages for this project. Pin exact versions (package==x.y.z):
+# the course requires dependencies and versions for reproducing results.
