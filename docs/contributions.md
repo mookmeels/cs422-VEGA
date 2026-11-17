@@ -6,7 +6,7 @@ Required by the course: each member's model, experiments and other work, plus th
 |---|---|---|---|
 | | NN | | |
 | | CNN | | |
-| | K-Means | | |
+| Edmond Luong | Hierarchical Clustering | | |
 
 ## Joint decisions
 
