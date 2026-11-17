@@ -32,14 +32,11 @@ df = read_csv(dataPath, separator=",", has_header=False) # contains image vector
 ### Hierarchical Clustering
 
 
-K_COUNT = 1058
-
 STYLE_COL = "style"
 
 
 """
 knowns: array of training data
-labels: array of all labels (styles)
 unknowns: array of data to categorize
 cut: the distance threshold
 """
@@ -197,10 +194,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.3
             sim_b = cluster_similarities[key_b]
 
             # new similarity calculation: weights of both averages together
-            new_similarity = (
-                size_a * sim_a +
-                size_b * sim_b
-            ) / (size_a + size_b)
+            new_similarity = (size_a * sim_a + size_b * sim_b) / (size_a + size_b)
 
 
             # declare new similarities array
@@ -210,7 +204,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.3
 
         # merge step
         if(replaceByB):
-            # remove A from similarities
+            # remove old similiarities
             cluster_similarities = {
                 key: value
                 for key, value in cluster_similarities.items()
