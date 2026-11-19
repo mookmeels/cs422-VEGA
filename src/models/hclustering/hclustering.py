@@ -245,7 +245,7 @@ for train_index, test_index in ss.split(X, Y):
         trainDF = completeTrainDF.gather(train_index)
         verifyDF = completeTrainDF.gather(ver_index)
 
-### Standarization
+        ### Standarization
 
         #standardizating features (can be removed if needed)
         means = trainDF.mean()
