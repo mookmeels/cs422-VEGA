@@ -6,7 +6,8 @@ Required by the course: each member's model, experiments and other work, plus th
 |---|---|---|---|
 | | NN | | |
 | | CNN | | |
-| Edmond Luong | Hierarchical Clustering | | |
+| Edmond Luong | Hierarchical Clustering | | Wrote the discussion logs |
+
 
 ## Joint decisions
 

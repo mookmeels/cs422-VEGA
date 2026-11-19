@@ -1,3 +1,5 @@
+#dependencies: numpy, polars, sklearn
+
 import numpy as np
 
 import polars as pl
@@ -5,34 +7,12 @@ from polars import read_csv, selectors, col # basic polars
 
 from sklearn.metrics.pairwise import cosine_similarity # finds distance between two points
 
-from sklearn import model_selection
-
-# say df is a dataframe of all the info
-
-# goal: 
-
-### training section
-
-dataPath = ".../" 
-
-FEATURE_COUNT = 100
-
-df = read_csv(dataPath, separator=",", has_header=False) # contains image vectors
-
-### Split Data into training, verification, test /w startification
+from sklearn import model_selection #stratification k-fold
+from sklearn.metrics import accuracy_score # accurary
 
 
 
-### Standarization
-
-
-
-
-
-### Hierarchical Clustering
-
-
-STYLE_COL = "style"
+### Hierarchical Clustering function
 
 
 """
@@ -212,6 +192,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.3
             }
             # merge
             clusters[class_b]["members"] += clusters[a]["members"]
+
             # update size
             cluster_sizes[class_b] = size_a + size_b
             # release cluster
@@ -234,8 +215,82 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.3
         
     return clusters
 
+### training section
+
+# say df is a dataframe of all the info
+
+dataPath = ".../" 
+
+STYLE_COL = "style"
+
+df = read_csv(dataPath, separator=",", has_header=False) # contains image vectors
+
+### Split Data into training, verification, test /w startification
+
+# split into training + test
+ss = model_selection.StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+X = df.select(pl.exclude(STYLE_COL)).to_numpy() 
+Y = df.select(pl.col(STYLE_COL)).to_numpy()
+
+for train_index, test_index in ss.split(X, Y):
+    completeTrainDF = df.gather(train_index)
+    skf = model_selection.StratifiedKFold(n_splits=5)
+    X2 = completeTrainDF.select(pl.exclude(STYLE_COL)).to_numpy()
+    Y2 = completeTrainDF.select(pl.col(STYLE_COL)).to_numpy()
+
 ### verification section
+
+    #K Fold
+    for fold, (train_index, ver_index) in enumerate(skf.split(X2, Y2)):
+        trainDF = completeTrainDF.gather(train_index)
+        verifyDF = completeTrainDF.gather(ver_index)
+
+### Standarization
+
+        #standardizating features (can be removed if needed)
+        means = trainDF.mean()
+        sds = trainDF.std()
+        for colName in trainDF.columns:
+            if colName != STYLE_COL:
+                trainDF = trainDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
+                verifyDF = verifyDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
+
+        foundClusters = find_average_linkage(trainDF, verifyDF)
+
+        #check all clusters
+        trueClass = verifyDF.select(pl.col(STYLE_COL)).to_numpy()
+        predictedClass = ["Unknown"] * verifyDF.height
+        for style, cluster in foundClusters:
+            #check unknown members (cluster[members] is an array of indices)
+            predictedClass[cluster["members"]] = style
+        
+        accuracy = accuracy_score(trueClass, predictedClass)
+
+        
+
 
 
 
 ### testing
+
+
+"""
+    testDF = df.gather(test_index)
+
+    predictedClass = ["Unknown"] * testDF.height
+    trueClass = testDF.select(pl.col(STYLE_COL)).to_numpy()
+    #standardizating features (can be removed if needed)
+    means = completeTrainDF.mean()
+    sds = completeTrainDF.std()
+    for colName in completeTrainDF.columns:
+        if colName != STYLE_COL:
+            completeTrainDF = completeTrainDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
+            testDF = testDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
+
+    foundClusters = find_average_linkage(completeTrainDF, testDF)
+    for style, cluster in foundClusters:
+        #check unknown members (cluster[members] is an array of indices)
+        predictedClass[cluster["members"]] = style
+    
+    accuracy = accuracy_score(trueClass, predictedClass)
+"""
