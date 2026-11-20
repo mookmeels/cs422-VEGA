@@ -1,2 +1,18 @@
 # Python packages for this project. Pin exact versions (package==x.y.z):
 # the course requires dependencies and versions for reproducing results.
+#
+# Versions of the team's environment on ml-db (/srv/ml/vega/.venv, Python 3.12.3), where every recorded
+# result so far was made. They cover src/common, src/baselines and src/models/nn.
+#
+#   pip install -r requirements.txt
+#
+# No script needs a GPU. The CPU build of torch is much smaller; to install it, run this first:
+#   pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+numpy==2.5.5
+polars==2.1.0
+torch==2.15.0
+# only for the example image sheets: src/models/nn/analyse_errors.py --sheets
+pillow==13.0.0
+
+# Not pinned yet: src/models/hclustering/hclustering.py imports scikit-learn, which is not installed in the
+# ml-db environment. Its owner should add the version used here, as scikit-learn==x.y.z.
