@@ -21,11 +21,11 @@ Owner: shared. `baselines.py` runs three baselines and scores them with the shar
 
 ## Results so far
 
-Validation split, 503 labels, measured 17 Nov 2026:
+Validation split (1,351 images), 503 labels, measured 20 Nov 2026, after one validation image that was a near-copy of a test image moved to test:
 
 | | top-5 | top-1 | MRR | per-label top-5 |
 |---|---|---|---|---|
-| Nearest centroid | 80.3 | 52.1 | 0.647 | 80.6 |
+| Nearest centroid | 80.2 | 52.2 | 0.647 | 80.6 |
 | Zero-shot text | 42.8 | 22.9 | 0.330 | 43.4 |
 | Popularity | 5.8 | 1.4 | 0.047 | 1.0 |
 
@@ -33,7 +33,7 @@ Nearest centroid is the number a trained model has to beat. **The test split has
 
 ## This is a copy
 
-Copied on 20 Nov 2026 from `/srv/ml/vega/code/baselines/baselines.py` on ml-db, where the recorded runs were made. One difference: this copy looks for the shared code in `../common` as well as in `../shared` (three lines near the top). Run from this folder on the validation split, it gave the same scores as the recorded run, to the last digit.
+Copied on 20 Nov 2026 from `/srv/ml/vega/code/baselines/baselines.py` on ml-db, where the recorded runs were made. One difference: this copy looks for the shared code in `../common` as well as in `../shared` (three lines near the top). Run from this folder on the validation split, it gave the same scores as the recorded run, to the last digit (checked again on 20 Nov, after the split fix).
 
 Versions: Python 3.12.3, numpy 2.5.5, polars 2.1.0.
 

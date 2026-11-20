@@ -37,7 +37,7 @@ then:
 
 A model that gives one answer per image (k-means, for example) still needs a score for every label:
 use the share of each label among the training images in the image's cluster, or 1 for its answer and 0 elsewhere.
-An image can have more than one true label (41 of the 1,352 validation images do); y splits the weight between them.
+An image can have more than one true label (41 of the 1,351 validation images do); y splits the weight between them.
 
 
 THE RULES THE CODE ENFORCES
@@ -63,13 +63,25 @@ THE VECTORS
   code/experiments/embed_eos_check.py on the PC, NOT handoff/scripts/vega_embed.py as it stands.
 
 
+THE TRANSFER TEST (second evaluation, added 19 Nov)
+
+  vega_transfer.py scores a model on ordinary outfit photos from outside the wiki: FashionStyle14 photos whose
+  expert style corresponds to wiki labels (runs/transfer/rows.csv; lolita, fairy, ethnic by default). The model is
+  fitted on the wiki's training + validation images, as in the final run, and must score all 13,186 photos.
+  Same rule as the test split: run it once the model is frozen, and never change a model because of it.
+
+      from vega_transfer import load          # t = load(); t["fit"], t["eval"]; save ids, scores, classes as before
+      python vega_transfer.py --pred my-transfer.npz --model "..." --owner "..." --seed 422
+      python vega_transfer.py --table          # runs/transfer/table.md
+
+
 WHAT IS SCORED
 
   Label set "merged": the wearable catalogue (544 aesthetics) with look-alike aesthetics merged, 503 labels.
   Which aesthetics were merged, and why: runs/labeler-wearable-merged/label_map.csv and groups.csv.
   (--labels wearable scores the 544 unmerged labels instead. Use one label set for the whole comparison.)
 
-  Training split: 9,359 images. Validation: 1,352. Half the labels have 14 or fewer training images;
+  Training split: 9,359 images. Validation: 1,351. Half the labels have 14 or fewer training images;
   274 of the 503 have under 16 ("thin" in the table).
 
   top5              share of images with a true label among the 5 best-scored labels   <- proposed primary metric

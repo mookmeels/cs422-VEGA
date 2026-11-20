@@ -8,7 +8,8 @@ These files hand every model its images and labels and score its predictions, so
 | `vega_score.py` | The scorer. Checks a predictions file, works out the metrics and appends one row to `results.jsonl`. It reads test labels only with `--final`, and logs every such use. |
 | `vega_table.py` | Builds the comparison table (`table.md`, `table.csv`) from `results.jsonl`. |
 | `vega_selftest.py` | Checks the three files above on made-up data. |
-| `README.txt` | How to plug a model in, the rules, the vectors, the metrics. |
+| `vega_transfer.py` | The transfer test, a second evaluation: a model fitted on the wiki's training + validation images is scored on FashionStyle14 outfit photos from outside the wiki. `load()` gives the images to fit on and the photos to score; `--pred` appends one row to `/srv/ml/vega/runs/transfer/results.jsonl`; `--table` rebuilds `table.md` there. Same rule as the test split: run it only on a frozen model. |
+| `README.txt` | How to plug a model in, the rules, the vectors, the metrics, and the transfer test. |
 
 ## Where the data is
 
@@ -18,8 +19,9 @@ The code is here; the data is not in git. The loader reads it from the project f
 - `emb/qwen2beos-448/` and `emb/qwen2beos-text/`: the image vectors and the text vectors
 - `wiki/manifest.csv` and `wiki/images/`: which gallery each image comes from, and the image files
 - `runs/labeler-wearable/catalog.csv` and `runs/labeler-wearable-merged/label_map.csv`: the 503 labels
+- for the transfer test: `emb/fashionstyle14/` (the photos' vectors), `runs/transfer/rows.csv` (which styles count as which wiki labels), and the photo files in `/srv/ml/datasets/fashionstyle14/` (`VEGA_DATASETS` changes that folder)
 
-Results go to `/srv/ml/vega/runs/comparison/` unless a script is given `--out`.
+Results go to `/srv/ml/vega/runs/comparison/` unless a script is given `--out`; the transfer test's go to `/srv/ml/vega/runs/transfer/`.
 
 ## Running (on ml-db, from this folder)
 
@@ -30,9 +32,16 @@ Results go to `/srv/ml/vega/runs/comparison/` unless a script is given `--out`.
 
 `--final` scores the **test split**. It is for the one final run of each model, after the team has frozen everything. Nothing has been scored on the test split yet.
 
+The transfer test, once a model is frozen (`vega_transfer.py` with no options also rebuilds the table):
+
+    $PY vega_transfer.py --pred my-transfer.npz --model "My model" --owner "My Name" --seed 422
+    $PY vega_transfer.py --table
+
+The usage example in `vega_transfer.py`'s docstring adds `/srv/ml/vega/code/shared` to the path. From this repo, add this folder (`src/common`) instead; the code is the same.
+
 ## These are copies
 
-Copied unchanged on 20 Nov 2026 from `/srv/ml/vega/code/shared/` on ml-db, where the recorded runs were made. Change the files there, then copy them here again. To check that the copies are current (no output means identical):
+Copied unchanged on 20 Nov 2026 from `/srv/ml/vega/code/shared/` on ml-db, where the recorded runs were made (`vega_transfer.py` and the current `README.txt` added later that day). Change the files there, then copy them here again. To check that the copies are current (no output means identical):
 
     for f in vega_*.py README.txt; do cmp /srv/ml/vega/code/shared/$f $f; done
 

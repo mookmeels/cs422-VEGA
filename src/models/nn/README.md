@@ -39,14 +39,16 @@ These are the same files as `/srv/ml/vega/code/nn/` on ml-db, where the recorded
 
 ## Results so far
 
-Validation split, 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 17 Nov 2026:
+Validation split (1,351 images), 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 20 Nov 2026:
 
 | | top-5 | top-1 | MRR | per-label top-5 |
 |---|---|---|---|---|
-| NN | 87.6 ± 0.2 | 62.2 ± 0.6 | 0.731 ± 0.003 | 85.7 ± 0.5 |
-| Baseline: nearest centroid | 80.3 | 52.1 | 0.647 | 80.6 |
+| NN | 87.6 ± 0.2 | 62.3 ± 0.6 | 0.731 ± 0.003 | 85.7 ± 0.5 |
+| Baseline: nearest centroid | 80.2 | 52.2 | 0.647 | 80.6 |
 
 **The test split has not been scored.** The full table is `/srv/ml/vega/runs/comparison/table.md`.
+
+These are from the split as fixed on 20 Nov: one validation image that was a near-copy of a test image moved to test (`/srv/ml/vega/handoff/WORKLOG.md`, entries ~04:12 and ~04:24 UTC). The settings sweep (next section) and the error analysis (`/srv/ml/vega/runs/nn/errors/`) were run on the earlier split, whose validation set had that one image more, and have not been re-run.
 
 ## How the settings were chosen
 
