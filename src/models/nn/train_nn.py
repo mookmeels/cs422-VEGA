@@ -35,9 +35,15 @@ Real outfit photos (--real-weight, default 0.25).
     the 20 style FAMILIES (frozen tables runs/family-v1/label_family.csv and outside_family.csv). So a real
     photo's loss is minus the log of the probability the network gives to its family IN TOTAL, summed over
     that family's aesthetics: it is told which family, never which aesthetic.
-  * Each training step takes the usual batch of wiki images plus 512 real photos, drawn family by family (each
-    family that has photos equally often, then one of its photos at random), and adds real_weight x their
+  * Each training step takes the usual batch of wiki images plus 512 real photos and adds real_weight x their
     mean loss. The wiki images, their order and their loss are exactly as without real photos.
+  * How a real photo is drawn (--real-draw, default "tag"): a family that has photos, each equally often; then one
+    of that family's TAGS, each equally often; then one of that tag's photos. So within a family a narrow tag
+    (Formal, 1,300 photos) has the same say as a broad one. Until 21 Nov the draw was family -> photo
+    (--real-draw photo), which let the largest tag supply most of a family's photos. Adopted by Andrew on 21 Nov
+    together with leaving three broad tags out of the mapping (Elegant, Urban, Androgynous: Amendment 5 in
+    runs/family-v1/FROZEN.md). Evidence: runs/tag-iter (chosen on one half of FashionStyle14's photos, then
+    checked once on the other: +3.3 points of family accuracy, 95% interval +2.6 to +3.9, wiki scores unchanged).
   * Posters fall into 10 groups by name (sha1 mod 10). Group 0 is never trained on; its photos stay available
     for checking. real_photo_folds.py rotates which group is left out to score every photo once (10 folds).
     FashionStyle14 is never trained on.
@@ -98,7 +104,7 @@ OWNER = "Andrew Nguyen"
 # together after a confirmation on five fresh seeds (stage 4 of sweep_nn.py).
 # real_weight was chosen on 21 Nov between 0.25 and 1.0, the only two values tried (runs/real-photos-v1).
 SETTINGS = {"layers": 1, "hidden": 1024, "dropout": 0.7, "input_dropout": 0.0, "weight_decay": 1.0, "lr": 1e-3,
-            "epochs": 40, "batch": 512, "balance": 1.0, "prep": "standardize", "real_weight": 0.25}
+            "epochs": 40, "batch": 512, "balance": 1.0, "prep": "standardize", "real_weight": 0.25, "real_draw": "tag"}
 REAL_BATCH = 512                                                 # real photos added to every training step
 REAL_GROUPS = 10                                                 # posters fall into 10 groups: sha1(name) % 10
 
@@ -140,26 +146,42 @@ def real_photo_table(root, classes):
     return rows, vec, lab_fam, families
 
 
-def real_photos(root, classes, holdout=0):
+def real_photos(root, classes, holdout=0, draw=None):
     """The Street Fashion Style photos the network trains on: their vectors, and what their loss needs.
 
     holdout: the poster group that is never trained on (0, as in the runs that chose the settings, unless a
     cross-validation fold says otherwise; see real_photo_folds.py).
-    Returns x (photos x 2048, ordered by family), where each covered family's photos start and how many it has,
-    the covered families, and mask (families x labels: 0 where the label belongs to the family, -1e9 elsewhere).
+    draw: "tag" (SETTINGS' default): family -> one of its tags -> one of the tag's photos. "photo": family -> photo.
+
+    Returns x (photos x 2048) and the "slots" a training step draws from: train() picks a slot at random, then a
+    photo at random among the slot's `sizes` photos starting at `starts`; `covered` is the slot's family. With
+    "photo" there is one slot per family. With "tag" there is a slot per (family, tag), repeated so that every
+    family has the same number of slots, split evenly over its tags. Also mask (families x labels: 0 where the
+    label belongs to the family, -1e9 elsewhere) and photo_family (each photo's family, in x's order).
     """
+    draw = draw or SETTINGS["real_draw"]
+    assert draw in ("tag", "photo"), draw
     rows, vec, lab_fam, families = real_photo_table(root, classes)
-    keep = [(f, r) for f, r, group, _, _ in rows if group != holdout]
+    with open(Path(root) / "emb" / "street-fashion-style" / "manifest.csv", encoding="utf-8", newline="") as f:
+        tag_of = {r["id"]: r["style"] for r in csv.DictReader(f)}
+    keep = sorted((f, tag_of[pid] if draw == "tag" else "", r) for f, r, group, _, pid in rows if group != holdout)
     if not keep:
         raise SystemExit("No real photo is left to train on once that poster group is held out.")
-    fam = np.asarray([f for f, _ in keep])
-    covered = sorted(set(fam.tolist()))
+    fam = np.asarray([f for f, _, _ in keep])
+    slots, start = [], 0                                         # (family, first photo, how many): one per family and tag
+    for k in range(1, len(keep) + 1):
+        if k == len(keep) or keep[k][:2] != keep[start][:2]:
+            slots.append((keep[start][0], start, k - start))
+            start = k
+    per_family = {f: sum(1 for s in slots if s[0] == f) for f in {s[0] for s in slots}}
+    most = math.lcm(*per_family.values())
+    slots = [s for s in slots for _ in range(most // per_family[s[0]])]       # every family: `most` slots, shared evenly by its tags
     mask = torch.full((len(families), len(classes)), -1e9)
     mask[torch.from_numpy(lab_fam), torch.arange(len(classes))] = 0.0
-    return {"x": np.ascontiguousarray(np.load(vec / "embeddings.npy", mmap_mode="r")[[r for _, r in keep]]),
-            "starts": torch.tensor([int(np.searchsorted(fam, f)) for f in covered]),
-            "sizes": torch.tensor([int((fam == f).sum()) for f in covered]),
-            "covered": torch.tensor(covered), "mask": mask, "photos": len(keep), "families": len(covered), "holdout": holdout}
+    return {"x": np.ascontiguousarray(np.load(vec / "embeddings.npy", mmap_mode="r")[[r for _, _, r in keep]]),
+            "starts": torch.tensor([s[1] for s in slots]), "sizes": torch.tensor([s[2] for s in slots]),
+            "covered": torch.tensor([s[0] for s in slots]), "mask": mask, "photo_family": fam,
+            "photos": len(keep), "families": len(per_family), "tags": len({(f, t) for f, t, _ in keep}), "holdout": holdout, "draw": draw}
 
 
 def input_scaling(fit_x, how):
@@ -228,7 +250,7 @@ def train(fit_x, fit_y, eval_x, s, seed, device="cpu", each_epoch=None, real=Non
         for i in range(0, len(X), s["batch"]):
             idx = order[i:i + s["batch"]]
             if weight > 0:
-                f = torch.randint(len(real["covered"]), (REAL_BATCH,), generator=pick)       # a family, then one of its photos
+                f = torch.randint(len(real["covered"]), (REAL_BATCH,), generator=pick)       # a slot (see real_photos), then one of its photos
                 rows = real["starts"][f] + (torch.rand(REAL_BATCH, generator=pick) * real["sizes"][f]).long()
                 xr = torch.from_numpy(scale(real["x"][rows.numpy()])).to(device)
                 logp = F.log_softmax(net(torch.cat([X[idx], xr])), dim=1)
@@ -269,6 +291,8 @@ def main():
     ap.add_argument("--prep", default=SETTINGS["prep"], choices=("standardize", "center", "none"), help="input scaling, measured on the fit images")
     ap.add_argument("--real-weight", type=float, default=SETTINGS["real_weight"],
                     help="weight of the real outfit photos' loss; 0 = wiki images only (the NN as it was until 21 Nov)")
+    ap.add_argument("--real-draw", default=SETTINGS["real_draw"], choices=("tag", "photo"),
+                    help="how a real photo is drawn: family -> tag -> photo (default) or family -> photo (as until 21 Nov)")
     ap.add_argument("--real-holdout", type=int, default=0, choices=range(REAL_GROUPS),
                     help="the poster group never trained on; 0 (default) is the group held out when the settings were chosen")
     ap.add_argument("--final", action="store_true", help="score the TEST split (only once everything is frozen)")
@@ -290,12 +314,13 @@ def main():
     t0 = time.perf_counter()
     d = vega_data.load(final=a.final, labels=a.labels, root=root)
     fit, ev = d["fit"], d["eval"]
-    real = real_photos(root, d["classes"], a.real_holdout) if s["real_weight"] > 0 else None
+    real = real_photos(root, d["classes"], a.real_holdout, s["real_draw"]) if s["real_weight"] > 0 else None
     print(f"{name}: fit {len(fit['ids'])} images, eval {len(ev['ids'])} ({d['eval_split']}), {len(d['classes'])} labels, "
           f"device {a.device}, {torch.get_num_threads()} thread(s)\nsettings: {json.dumps(s)}", flush=True)
     if real is not None:
-        print(f"real outfit photos: {real['photos']} Street Fashion Style photos in {real['families']} families, "
-              f"{REAL_BATCH} per step, weight {s['real_weight']}, poster group {real['holdout']} held out", flush=True)
+        print(f"real outfit photos: {real['photos']} Street Fashion Style photos in {real['families']} families"
+              + (f" and {real['tags']} tags, drawn family -> tag -> photo" if real["draw"] == "tag" else ", drawn family -> photo")
+              + f", {REAL_BATCH} per step, weight {s['real_weight']}, poster group {real['holdout']} held out", flush=True)
     fit_count = (fit["y"] > 0).sum(0)
     for seed in a.seed:
         t1 = time.perf_counter()
@@ -313,7 +338,7 @@ def main():
         np.savez_compressed(pred, ids=ev["ids"], scores=scores.astype(np.float32), classes=np.asarray(d["classes"]))
         vega_score.score(pred, name, OWNER, seed=seed, final=a.final, labels=a.labels, root=root, out=out,
                          note=f"settings {json.dumps(s)}; device {a.device}; threads {torch.get_num_threads()}; torch {torch.__version__}"
-                              + (f"; real photos {real['photos']} in {real['families']} families, {REAL_BATCH} per step, "
+                              + (f"; real photos {real['photos']} in {real['families']} families, drawn by {real['draw']}, {REAL_BATCH} per step, "
                                  f"poster group {real['holdout']} held out" if real is not None else ""))
         if curve:
             (out / "curves").mkdir(exist_ok=True)

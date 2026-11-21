@@ -98,7 +98,7 @@ def main():
             "wiki_label,family,family_name\n" + "".join(f"{c},{f},{f}\n" for c, f in fam_of.items()), encoding="utf-8")
         (root / "runs" / "family-v1" / "outside_family.csv").write_text(
             "source,style_or_tag,family,photos,posters\nStreet Fashion Style,TagOne,one,0,\nStreet Fashion Style,TagTwo,two,0,\n"
-            "Street Fashion Style,Vague,,0,\nFashionStyle14,TagOne,two,0,\n", encoding="utf-8")
+            "Street Fashion Style,TagOneB,one,0,\nStreet Fashion Style,Vague,,0,\nFashionStyle14,TagOne,two,0,\n", encoding="utf-8")
         group = lambda u: int(__import__("hashlib").sha1(u.encode("utf-8")).hexdigest(), 16) % train_nn.REAL_GROUPS
         held = lambda u: group(u) == 0                           # poster group 0 is the one left out by default
         names = [f"poster{i}" for i in range(400)]
@@ -110,7 +110,7 @@ def main():
         for j in range(140):
             src = j % len(fit["ids"])
             family = fam_of[d["classes"][int(fit["truth"][src][0])]]
-            style = "Vague" if j % 14 == 13 else {"one": "TagOne", "two": "TagTwo"}[family]
+            style = "Vague" if j % 14 == 13 else "TagOneB" if family == "one" and j % 7 == 3 else {"one": "TagOne", "two": "TagTwo"}[family]   # TagOneB: a small second tag of family one
             user = users[j % len(users)]
             v = fit["x"][src] + 0.05 * rng.normal(size=fit["x"].shape[1])
             man.append(f"real-{j:04d},{user},{j}.jpg,x/{j}.jpg,{style}")
@@ -124,6 +124,16 @@ def main():
         real = train_nn.real_photos(root, d["classes"])
         assert real["photos"] == expect and 0 < expect < 130 and real["families"] == 2, (real["photos"], expect)   # no vague tag, no held-out poster
         assert tuple(real["mask"].shape) == (2, 5) and (real["mask"] == 0).sum(1).tolist() == [2, 3], real["mask"]
+        # how a photo is drawn. Default "tag": family one has two tags and family two has one, so each family gets two slots;
+        # family one's are its two tags (a large and a small one, drawn equally often), family two's are its one tag twice.
+        assert real["draw"] == "tag" and real["covered"].tolist() == [0, 0, 1, 1] and real["tags"] == 3, (real["draw"], real["covered"])
+        n_one = int((real["photo_family"] == 0).sum())
+        n_big, n_small = real["sizes"][:2].tolist()
+        assert n_big + n_small == n_one and 0 < n_small < n_big and real["starts"].tolist() == [0, n_big, n_one, n_one], (real["starts"], real["sizes"])
+        assert real["sizes"][2:].tolist() == [real["photos"] - n_one] * 2
+        old = train_nn.real_photos(root, d["classes"], draw="photo")          # as until 21 Nov: one slot per family
+        assert old["covered"].tolist() == [0, 1] and old["starts"].tolist() == [0, n_one] and old["sizes"].tolist() == [n_one, old["photos"] - n_one]
+        assert old["photos"] == real["photos"] and sorted(map(bytes, old["x"])) == sorted(map(bytes, real["x"])), "the two draws must use the same photos"
         sr = {**s, "real_weight": 0.25}
         b = train_nn.train(fit["x"], fit["y"], ev["x"], sr, seed=1, real=real)
         assert vega_score.metrics(b, ev["truth"], count)["top1"] > 0.6, "the network with real photos does not learn the made-up labels"
@@ -136,7 +146,8 @@ def main():
         row = json.loads(open(root / "with-real" / "results.jsonl", encoding="utf-8").readline())
         assert row["model"].endswith("+ real outfit photos") and row["top1"] > 0.6 and '"real_weight": 0.25' in row["note"], row
         assert (root / "with-real" / "preds" / "nn-mlp1x32real-validation-merged-seed1.npz").exists()
-        print("real photos: refused when missing; vague tags and held-out posters stay out; they change the network; weight 0 is the wiki-only network exactly")
+        print("real photos: refused when missing; vague tags and held-out posters stay out; a family's tags are drawn equally often "
+              "(and --real-draw photo is one slot per family); they change the network; weight 0 is the wiki-only network exactly")
 
         # folds by poster (real_photo_folds.py): leaving out another group changes who is trained on, and a photo is
         # only ever scored in the fold of its own poster's group
