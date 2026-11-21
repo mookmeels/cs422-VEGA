@@ -1,4 +1,4 @@
-#dependencies: numpy, polars, sklearn
+#dependencies: numpy, polars, sklearn, sys
 
 import sys, numpy as np
 
@@ -23,9 +23,13 @@ STYLE_COL = "class"
 ID_COL = "id"
 
 """
+The Hierarchical Clustering Method
+
 knowns: array of training data
 unknowns: array of data to categorize
 cut: the distance threshold
+
+returns an array of all the unknown samples' score to all the classes
 """
 def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.78):
     clusters = {}
@@ -302,13 +306,16 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
 
 ### training section
 
-# say df is a dataframe of all the info
-
-
 # Training DataFrame (id to label)
+"""
+Turns training data into a polar dataframe of the associated classes, will duplicate those with multiple classes
+to multiple samples representing each of the classes
 
+split: The data to convert to polars dataframe
 
-def make_long_df(split, duplicate = True):
+returns polars dataframe
+"""
+def make_long_df(split):
     y = split["y"]
     df = pl.DataFrame({
         "id": split["ids"],
@@ -333,14 +340,22 @@ def make_long_df(split, duplicate = True):
 train_df = make_long_df(d["fit"])
 
 
-
-
+#format the eval df to polars
 eval_df = pl.DataFrame({
     "id": d["eval"]["ids"],
     **{f"emb_{i}": d["eval"]["x"][:, i]
         for i in range(d["eval"]["x"].shape[1])
     }
 })
+
+"""
+Joins the data associated with the classes based on id so that the duplicated samples have the same data except for class
+
+df: dataframe
+split: the data that shows the embedding and id
+
+returns the completed dataframe
+"""
 def add_embeddings(df, split):
     embeddings = pl.DataFrame(
         split["x"],
@@ -354,7 +369,7 @@ def add_embeddings(df, split):
 # add embeddings to each of the classes
 train_df = add_embeddings(train_df, d["fit"])
 
-
+# standardizing
 means = train_df.mean()
 sds = train_df.std()
 
@@ -373,7 +388,6 @@ print(len(d["eval"]["ids"]), len(d["classes"]))
 assert scores.shape == (len(d["eval"]["ids"]), len(d["classes"]))
 
 
-#assert 1 == 0
 # Save in correct format
 np.savez(
     "my-preds.npz",
