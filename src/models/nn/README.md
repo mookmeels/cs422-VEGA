@@ -2,15 +2,26 @@
 
 Owner: Andrew Nguyen. One of the team's three models. It reads its data from the team's shared loader and is scored by the shared scorer, so its numbers sit in the same table as the other models.
 
+**Since 21 Nov 2026 the NN also learns from real outfit photos** (Andrew's decision). The network without them, the "wiki-only NN", is kept as a reference and is one flag away (`--real-weight 0`). Both get a final test run.
+
 ## What it is
 
 Every image has already been turned into 2,048 numbers by the frozen Qwen3-VL-Embedding-2B model, with the instruction "Represent the fashion aesthetic of this image." (the team's shared vectors, `emb/qwen2beos-aesthetic-448`, since 20 Nov 2026). The NN takes those numbers and gives a score to each of the 503 labels. It is a multilayer perceptron:
 
     2,048 inputs -> scale each input -> one hidden layer of 1,024 units (ReLU, dropout 0.7) -> 503 scores
 
-- **Input scaling:** mean and standard deviation of each input, measured on the training images only.
-- **Loss:** cross-entropy against the image's labels. An image in two galleries has half its weight on each label. Every label counts alike, whatever its number of images.
+- **Input scaling:** mean and standard deviation of each input, measured on the wiki training images only.
+- **Loss on wiki images:** cross-entropy against the image's labels. An image in two galleries has half its weight on each label. Every label counts alike, whatever its number of images.
 - **Training:** AdamW, peak learning rate 1e-3 (linear warm-up, then a cosine down to zero), weight decay 1, batch 512, 40 epochs. No early stopping.
+
+### Real outfit photos
+
+The wiki galleries are mostly moodboards; the input the project is about is a photo of a person's outfit. So each training step also takes 512 photos from Street Fashion Style (outfit posts, `emb/street-fashion-style`).
+
+- A real photo has no aesthetic label. It has the style tag its poster typed, and that tag stands for one of the team's 20 style **families** (`runs/family-v1/outside_family.csv`). Its loss is minus the log of the probability the network gives to that family in total, summed over the family's aesthetics. The network is told which family, never which aesthetic.
+- Real photos are drawn family by family, so the largest tag does not drown the small ones. Their loss is added with weight 0.25 (`--real-weight`).
+- Trained on: 166,551 photos in 12 of the 20 families. Never trained on: the 530 posters whose name hashes to 0 mod 10 (21,024 photos), and all of FashionStyle14.
+- The wiki images, their order and their loss are exactly as in the wiki-only NN. With `--real-weight 0` the script gives the wiki-only NN to the last digit.
 
 The docstring at the top of `train_nn.py` explains each choice.
 
@@ -19,42 +30,64 @@ The docstring at the top of `train_nn.py` explains each choice.
 | File | What it does |
 |---|---|
 | `train_nn.py` | Trains and scores the NN, one run per `--seed`. The chosen settings are its defaults. |
-| `sweep_nn.py` | How the settings were chosen: the full list of configurations tried, on validation only. |
-| `check_nn.py` | Checks `train_nn.py` on made-up data. Reads no real image, label or split. |
+| `sweep_nn.py` | How the wiki-only settings were chosen: the full list of configurations tried, on validation only. |
+| `check_nn.py` | Checks `train_nn.py` on made-up data, with and without (made-up) real photos. Reads no real image, label or split. |
 | `analyse_errors.py` | Error analysis on validation: tables, and example images with `--sheets`. |
+| `real_photo_folds.py` | Part of the final run: scores every tagged real photo with a network that never trained on its poster (10 folds by poster). |
 
 These are the same files as `/srv/ml/vega/code/nn/` on ml-db, where the recorded runs were made.
 
 ## Running it (on ml-db, from this folder)
 
     PY=/srv/ml/vega/.venv/bin/python
-    $PY check_nn.py                                # should end with "all checks passed"
-    $PY train_nn.py --seed 422 423 424 425 426     # validation, about 1 minute per seed
-    $PY ../../common/vega_table.py                 # rebuild the comparison table
-    $PY analyse_errors.py --sheets                 # needs the five runs above
+    $PY check_nn.py                                                 # should end with "all checks passed"
+    $PY train_nn.py --seed 422 423 424 425 426                      # the NN (with real photos), validation, about 2 minutes per seed
+    $PY train_nn.py --seed 422 423 424 425 426 --real-weight 0      # the wiki-only NN, about 1 minute per seed
+    $PY ../../common/vega_table.py                                  # rebuild the comparison table
+    $PY analyse_errors.py --pattern "nn-mlp1x1024real-validation-merged-seed*.npz" --out /srv/ml/vega/runs/nn/errors-real-photos --sheets
 
 - Runs append a row to `/srv/ml/vega/runs/comparison/results.jsonl`. Add `--out <folder>` to try something without touching the team's table.
-- `--final` scores the **test split**. It is for the one final run, after the team has frozen every model. It has not been run.
+- `--final` scores the **test split**. It is for the one final run, after the team has frozen every model (freeze: Saturday 21 Nov, 6 pm Pacific). It has not been run. Both networks will be run with it.
+- **The real-photo test, also for the final run only:** `$PY real_photo_folds.py --final` (about 40 minutes for one seed). Posters fall into 10 groups by name; for each group a network is trained without it and then scores that group's photos, so all 187,575 tagged photos are scored once by a network that never saw their poster. The wiki-only NN is scored on the same photos. It has not been run. `--check` shows that it runs (two folds, one epoch, no score shown, nothing kept). A fold that is saved is never trained again.
+- The real photos and the family tables must be under the project root (`emb/street-fashion-style/qwen2beos-aesthetic-448/`, `emb/street-fashion-style/manifest.csv`, `runs/family-v1/`). If they are missing the script stops and says so; it does not fall back to the wiki-only NN.
+- The predictions folder now holds two networks, so `analyse_errors.py` needs `--pattern` (`nn-mlp1x1024real-...` for the NN, `nn-mlp1x1024-...` for the wiki-only one).
 - The loader and scorer (`vega_data.py`, `vega_score.py`) are in `src/common`, and the scripts find them there. The data is not in git: it is read from `/srv/ml/vega` on ml-db, or from the folder `VEGA_ROOT` names on another machine.
 
 ## Results so far
 
-Validation split (1,351 images), 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 20 Nov 2026 on the current vectors:
+Validation split (1,351 images), 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 21 Nov 2026:
 
-| | top-5 | top-1 | MRR | per-label top-5 |
-|---|---|---|---|---|
-| NN | 88.3 ± 0.4 | 62.7 ± 0.5 | 0.741 ± 0.002 | 86.6 ± 0.5 |
-| Baseline: nearest centroid | 82.0 | 53.5 | 0.660 | 82.6 |
+| | top-5 | top-1 | MRR | per-label top-5 | family top-1 |
+|---|---|---|---|---|---|
+| NN (with real outfit photos) | 87.9 ± 0.4 | 62.3 ± 0.3 | 0.738 ± 0.002 | 86.0 ± 0.3 | 75.1 ± 0.5 |
+| Wiki-only NN | 88.3 ± 0.4 | 62.7 ± 0.5 | 0.741 ± 0.002 | 86.6 ± 0.5 | 75.6 ± 0.6 |
+| Baseline: nearest centroid | 82.0 | 53.5 | 0.660 | 82.6 | 69.4 |
+
+On real outfit photos the network never trained on (family top-1, 20 families):
+
+| | FashionStyle14, 11 styles, 10,312 photos | Street Fashion Style, 530 held-out posters, 21,024 photos |
+|---|---|---|
+| NN (with real outfit photos) | 49.4 ± 0.8 | 31.6 ± 0.3 |
+| Wiki-only NN | 33.1 ± 0.5 | 23.7 ± 0.4 |
 
 **The test split has not been scored.** The full table is `/srv/ml/vega/runs/comparison/table.md`.
 
-Two changes on 20 Nov moved these numbers (`/srv/ml/vega/handoff/WORKLOG.md`, 20 Nov): one validation image that was a near-copy of a test image moved to test, and the vectors switched to the fashion-aesthetic instruction. With Qwen's default instruction the NN had 87.6 ± 0.2 top-5; the difference, +0.7 (95% interval -0.2 to +1.7), is inside noise. The error analysis (`/srv/ml/vega/runs/nn/errors/`) was re-run on the current vectors and split; the settings sweep (next section) was not.
+How to read this:
+
+- On the wiki images the two networks are level: top-5 differs by -0.4 points (95% interval -0.9 to +0.1, paired bootstrap).
+- On real outfit photos the NN is 16.3 points better at the family (interval +15.4 to +17.1). Even so, about half of the FashionStyle14 photos get the wrong family.
+- Only 12 of the 20 families have real photos. Wiki outfit images of the other 8 families are guessed as one of the 12 covered families 2.2 points more often than before (interval +0.5 to +4.2).
+- The NN has training data the team's other models do not have. For a like-for-like comparison of algorithms, use the wiki-only NN's row.
+- It is not a wiki-only model for the transfer test (bohemian street photos are in its training).
+- FashionStyle14's 11 styles were used to choose the weight, between two values, so they are not an untouched test for this model. The held-out posters above were scored in the same experiment. The untouched real-photo figure will come from `real_photo_folds.py` in the final run.
+
+The family level (20 style families above the 503 labels) is scored by `vega_score.py` from the same predictions. Training the network directly on the 20 families was tried and is 7.5 points worse than grouping the 503-label network's guesses (`/srv/ml/vega/runs/family-v1/nn/results.md`), so the network keeps its 503 outputs.
 
 ## How the settings were chosen
 
-On the validation split only, with the vectors of 17 Nov (Qwen's default instruction): 146 runs over 32 configurations, changing one setting at a time and then combining the best. The winning combination was then run on five fresh seeds (427 to 431) under a rule written into `sweep_nn.py` before that run, and it passed. Record: `/srv/ml/vega/runs/nn/sweep-qwen2beos/summary.md`.
+**The wiki-only settings.** On the validation split only, with the vectors of 17 Nov (Qwen's default instruction): 146 runs over 32 configurations, changing one setting at a time and then combining the best. The winning combination was then run on five fresh seeds (427 to 431) under a rule written into `sweep_nn.py` before that run, and it passed. Record: `/srv/ml/vega/runs/nn/sweep-qwen2beos/summary.md`. The gain from tuning is small (about half a point of top-5). These settings were frozen on 17 Nov. They were not re-tuned when the vectors changed on 20 Nov, and not when real photos were added on 21 Nov.
 
-The gain from tuning is small (about half a point of top-5). The settings were frozen on 17 Nov and were not re-tuned when the vectors changed on 20 Nov.
+**The real photos' weight.** Two values were tried, 0.25 and 1.0, and nothing else, under rules written before the runs (`/srv/ml/vega/runs/real-photos-v1/RULES.md`): a weight is a candidate if FashionStyle14 family accuracy rises beyond its interval and neither wiki top-5 nor the uncovered families' outfit images fall beyond theirs. 0.25 passed. 1.0 gained 2.7 more points on real photos and lost 1.3 points of wiki top-5. Record: `/srv/ml/vega/runs/real-photos-v1/results.md`.
 
 ## Repeating a run
 
@@ -69,11 +102,14 @@ Python 3.12.3, torch 2.15.0 (CPU build), numpy 2.5.5, polars 2.1.0, and Pillow 1
 | Path | What |
 |---|---|
 | `/srv/ml/vega/runs/comparison/` | scored runs (`results.jsonl`), the table, saved predictions (`preds/`) |
-| `/srv/ml/vega/runs/nn/sweep-qwen2beos/` | the settings sweep |
-| `/srv/ml/vega/runs/nn/curve-qwen2beos/` | loss and accuracy per epoch |
-| `/srv/ml/vega/runs/nn/errors/` | error analysis (`summary.md` first) |
+| `/srv/ml/vega/runs/real-photos-v1/` | the experiment that added real photos: rules, results, predictions |
+| `/srv/ml/vega/runs/family-v1/` | the 20 families (frozen table), and the network trained on families (`nn/`) |
+| `/srv/ml/vega/runs/nn/errors-real-photos/` | error analysis of the NN (`summary.md` first) |
+| `/srv/ml/vega/runs/nn/errors/` | error analysis of the wiki-only NN |
+| `/srv/ml/vega/runs/nn/sweep-qwen2beos/` | the settings sweep (wiki-only) |
+| `/srv/ml/vega/runs/nn/curve-qwen2beos/` | loss and accuracy per epoch (wiki-only) |
 | `/srv/ml/vega/runs/nn/repeatability/` | why a seed did not repeat with two threads, and the fix |
-| `/srv/ml/vega/handoff/WORKLOG.md` | what was run and checked, entry by entry (17 Nov for the NN) |
+| `/srv/ml/vega/handoff/WORKLOG.md` | what was run and checked, entry by entry (17 Nov and 21 Nov for the NN) |
 
 ## Generative-AI use
 

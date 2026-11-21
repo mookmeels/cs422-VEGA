@@ -3,6 +3,9 @@
     python train_nn.py --seed 422 423 424 425 426     # fit on train, score on validation, one run per seed
     python train_nn.py --seed 422 --curve             # also write the per-epoch learning curve
     python train_nn.py --seed 422 423 424 425 426 --final    # the one final run: fit on train + validation, score on test
+    python train_nn.py --seed 422 --real-weight 0     # the wiki-only network (the NN as it was until 21 Nov)
+
+Since 21 Nov the NN also learns from real outfit photos (Andrew's decision; see "Real outfit photos" below).
 
 What it is. Every image has already been turned into 2048 numbers by the frozen Qwen3-VL-Embedding-2B model
 (the same vectors every VEGA model may use). This network takes those 2048 numbers and gives one score per
@@ -25,6 +28,26 @@ How it learns.
   * The number of epochs is a fixed setting chosen on validation. Nothing here stops early by looking at the
     eval images, because the final run has no labelled held-out images to look at.
 
+Real outfit photos (--real-weight, default 0.25).
+  * The wiki galleries are mostly moodboards; the app's input is a photo of a person's outfit. So besides the
+    wiki training images the network sees Street Fashion Style photos (outfit posts, emb/street-fashion-style).
+  * Such a photo has no aesthetic label. It has the style tag its poster typed, and that tag stands for one of
+    the 20 style FAMILIES (frozen tables runs/family-v1/label_family.csv and outside_family.csv). So a real
+    photo's loss is minus the log of the probability the network gives to its family IN TOTAL, summed over
+    that family's aesthetics: it is told which family, never which aesthetic.
+  * Each training step takes the usual batch of wiki images plus 512 real photos, drawn family by family (each
+    family that has photos equally often, then one of its photos at random), and adds real_weight x their
+    mean loss. The wiki images, their order and their loss are exactly as without real photos.
+  * Posters fall into 10 groups by name (sha1 mod 10). Group 0 is never trained on; its photos stay available
+    for checking. real_photo_folds.py rotates which group is left out to score every photo once (10 folds).
+    FashionStyle14 is never trained on.
+  * 0.25 was chosen on validation data under rules written before the runs (runs/real-photos-v1/RULES.md and
+    results.md): family accuracy on FashionStyle14 photos rose from 33.1% to 49.4% and top-5 on the wiki
+    validation images did not fall beyond its margin (88.3 to 87.9). Weight 1.0 was the only other value tried.
+  * --real-weight 0 gives the wiki-only network, the same to the last digit as the runs made before 21 Nov.
+  * Limits to state with any result: 12 of the 20 families have real photos and 8 have none; the tags are the
+    posters' own; and this network has training data the team's other models do not have.
+
 The defaults below are the settings chosen on the validation split (see runs/nn/sweep-qwen2beos/summary.md;
 runs/nn/sweep is the earlier sweep on the vectors the team used before 17 Nov). Each run saves its
 predictions to <out>/preds/ and is scored by the shared scorer, which appends a row to <out>/results.jsonl.
@@ -41,7 +64,7 @@ faster, but then the first training in a new process sometimes rounds differentl
 point away (seen on ml-db on 17 Nov: seed 422 gave 87.0 or 86.7 top-5 with 2 threads). Another machine can
 still differ in the last decimals, because its processor adds the same numbers in another order.
 """
-import argparse, json, math, os, sys, time
+import argparse, csv, hashlib, json, math, os, sys, time
 from pathlib import Path
 
 import numpy as np
@@ -73,8 +96,70 @@ OWNER = "Andrew Nguyen"
 # Chosen on validation, 17 Nov, on the corrected vectors (runs/nn/sweep-qwen2beos/summary.md). The search started
 # from dropout 0.5, weight decay 0.01, balance 0.5; the three values below that differ from that were adopted
 # together after a confirmation on five fresh seeds (stage 4 of sweep_nn.py).
+# real_weight was chosen on 21 Nov between 0.25 and 1.0, the only two values tried (runs/real-photos-v1).
 SETTINGS = {"layers": 1, "hidden": 1024, "dropout": 0.7, "input_dropout": 0.0, "weight_decay": 1.0, "lr": 1e-3,
-            "epochs": 40, "batch": 512, "balance": 1.0, "prep": "standardize"}
+            "epochs": 40, "batch": 512, "balance": 1.0, "prep": "standardize", "real_weight": 0.25}
+REAL_BATCH = 512                                                 # real photos added to every training step
+REAL_GROUPS = 10                                                 # posters fall into 10 groups: sha1(name) % 10
+
+
+def real_photo_table(root, classes):
+    """Every Street Fashion Style photo whose style tag stands for a family.
+
+    Returns rows = (family, row in the vectors, poster group, poster, photo id), sorted; the folder holding the
+    vectors; each label's family; and the families' names. A poster's group is sha1(name) % 10, so all photos of
+    one poster are in one group.
+    """
+    root = Path(root)
+    fam_dir, sfs = root / "runs" / "family-v1", root / "emb" / "street-fashion-style"
+    vec = sfs / f"{vega_data.VECTORS}-448"
+    need = [fam_dir / "label_family.csv", fam_dir / "families.csv", fam_dir / "outside_family.csv",
+            sfs / "manifest.csv", vec / "ids.txt", vec / "embeddings.npy"]
+    if any(not p.exists() for p in need):
+        raise SystemExit("The real outfit photos are part of this model and were not found:\n  "
+                         + "\n  ".join(str(p) for p in need if not p.exists())
+                         + "\nFor the wiki-only network, run with --real-weight 0.")
+
+    def read(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            return list(csv.DictReader(f))
+
+    families = [r["family"] for r in read(fam_dir / "families.csv")]
+    fi = {f: i for i, f in enumerate(families)}
+    lab = {r["wiki_label"]: r["family"] for r in read(fam_dir / "label_family.csv")}
+    if any(c not in lab for c in classes):
+        raise SystemExit("The family table covers the merged label set only; with other labels run with --real-weight 0.")
+    lab_fam = np.asarray([fi[lab[c]] for c in classes])
+    tag = {r["style_or_tag"]: fi[r["family"]] for r in read(fam_dir / "outside_family.csv")
+           if r["source"] == "Street Fashion Style" and r["family"] in fi}
+    row = {s: i for i, s in enumerate((vec / "ids.txt").read_text(encoding="utf-8").split())}
+    rows = sorted((tag[r["style"]], row[r["id"]], int(hashlib.sha1(r["user"].encode("utf-8")).hexdigest(), 16) % REAL_GROUPS,
+                   r["user"], r["id"]) for r in read(sfs / "manifest.csv") if r["style"] in tag and r["id"] in row)
+    if not rows:
+        raise SystemExit(f"No Street Fashion Style photo with a mapped style tag in {sfs}.")
+    return rows, vec, lab_fam, families
+
+
+def real_photos(root, classes, holdout=0):
+    """The Street Fashion Style photos the network trains on: their vectors, and what their loss needs.
+
+    holdout: the poster group that is never trained on (0, as in the runs that chose the settings, unless a
+    cross-validation fold says otherwise; see real_photo_folds.py).
+    Returns x (photos x 2048, ordered by family), where each covered family's photos start and how many it has,
+    the covered families, and mask (families x labels: 0 where the label belongs to the family, -1e9 elsewhere).
+    """
+    rows, vec, lab_fam, families = real_photo_table(root, classes)
+    keep = [(f, r) for f, r, group, _, _ in rows if group != holdout]
+    if not keep:
+        raise SystemExit("No real photo is left to train on once that poster group is held out.")
+    fam = np.asarray([f for f, _ in keep])
+    covered = sorted(set(fam.tolist()))
+    mask = torch.full((len(families), len(classes)), -1e9)
+    mask[torch.from_numpy(lab_fam), torch.arange(len(classes))] = 0.0
+    return {"x": np.ascontiguousarray(np.load(vec / "embeddings.npy", mmap_mode="r")[[r for _, r in keep]]),
+            "starts": torch.tensor([int(np.searchsorted(fam, f)) for f in covered]),
+            "sizes": torch.tensor([int((fam == f).sum()) for f in covered]),
+            "covered": torch.tensor(covered), "mask": mask, "photos": len(keep), "families": len(covered), "holdout": holdout}
 
 
 def input_scaling(fit_x, how):
@@ -112,12 +197,15 @@ def predict(net, x):
         return net(x).cpu().numpy()
 
 
-def train(fit_x, fit_y, eval_x, s, seed, device="cpu", each_epoch=None):
+def train(fit_x, fit_y, eval_x, s, seed, device="cpu", each_epoch=None, real=None):
     """Train one network on the fit images and return its scores for the eval images (rows x labels).
 
-    Only fit_x and fit_y are learned from. eval_x is scaled with the fit images' statistics and scored.
+    Only fit_x and fit_y are learned from, plus the real outfit photos when `real` (from real_photos) is given
+    and s["real_weight"] is above 0. Without `real` this is the wiki-only network, whatever s says.
+    eval_x is scaled with the fit images' statistics and scored.
     each_epoch(epoch, mean training loss, eval scores) is called after every epoch if given (for --curve).
     """
+    weight = float(s.get("real_weight", 0)) if real is not None else 0.0
     torch.manual_seed(seed)
     scale = input_scaling(fit_x, s["prep"])
     X = torch.from_numpy(scale(fit_x)).to(device)
@@ -131,12 +219,24 @@ def train(fit_x, fit_y, eval_x, s, seed, device="cpu", each_epoch=None):
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda i: (i + 1) / warm if i < warm else
                                               0.5 * (1 + math.cos(math.pi * (i - warm) / max(1, steps - warm))))
     shuffle = torch.Generator().manual_seed(seed)                # drawn on the CPU: same order on any device
+    pick = torch.Generator().manual_seed(seed + 100_000)         # the real photos' own draw: the wiki order is untouched
+    if weight > 0:
+        mask = real["mask"].to(device)
     for epoch in range(1, s["epochs"] + 1):
         net.train()
         order, total = torch.randperm(len(X), generator=shuffle).to(device), 0.0
         for i in range(0, len(X), s["batch"]):
             idx = order[i:i + s["batch"]]
-            loss = (W[idx] * -(Y[idx] * F.log_softmax(net(X[idx]), dim=1)).sum(1)).mean()
+            if weight > 0:
+                f = torch.randint(len(real["covered"]), (REAL_BATCH,), generator=pick)       # a family, then one of its photos
+                rows = real["starts"][f] + (torch.rand(REAL_BATCH, generator=pick) * real["sizes"][f]).long()
+                xr = torch.from_numpy(scale(real["x"][rows.numpy()])).to(device)
+                logp = F.log_softmax(net(torch.cat([X[idx], xr])), dim=1)
+                loss_wiki = (W[idx] * -(Y[idx] * logp[:len(idx)]).sum(1)).mean()
+                loss_real = -torch.logsumexp(logp[len(idx):] + mask[real["covered"][f]], dim=1).mean()   # log of the family's total share
+                loss = loss_wiki + weight * loss_real
+            else:
+                loss = (W[idx] * -(Y[idx] * F.log_softmax(net(X[idx]), dim=1)).sum(1)).mean()
             opt.zero_grad()
             loss.backward()
             opt.step()
@@ -148,9 +248,10 @@ def train(fit_x, fit_y, eval_x, s, seed, device="cpu", each_epoch=None):
 
 
 def model_name(s):
+    real = " + real outfit photos" if s.get("real_weight", 0) > 0 else ""
     if s["layers"] == 0:
-        return "NN (softmax regression, no hidden layer)"
-    return f"NN (MLP, {s['layers']} hidden layer{'s' if s['layers'] > 1 else ''} of {s['hidden']})"
+        return "NN (softmax regression, no hidden layer)" + real
+    return f"NN (MLP, {s['layers']} hidden layer{'s' if s['layers'] > 1 else ''} of {s['hidden']})" + real
 
 
 def main():
@@ -166,6 +267,10 @@ def main():
     ap.add_argument("--batch", type=int, default=SETTINGS["batch"])
     ap.add_argument("--balance", type=float, default=SETTINGS["balance"], help="0 = every image counts alike, 1 = every label counts alike")
     ap.add_argument("--prep", default=SETTINGS["prep"], choices=("standardize", "center", "none"), help="input scaling, measured on the fit images")
+    ap.add_argument("--real-weight", type=float, default=SETTINGS["real_weight"],
+                    help="weight of the real outfit photos' loss; 0 = wiki images only (the NN as it was until 21 Nov)")
+    ap.add_argument("--real-holdout", type=int, default=0, choices=range(REAL_GROUPS),
+                    help="the poster group never trained on; 0 (default) is the group held out when the settings were chosen")
     ap.add_argument("--final", action="store_true", help="score the TEST split (only once everything is frozen)")
     ap.add_argument("--curve", action="store_true", help="write the per-epoch learning curve (validation runs only)")
     ap.add_argument("--labels", default="merged", choices=("merged", "wearable"))
@@ -185,8 +290,12 @@ def main():
     t0 = time.perf_counter()
     d = vega_data.load(final=a.final, labels=a.labels, root=root)
     fit, ev = d["fit"], d["eval"]
+    real = real_photos(root, d["classes"], a.real_holdout) if s["real_weight"] > 0 else None
     print(f"{name}: fit {len(fit['ids'])} images, eval {len(ev['ids'])} ({d['eval_split']}), {len(d['classes'])} labels, "
           f"device {a.device}, {torch.get_num_threads()} thread(s)\nsettings: {json.dumps(s)}", flush=True)
+    if real is not None:
+        print(f"real outfit photos: {real['photos']} Street Fashion Style photos in {real['families']} families, "
+              f"{REAL_BATCH} per step, weight {s['real_weight']}, poster group {real['holdout']} held out", flush=True)
     fit_count = (fit["y"] > 0).sum(0)
     for seed in a.seed:
         t1 = time.perf_counter()
@@ -198,12 +307,14 @@ def main():
             log_p = log_p - np.log(np.exp(log_p).sum(1, keepdims=True))
             curve.append((epoch, train_loss, float(-(ev["y"] * log_p).sum(1).mean()), m["top5"], m["top1"]))
 
-        scores = train(fit["x"], fit["y"], ev["x"], s, seed, a.device, each_epoch if a.curve and not a.final else None)
-        slug = "linear" if s["layers"] == 0 else f"mlp{s['layers']}x{s['hidden']}"
+        scores = train(fit["x"], fit["y"], ev["x"], s, seed, a.device, each_epoch if a.curve and not a.final else None, real=real)
+        slug = ("linear" if s["layers"] == 0 else f"mlp{s['layers']}x{s['hidden']}") + ("real" if real is not None else "")
         pred = out / "preds" / f"nn-{slug}-{d['eval_split']}-{a.labels}-seed{seed}.npz"
         np.savez_compressed(pred, ids=ev["ids"], scores=scores.astype(np.float32), classes=np.asarray(d["classes"]))
         vega_score.score(pred, name, OWNER, seed=seed, final=a.final, labels=a.labels, root=root, out=out,
-                         note=f"settings {json.dumps(s)}; device {a.device}; threads {torch.get_num_threads()}; torch {torch.__version__}")
+                         note=f"settings {json.dumps(s)}; device {a.device}; threads {torch.get_num_threads()}; torch {torch.__version__}"
+                              + (f"; real photos {real['photos']} in {real['families']} families, {REAL_BATCH} per step, "
+                                 f"poster group {real['holdout']} held out" if real is not None else ""))
         if curve:
             (out / "curves").mkdir(exist_ok=True)
             path = out / "curves" / f"nn-{slug}-{a.labels}-seed{seed}.csv"
