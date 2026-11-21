@@ -150,8 +150,27 @@ def build(ck):
     return net
 
 
+EXTRAS = {"crop_min": 0.0, "stretch": 0.0, "mix": "none", "smooth": 0.0, "sample": "weights"}   # off = the original
+
+
+def extras_tag(s):
+    """Short name of the 21 Nov 2026 test options in use (empty when none is), for file names."""
+    parts = []
+    if s.get("crop_min"):
+        parts.append(f"crop{round(100 * s['crop_min'])}")
+    if s.get("stretch"):
+        parts.append(f"st{round(100 * s['stretch'])}")
+    if s.get("mix", "none") != "none":
+        parts.append("mix")
+    if s.get("smooth"):
+        parts.append(f"ls{round(100 * s['smooth'])}")
+    if s.get("sample", "weights") == "oversample":
+        parts.append("os")
+    return "".join("-" + q for q in parts)
+
+
 def run_tag(s):
-    return f"cnn-r18w{s['width']}-{s['size']}" + ("-street" if s.get("street_weight") else "")
+    return f"cnn-r18w{s['width']}-{s['size']}" + ("-street" if s.get("street_weight") else "") + extras_tag(s)
 
 
 class Street:
@@ -224,8 +243,19 @@ def street_accuracy(net, street, device, precision, batch=256):
             "tag_top1_per_tag_mean": round(float(np.mean(per_tag)), 4), "tags": len(street.tags)}
 
 
-def augment(x, gen, shift, zoom, flip):
-    """Random flip, shift and zoom of a batch (already colour-scaled), one fresh draw per picture."""
+def augment(x, gen, shift, zoom, flip, crop_min=0.0, stretch=0.0):
+    """Random flip, shift and zoom of a batch (already colour-scaled), one fresh draw per picture.
+
+    With crop_min or stretch (21 Nov 2026 tests; both 0 = exactly the original augmentation):
+      crop_min > 0: a random crop keeping between crop_min and all of the picture's area (the standard random
+                    resized crop, Szegedy et al. 2015, with a gentler lower limit than ImageNet's 8% so the outfit
+                    stays in view), placed anywhere inside the picture, then scaled back to full size; it replaces
+                    the shift and zoom;
+      stretch > 0:  width and height are scaled separately, their ratio between 1 / (1 + stretch) and 1 + stretch
+                    (with crop_min: the crop's shape; without: on top of the shift and zoom).
+    """
+    if crop_min or stretch:
+        return _augment_more(x, gen, shift, zoom, flip, crop_min, stretch)
     n = x.shape[0]
     r = torch.rand(n, 4, generator=gen, device=x.device)
     scale = 1 + zoom * (2 * r[:, 0] - 1)                         # above 1 shows more (zoom out), below 1 zooms in
@@ -237,6 +267,55 @@ def augment(x, gen, shift, zoom, flip):
     theta[:, 1, 2] = 2 * shift * (2 * r[:, 2] - 1)
     grid = F.affine_grid(theta, list(x.shape), align_corners=False)
     return F.grid_sample(x, grid, mode="bilinear", padding_mode="zeros", align_corners=False)
+
+
+def _augment_more(x, gen, shift, zoom, flip, crop_min, stretch):
+    n = x.shape[0]
+    r = torch.rand(n, 6, generator=gen, device=x.device)
+    mirror = torch.where(r[:, 3] < 0.5, -1.0, 1.0) if flip else torch.ones(n, device=x.device)
+    ratio = torch.exp(math.log(1 + stretch) * (2 * r[:, 4] - 1)) if stretch else torch.ones(n, device=x.device)
+    theta = torch.zeros(n, 2, 3, device=x.device)
+    if crop_min:
+        area = crop_min + (1 - crop_min) * r[:, 0]
+        w = torch.sqrt(area * ratio).clamp(max=1.0)               # share of the picture's width the crop covers
+        h = torch.sqrt(area / ratio).clamp(max=1.0)
+        theta[:, 0, 0] = w * mirror
+        theta[:, 1, 1] = h
+        theta[:, 0, 2] = (1 - w) * (2 * r[:, 1] - 1)              # anywhere inside the picture
+        theta[:, 1, 2] = (1 - h) * (2 * r[:, 2] - 1)
+    else:
+        scale = 1 + zoom * (2 * r[:, 0] - 1)
+        theta[:, 0, 0] = scale * torch.sqrt(ratio) * mirror
+        theta[:, 1, 1] = scale / torch.sqrt(ratio)
+        theta[:, 0, 2] = 2 * shift * (2 * r[:, 1] - 1)
+        theta[:, 1, 2] = 2 * shift * (2 * r[:, 2] - 1)
+    grid = F.affine_grid(theta, list(x.shape), align_corners=False)
+    return F.grid_sample(x, grid, mode="bilinear", padding_mode="zeros", align_corners=False)
+
+
+MIXUP_ALPHA, CUTMIX_ALPHA = 0.8, 1.0                              # DeiT's settings (Touvron et al. 2021)
+
+
+def mix_batch(x, y, w, rng, perm_gen):
+    """Mixup (Zhang et al. 2018) or CutMix (Yun et al. 2019), one of the two at random for the whole batch.
+
+    Pictures, label rows and loss weights are all mixed by the same share, so a picture's soft labels (a picture
+    in two galleries is half each) mix naturally. Returns the mixed batch, labels and weights."""
+    n = x.shape[0]
+    perm = torch.randperm(n, generator=perm_gen).to(x.device)
+    if rng.random() < 0.5:                                        # mixup: blend whole pictures
+        lam = float(rng.beta(MIXUP_ALPHA, MIXUP_ALPHA))
+        x = lam * x + (1 - lam) * x[perm]
+    else:                                                         # CutMix: paste a rectangle of another picture
+        lam = float(rng.beta(CUTMIX_ALPHA, CUTMIX_ALPHA))
+        H, W = x.shape[2], x.shape[3]
+        ch, cw = int(H * math.sqrt(1 - lam)), int(W * math.sqrt(1 - lam))
+        cy, cx = int(rng.integers(H)), int(rng.integers(W))
+        y0, y1, x0, x1 = max(cy - ch // 2, 0), min(cy + ch // 2, H), max(cx - cw // 2, 0), min(cx + cw // 2, W)
+        x = x.clone()
+        x[:, :, y0:y1, x0:x1] = x[perm][:, :, y0:y1, x0:x1]
+        lam = 1 - (y1 - y0) * (x1 - x0) / (H * W)                 # the share of the picture actually kept
+    return x, lam * y + (1 - lam) * y[perm], lam * w + (1 - lam) * w[perm]
 
 
 def image_weights(fit_y, balance):
@@ -261,7 +340,16 @@ def pick_device(want):
 
 def model_name(s):
     w = {64: "", 32: ", half width"}.get(s["width"], f", width {s['width']}")
-    return f"CNN (ResNet-18{w}, {s['size']} px)"
+    extra = []
+    if s.get("crop_min") or s.get("stretch"):
+        extra.append("stronger distortions")
+    if s.get("mix", "none") != "none":
+        extra.append("mixup/CutMix")
+    if s.get("smooth"):
+        extra.append(f"label smoothing {s['smooth']}")
+    if s.get("sample", "weights") == "oversample":
+        extra.append("oversampling")
+    return f"CNN (ResNet-18{w}, {s['size']} px" + "".join(", " + e for e in extra) + ")"
 
 
 class Pictures:
@@ -318,9 +406,19 @@ def train(fit, fit_y, ev, s, seed, device, each_epoch=None, street=None):
                                               0.5 * (1 + math.cos(math.pi * (i - warm) / max(1, steps - warm))))
     scaler = torch.amp.GradScaler(device.type, enabled=s["precision"] == "fp16")
     Y = torch.from_numpy(fit_y).to(device)
-    W = torch.from_numpy(image_weights(fit_y, s["balance"])).to(device)
+    oversample = s.get("sample", "weights") == "oversample"
+    if oversample:                                               # rare labels' pictures drawn more often instead
+        draw_p = torch.from_numpy(image_weights(fit_y, s["balance"]).astype(np.float64))
+        W = torch.ones(len(fit_y), device=device)
+    else:
+        W = torch.from_numpy(image_weights(fit_y, s["balance"])).to(device)
     shuffle = torch.Generator().manual_seed(seed)                # picture order drawn on the CPU: same on any device
     aug = torch.Generator(device=device).manual_seed(seed + 1)
+    crop_min, stretch, smooth = s.get("crop_min", 0.0), s.get("stretch", 0.0), s.get("smooth", 0.0)
+    mixing = s.get("mix", "none") != "none"
+    if mixing:                                                   # their own generators: other draws stay the same
+        mix_rng = np.random.default_rng(seed + 4)
+        mix_perm = torch.Generator().manual_seed(seed + 5)
     if street:                                                   # its own generators: the wiki draws stay the same
         street_rng = np.random.default_rng(seed + 2)
         street_aug = torch.Generator(device=device).manual_seed(seed + 3)
@@ -328,19 +426,28 @@ def train(fit, fit_y, ev, s, seed, device, each_epoch=None, street=None):
     for epoch in range(1, s["epochs"] + 1):
         net.train()
         t0 = time.perf_counter()
-        order, total = torch.randperm(len(fit), generator=shuffle).to(device), 0.0
+        if oversample:                                           # as many draws as pictures, with replacement
+            order = torch.multinomial(draw_p, len(fit), replacement=True, generator=shuffle).to(device)
+        else:
+            order = torch.randperm(len(fit), generator=shuffle).to(device)
+        total = 0.0
         for i in range(0, len(fit), s["batch"]):
             idx = order[i:i + s["batch"]]
-            x = augment(fit.batch(idx), aug, s["shift"], s["zoom"], s["flip"])
+            x = augment(fit.batch(idx), aug, s["shift"], s["zoom"], s["flip"], crop_min, stretch)
+            yb, wb = Y[idx], W[idx]
+            if mixing:
+                x, yb, wb = mix_batch(x, yb, wb, mix_rng, mix_perm)
+            if smooth:                                           # label smoothing (Szegedy et al. 2016)
+                yb = (1 - smooth) * yb + smooth / yb.shape[1]
             if street:
                 xs, ys = street.batch(street.draw(s["street_batch"], street_rng))
-                xs = augment(xs, street_aug, s["shift"], s["zoom"], s["flip"])
+                xs = augment(xs, street_aug, s["shift"], s["zoom"], s["flip"], crop_min, stretch)
                 with autocast(device, s["precision"]):
                     logits, tag_logits = net.both(torch.cat([x, xs]), len(idx))
             else:
                 with autocast(device, s["precision"]):
                     logits = net(x)
-            loss = (W[idx] * -(Y[idx] * F.log_softmax(logits.float(), dim=1)).sum(1)).mean()
+            loss = (wb * -(yb * F.log_softmax(logits.float(), dim=1)).sum(1)).mean()
             if street:
                 loss = loss + s["street_weight"] * F.cross_entropy(tag_logits.float(), ys)
             opt.zero_grad(set_to_none=True)
@@ -399,6 +506,17 @@ def main():
                                                                       "default 0.25)")
     ap.add_argument("--street-batch", type=int, default=None, help="street photos per step, drawn tag-evenly (with --street; "
                                                                    "default 128)")
+    ap.add_argument("--crop-min", type=float, default=0.0,
+                    help="test option: random crop keeping at least this share of the picture's area, replacing "
+                         "shift and zoom (0 = off; 21 Nov 2026 tests used 0.6)")
+    ap.add_argument("--stretch", type=float, default=0.0,
+                    help="test option: width and height scaled separately, ratio up to 1 + this (0 = off; tests 0.15)")
+    ap.add_argument("--mix", default="none", choices=("none", "mixup-cutmix"),
+                    help="test option: mixup or CutMix on each wiki batch, one of the two at random (DeiT's settings)")
+    ap.add_argument("--smooth", type=float, default=0.0, help="test option: label smoothing (0 = off; tests 0.1)")
+    ap.add_argument("--sample", default="weights", choices=("weights", "oversample"),
+                    help="weights: rare labels' pictures count more in the loss (the original); oversample: they are "
+                         "drawn more often instead, each time freshly distorted, with the loss unweighted")
     ap.add_argument("--fit-only", action="store_true",
                     help="with --final: train on train + validation and save the weights only; needs no test pictures "
                          "(the test split is then predicted on ml-db with predict_cnn.py)")
@@ -419,6 +537,9 @@ def main():
     if a.street_weight < 0 or a.street_batch < 1:
         raise SystemExit("--street-weight must be 0 or more and --street-batch at least 1")
     s = {k: getattr(a, k) for k in SETTINGS}
+    if not 0 <= a.crop_min < 1 or a.stretch < 0 or not 0 <= a.smooth < 1:
+        raise SystemExit("--crop-min and --smooth must be from 0 to below 1, and --stretch 0 or more")
+    s.update({k: getattr(a, k) for k, off in EXTRAS.items() if getattr(a, k) != off})   # recorded only when used
     if not a.miopen:
         torch.backends.cudnn.enabled = False                     # before any work on the graphics card
     if a.threads:

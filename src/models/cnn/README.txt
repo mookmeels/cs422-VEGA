@@ -20,7 +20,7 @@ FILES
   train_cnn.py        the network, its training, and scoring through the team's vega_score.py
   predict_cnn.py      the final run's test predictions on ml-db, from weights trained on the PC (never scores them)
   prepare_street.py   the Street Fashion Style photos for the CNN's second output (their posters' own style tags)
-  check_cnn.py        36 checks on made-up pictures (run after any change; all pass, about two minutes on a CPU)
+  check_cnn.py        39 checks on made-up pictures (run after any change; all pass, about two minutes on a CPU)
   summarise_tuning.py the tuning table, the rule's verdict, seed means and the learning curves
   find_shared.py      finds the team's loader and scorer (src/common in the repo, code/shared on ml-db)
   show_filters.py     every first-layer filter drawn as a picture; for each of the 4 stages, a sample of 32 of its

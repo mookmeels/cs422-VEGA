@@ -13,7 +13,8 @@ The rule (Gianni, 19 Nov 2026, decision 9, written before any tuning run): among
 length), keep the best validation top-5; if another run is within 0.5 point of it, keep whichever trained faster.
 The tuning runs are the FIRST seed-422 run of each plain setting at full length and the tuning precision
 (fp32); a later repeat never replaces it, and an earlier shorter or other-precision run (a smoke test, a speed test)
-cannot take its place. Street-photo runs ("-street" tags) are a different model, not a tuning setting: they are
+cannot take its place. Street-photo runs ("-street" tags) and runs with the 21 Nov 2026 test options (tags such as "-crop60-st15",
+"-mix", "-ls10", "-os") are different recipes, not tuning settings: they are
 listed and get their own seed means, but never enter the verdict or the tuning curves (scan, 21 Nov 2026). Only the
 merged label set is read; runs and scores of any other label set are left out. Seed means follow the team table (vega_table.py): the latest run of each seed counts. A setting and
 seed run more than once gets a "repeats" table showing how far the runs differ.
@@ -22,6 +23,7 @@ Only validation pictures are used; the test split plays no part.
 import argparse
 import csv
 import json
+import re
 import statistics
 import sys
 from pathlib import Path
@@ -155,7 +157,7 @@ def main():
     tuning, taken = [], set()
     for r in rows:                                                # in the order made: the first qualifying run counts
         if (r["seed"] == TUNING_SEED and r["settings"]["epochs"] == full and r["settings"]["precision"] == TUNING_PRECISION
-                and not r["settings"].get("street_weight") and r["tag"] not in taken):
+                and re.fullmatch(r"cnn-r18w\d+-\d+", r["tag"]) and r["tag"] not in taken):
             tuning.append(r)
             taken.add(r["tag"])
     lines = ["# CNN runs: tuning and seeds", "",
