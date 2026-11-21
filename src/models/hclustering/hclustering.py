@@ -323,7 +323,7 @@ def make_long_df(split, duplicate = True):
         .unpivot(
             on=d["classes"],
             index="id",
-            variable_name="class",
+            variable_name=STYLE_COL,
             value_name="weight"
         )
         .filter(pl.col("weight") > 0)
@@ -331,6 +331,9 @@ def make_long_df(split, duplicate = True):
     )
 # create all class rows
 train_df = make_long_df(d["fit"])
+
+
+
 
 eval_df = pl.DataFrame({
     "id": d["eval"]["ids"],
@@ -344,13 +347,21 @@ def add_embeddings(df, split):
         schema=[f"emb_{i}" for i in range(split["x"].shape[1])],
         orient="row"
     ).with_columns(
-        pl.Series("id", split["ids"])
+        pl.Series(ID_COL, split["ids"])
     )
 
     return df.join(embeddings, on="id")
 # add embeddings to each of the classes
 train_df = add_embeddings(train_df, d["fit"])
 
+
+means = train_df.mean()
+sds = train_df.std()
+
+for colName in train_df.columns:
+    if colName not in (STYLE_COL, ID_COL):
+        train_df = train_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
+        eval_df = eval_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
 # eval_df = eval_df.head(250)
 
 predictions = find_average_linkage(train_df, eval_df)
