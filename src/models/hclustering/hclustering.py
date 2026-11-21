@@ -27,7 +27,7 @@ knowns: array of training data
 unknowns: array of data to categorize
 cut: the distance threshold
 """
-def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.75):
+def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.78):
     clusters = {}
 
     # convert df to vectors
