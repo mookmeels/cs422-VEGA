@@ -11,7 +11,10 @@ It never scores them: the test split is scored once, with vega_score.py --final,
 
 Before predicting, it checks that the weights were made for the final run, from the same split and label set, and
 with exactly the colour scaling of this preparation (so the PC trained on the same fit pictures this folder holds).
-An existing prediction file is never replaced unless --overwrite is given.
+An existing prediction file is never replaced unless --overwrite is given, and two weights files that would write
+the same prediction file (the same setting and seed, for example from two run folders) are refused. Every check runs
+on every weights file before the first prediction is written, so a refusal leaves no half-finished set. Scores that
+are not finite numbers are refused rather than saved.
 """
 import argparse
 import json
@@ -46,7 +49,6 @@ def main():
     root = Path(a.root) if a.root else vega_data.ROOT
     prepared = Path(a.prepared) if a.prepared else root / "runs" / "cnn" / "prepared" / "final"
     out = Path(a.out) if a.out else root / "runs" / "cnn" / "final"
-    (out / "preds").mkdir(parents=True, exist_ok=True)
     stats = json.loads((prepared / "stats.json").read_text(encoding="utf-8"))
     if stats.get("mode") != "final":
         raise SystemExit(f"{prepared} is not a final-run preparation (mode {stats.get('mode')!r})")
@@ -56,7 +58,7 @@ def main():
 
     checked, loaded = [], {}
     for w in a.weights:
-        ck = torch.load(w, map_location="cpu", weights_only=False)
+        ck = torch.load(w, map_location="cpu", weights_only=True)   # never run code hidden in a file (scan, 21 Nov 2026)
         s = ck["settings"]
         st = stats["per_size"].get(str(s["size"]))
         problems = [why for bad, why in (
@@ -72,18 +74,32 @@ def main():
         pred = out / "preds" / f"{tag}-test-{ck['labels']}-seed{ck['seed']}.npz"
         if pred.exists() and not a.overwrite:
             raise SystemExit(f"{pred} exists already; use --overwrite to replace it on purpose")
-        checked.append((w, ck, s, st, tag, pred))
-
-    for w, ck, s, st, tag, pred in checked:
-        t0 = time.perf_counter()
+        clash = [c[0] for c in checked if c[5] == pred]
+        if clash:
+            raise SystemExit(f"{w} and {clash[0]} would both write {pred.name} (same setting and seed); "
+                             "predict them in separate commands with separate --out folders")
         d = loaded.get(ck["labels"]) or loaded.setdefault(ck["labels"], vega_data.load(final=True, labels=ck["labels"],
                                                                                         root=root, vectors=False))
         if list(d["classes"]) != list(ck["classes"]):
             raise SystemExit(f"{w}: the label list differs from the loader's")
+        prepared_ids = set((prepared / "eval-ids.txt").read_text(encoding="utf-8").split())
+        if not set(d["eval"]["ids"]) <= prepared_ids:
+            raise SystemExit(f"{w}: some test pictures the loader expects are not in {prepared}; rerun prepare_images.py --final")
+        train_cnn.build(ck)                                       # the weights fit the network they describe
+        checked.append((w, ck, s, st, tag, pred))
+        print(f"{Path(w).name}: width {s['width']}, {s['size']} px, {s['epochs']} epochs, "
+              f"{'street photos' if s.get('street_weight') else 'no street photos'}, seed {ck['seed']} -> {pred.name}")
+
+    (out / "preds").mkdir(parents=True, exist_ok=True)
+    for w, ck, s, st, tag, pred in checked:
+        t0 = time.perf_counter()
+        d = loaded[ck["labels"]]
         ev = train_cnn.Pictures(prepared, "eval", s["size"], list(d["eval"]["ids"]), st["mean"], st["std"], device)
         net = train_cnn.build(ck)
         net.to(device)
         scores = train_cnn.predict(net, ev, device, s["precision"])
+        if not np.isfinite(scores).all():
+            raise SystemExit(f"{w}: {int((~np.isfinite(scores)).sum())} scores are not finite numbers; nothing saved for it")
         np.savez_compressed(pred, ids=d["eval"]["ids"], scores=scores.astype(np.float32), classes=np.asarray(d["classes"]))
         print(f"seed {ck['seed']}: {len(ev)} test pictures predicted in {time.perf_counter() - t0:.0f}s -> {pred.name} "
               "(NOT scored; score once with vega_score.py --final after the team freezes settings)", flush=True)

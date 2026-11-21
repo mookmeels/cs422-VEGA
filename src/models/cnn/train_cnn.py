@@ -24,7 +24,8 @@ How it learns.
     filled with zero after colour scaling, which is the average colour, the same as the padding bars.
     Scoring always sees the plain picture.
   * Loss: the NN's (Andrew's): cross-entropy between the softmax and the picture's label row (a picture in two
-    galleries has half its weight on each), each picture weighted by (pictures of its label) ** -balance.
+    galleries has half its weight on each), each picture weighted by (pictures of its label) ** -balance, where a
+    picture in two galleries counts half to each label (the same count as Andrew's NN).
   * Optimiser: AdamW. The learning rate rises linearly for the first --warmup share of steps, then falls to zero
     along a cosine. Weight decay applies to filter and linear weights, not to batch-norm scales or biases.
   * A fixed number of epochs, chosen on validation; nothing stops early by looking at the scored pictures.
@@ -56,7 +57,9 @@ predict_cnn.py then makes the test predictions on ml-db from those weights (Andr
 --street <folder> (Gianni, 20 Nov 2026) also trains a second output on Street Fashion Style photos' own style
 tags (prepare_street.py): each step adds --street-batch photos drawn tag-evenly, their tag cross-entropy times
 --street-weight (0.25, Andrew's NN weight, not tuned). The 503 outputs, their loss and every other setting are
-unchanged; posters of the held-out group are never trained on and give the tag accuracy on unseen posters.
+as for the plain CNN, but one forward pass carries both the wiki pictures and the street photos, so every batch norm layer is fitted on that mix (about half street photos), and the saved running averages used at test time are the mix too (scan, 21 Nov 2026). Its "train loss" includes 0.25 x the tag loss, so it
+is not comparable with the plain runs' train loss. Posters of the held-out group are never trained on and give the
+tag accuracy on unseen posters.
 The model is named "... + street photos" and its files carry "-street" in the tag.
 """
 import argparse
@@ -75,20 +78,8 @@ import torch.nn.functional as F
 from torch import nn
 
 
-def shared_code():
-    """The folder holding the team's loader and scorer (vega_data.py, vega_score.py)."""
-    here = Path(__file__).resolve().parent
-    places = [here.parent / "shared", here.parent.parent / "common",
-              Path(os.environ.get("VEGA_ROOT", "/srv/ml/vega")) / "code" / "shared"]
-    if os.environ.get("VEGA_SHARED"):
-        places.insert(0, Path(os.environ["VEGA_SHARED"]))
-    for p in places:
-        if (p / "vega_data.py").exists():
-            return p
-    raise SystemExit("vega_data.py not found; set VEGA_SHARED to its folder. Looked in: " + ", ".join(map(str, places)))
-
-
-sys.path.insert(0, str(shared_code()))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from find_shared import shared_code  # noqa: E402  (puts the shared code on the path; check_cnn.py uses it too)
 import vega_data   # noqa: E402
 import vega_score  # noqa: E402
 
@@ -249,7 +240,11 @@ def augment(x, gen, shift, zoom, flip):
 
 
 def image_weights(fit_y, balance):
-    """Loss weight of each fit picture: (pictures of its label) ** -balance, averaged over its labels; mean 1."""
+    """Loss weight of each fit picture: (pictures of its label) ** -balance, averaged over its labels; mean 1.
+
+    A label's picture count sums the loader's label rows, so a picture in two galleries counts half to each (the
+    same as Andrew's NN, train_nn.py image_weights).
+    """
     per_label = np.maximum(fit_y.sum(0), 1.0) ** -float(balance)
     w = fit_y @ per_label
     return (w * len(w) / w.sum()).astype(np.float32)
@@ -398,9 +393,12 @@ def main():
                     help="switch off MIOpen/cuDNN (torch.backends.cudnn) and use PyTorch's own GPU kernels")
     ap.add_argument("--street", default=None,
                     help="folder made by prepare_street.py: also train a second output on the street photos' own style "
-                         "tags (Gianni, 20 Nov 2026); the 503 wiki outputs and their loss are unchanged")
-    ap.add_argument("--street-weight", type=float, default=0.25, help="weight of the street photos' loss (with --street)")
-    ap.add_argument("--street-batch", type=int, default=128, help="street photos per step, drawn tag-evenly (with --street)")
+                         "tags (Gianni, 20 Nov 2026); the 503 wiki outputs and their loss are as before, but the "
+                         "network's batch norm now sees wiki pictures and street photos together (see README)")
+    ap.add_argument("--street-weight", type=float, default=None, help="weight of the street photos' loss (with --street; "
+                                                                      "default 0.25)")
+    ap.add_argument("--street-batch", type=int, default=None, help="street photos per step, drawn tag-evenly (with --street; "
+                                                                   "default 128)")
     ap.add_argument("--fit-only", action="store_true",
                     help="with --final: train on train + validation and save the weights only; needs no test pictures "
                          "(the test split is then predicted on ml-db with predict_cnn.py)")
@@ -410,8 +408,16 @@ def main():
     a = ap.parse_args()
     if a.fit_only and not a.final:
         raise SystemExit("--fit-only is for the final run (--final): validation runs are always scored")
-    if a.fit_only and a.curve:
-        raise SystemExit("--fit-only has no pictures to score, so no learning curve (drop --curve)")
+    if a.final and a.curve:
+        raise SystemExit("--final never scores the test split during training, so there is no learning curve (drop --curve)")
+    if len(set(a.seed)) != len(a.seed):
+        raise SystemExit(f"a seed is listed twice ({' '.join(map(str, a.seed))}); its second run would replace the first's files")
+    if not a.street and (a.street_weight is not None or a.street_batch is not None):
+        raise SystemExit("--street-weight and --street-batch need --street <folder>; without it the plain network is trained")
+    a.street_weight = 0.25 if a.street_weight is None else a.street_weight
+    a.street_batch = 128 if a.street_batch is None else a.street_batch
+    if a.street_weight < 0 or a.street_batch < 1:
+        raise SystemExit("--street-weight must be 0 or more and --street-batch at least 1")
     s = {k: getattr(a, k) for k in SETTINGS}
     if not a.miopen:
         torch.backends.cudnn.enabled = False                     # before any work on the graphics card
@@ -429,6 +435,9 @@ def main():
         raise SystemExit(f"size {a.size} is not prepared in {prepared} (prepared: {stats['sizes']})")
     if stats["split_sha256"] != vega_data.split_sha256(root):
         raise SystemExit("the prepared pictures come from another split file; rerun prepare_images.py")
+    if not str(stats.get("mode", mode)).startswith(mode):
+        raise SystemExit(f"{prepared} was prepared for a {stats.get('mode')} run, not a {mode} run; "
+                         f"point --prepared at the {mode} preparation" + (" or drop --final" if a.final else " or add --final"))
     st = stats["per_size"][str(a.size)]
 
     d = vega_data.load(final=a.final, labels=a.labels, root=root, vectors=False)
@@ -459,6 +468,10 @@ def main():
     if taken and not a.overwrite:                                # 20 Nov 2026: a repeat once replaced a tuning run's files
         raise SystemExit("an earlier run's files would be replaced:\n  " + "\n  ".join(map(str, taken))
                          + "\nuse a new --out folder, or --overwrite to replace them on purpose")
+    stale = [p for p in taken if a.fit_only and p.parent.name == "preds"]
+    if stale:                                                    # a fit-only run writes no predictions to replace them
+        raise SystemExit("--fit-only would leave an older run's test predictions beside the new weights:\n  "
+                         + "\n  ".join(map(str, stale)) + "\nuse a new --out folder, or move those files away first")
     t_load = time.perf_counter()
     fit = Pictures(prepared, "fit", a.size, list(fit_d["ids"]), st["mean"], st["std"], device)
     ev = None if a.fit_only else Pictures(prepared, "eval", a.size, list(ev_d["ids"]), st["mean"], st["std"], device)

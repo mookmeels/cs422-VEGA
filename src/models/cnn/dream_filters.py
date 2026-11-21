@@ -32,6 +32,7 @@ Writes, in --out (default: next to chosen.json's folder, with "-dreams" added):
     dreams.json                              settings, and per filter its mean activation on the final picture
 """
 import argparse
+import hashlib
 import json
 import sys
 import time
@@ -126,11 +127,16 @@ def main():
     a = ap.parse_args()
     if not a.miopen:
         torch.backends.cudnn.enabled = False
-    ck = torch.load(a.weights, map_location="cpu", weights_only=False)
+    ck = torch.load(a.weights, map_location="cpu", weights_only=True)   # never run code hidden in a file (scan, 21 Nov 2026)
     chosen_path = Path(a.chosen)
     chosen = json.loads(chosen_path.read_text(encoding="utf-8"))
-    if Path(chosen["weights"]).name != Path(a.weights).name:
-        raise SystemExit(f"chosen.json was made for {Path(chosen['weights']).name}, not {Path(a.weights).name}")
+    made_for = str(chosen["weights"]).replace("\\", "/").rsplit("/", 1)[-1]   # Windows or Linux path
+    if "weights_sha256" in chosen:                                # the exact file, not just its name (scan, 21 Nov 2026)
+        if chosen["weights_sha256"] != hashlib.sha256(Path(a.weights).read_bytes()).hexdigest():
+            raise SystemExit(f"chosen.json was made for another weights file ({made_for}, a different file "
+                             f"from {a.weights} even if the name matches); rerun show_filters.py on these weights")
+    elif made_for != Path(a.weights).name:
+        raise SystemExit(f"chosen.json was made for {made_for}, not {Path(a.weights).name}")
     st = ck["settings"]
     size = a.size or st["size"]
     device = train_cnn.pick_device(a.device)

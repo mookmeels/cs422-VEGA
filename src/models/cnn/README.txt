@@ -20,8 +20,9 @@ FILES
   train_cnn.py        the network, its training, and scoring through the team's vega_score.py
   predict_cnn.py      the final run's test predictions on ml-db, from weights trained on the PC (never scores them)
   prepare_street.py   the Street Fashion Style photos for the CNN's second output (their posters' own style tags)
-  check_cnn.py        31 checks on made-up pictures (run after any change; all pass, about two minutes on a CPU)
+  check_cnn.py        36 checks on made-up pictures (run after any change; all pass, about two minutes on a CPU)
   summarise_tuning.py the tuning table, the rule's verdict, seed means and the learning curves
+  find_shared.py      finds the team's loader and scorer (src/common in the repo, code/shared on ml-db)
   show_filters.py     every first-layer filter drawn as a picture; for each of the 4 stages, a sample of 32 of its
                       filters (the most selective) with the training pictures that make each fire most
   dream_filters.py    for the same sample of filters, a dreamed-up picture of what each looks for: start from
@@ -121,7 +122,9 @@ TRAINING, EVERY SETTING
     loss                  the NN's: cross-entropy on the      Gianni, decision 5
                           loader's label rows, each picture
                           weighted by (pictures of its
-                          label) ** -1 (balance 1)
+                          label) ** -1 (balance 1); a
+                          picture in two galleries counts
+                          half to each label, as in the NN
     optimiser             AdamW, peak learning rate 1e-3,     Gianni, decision 6
                           weight decay 0.05 (not on BN
                           scales or biases)
@@ -192,8 +195,10 @@ STREET PHOTOS (a second version of the CNN; Gianni, 20 Nov 2026)
   same pooling and dropout as the 503 wiki scores. Each step trains on the usual 128 wiki pictures and adds 128
   street photos, drawn tag-evenly (a tag at random, then one of its photos) so the big tags cannot dominate; their
   tag cross-entropy counts 0.25 (Andrew's weight for his NN's real photos, copied, not tuned). The 503 outputs,
-  their loss and every other setting are as above. The street outputs are not scored in the team table; they let
-  far more real outfit photos shape the shared filters (multi-task learning). Posters with sha1(name) % 10 == 0
+  their loss and every other setting are as above, with one difference found by the code scan (21 Nov 2026):
+  one forward pass carries both the wiki pictures and the street photos, so every batch norm layer is fitted on that mix (about half street photos), and the saved running averages used at test time are the mix too. The street outputs are not scored in the team table; they let far more
+  real outfit photos shape the network (multi-task learning). A street run's "train loss" includes 0.25 x the
+  tag loss, so its curve is not comparable with the plain runs' training loss. Posters with sha1(name) % 10 == 0
   (as for Andrew's NN; about 30,000 photos) are never trained on and give the tag accuracy on unseen posters.
   Gate, written before any run (Gianni "2 a"): seed 422 first; continue to seeds 423 to 426 and the final run only
   if its wiki validation top-5 is at least 31.6 (the plain CNN's seed 422: 30.6, plus 1 point, twice the measured
@@ -213,8 +218,10 @@ STREET PHOTOS (a second version of the CNN; Gianni, 20 Nov 2026)
     The tag output barely beats chance. Not a fault found in the code: on a 6,000-photo sample checked on ml-db,
     it scores 4.5% on photos it trained on and 2.8% on unseen ones, spread over 36 to 37 of the 39 tags (no
     collapse onto one tag, no memorising); the made-up tags in check_cnn.py reach above 60%. Reading (inferred):
-    the posters' own tags are hard to tell apart from a photo, and whatever helps the wiki score comes through
-    the shared filters, not through getting the tags right.
+    the posters' own tags are hard to tell apart from a photo, so the gain does not come from getting the tags
+    right. Where it does come from is not shown: the street photos shape the shared filters, but they also share
+    every batch norm layer with the wiki pictures (see How), and these runs cannot tell the two apart. Telling
+    them apart would need a run that keeps the street photos out of the batch norm statistics.
   Preparing: 271,091 photos (241,647 training, 29,444 held out; 3 unreadable files skipped), 186 s on the PC,
     40.8 GB at 224 px.
   Times per run on the PC (fp32, --no-miopen): validation about 2,955 s (49 to 50 min; about 197 training
@@ -231,7 +238,8 @@ REPEATS, TIME, MEMORY
   tuning run's prediction, weights and curve files (same names). The tuning run's scores survive in runs.jsonl
   and results.jsonl and its epochs in logs/tune-w64-224.log; the team table uses the repeat (latest run counts,
   as for every model). Since then train_cnn.py refuses to replace an earlier run's files, and
-  summarise_tuning.py judges tuning on the first run of each setting.
+  summarise_tuning.py judges tuning on the first full-length fp32 run of each plain setting (street runs and
+  other label sets never enter the verdict; code scan, 21 Nov 2026).
   Time per 60-epoch run, fp32 with a validation score after every epoch: W 32 / 128 px 8.7 min, W 64 / 128 px
   14.1, W 32 / 224 px 14.8, W 64 / 224 px 23.4 (22.1 of it training, 423 pictures/s). Peak GPU memory
   1.2 to 4.8 GB of 24. The four tuning runs and five seeds took about 3 hours of GPU time in all.

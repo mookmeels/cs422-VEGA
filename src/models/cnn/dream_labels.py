@@ -101,11 +101,11 @@ def main():
     if not a.miopen:
         torch.backends.cudnn.enabled = False
     root = Path(a.root) if a.root else vega_data.ROOT
-    ck = torch.load(a.weights, map_location="cpu", weights_only=False)
+    ck = torch.load(a.weights, map_location="cpu", weights_only=True)   # never run code hidden in a file (scan, 21 Nov 2026)
     st = ck["settings"]
     size = a.size or st["size"]
     classes = list(ck["classes"])
-    d = vega_data.load(labels=ck["labels"], root=root, vectors=False)
+    d = vega_data.load(final=bool(ck.get("final")), labels=ck["labels"], root=root, vectors=False)   # final: train + validation
     if list(d["classes"]) != classes:
         raise SystemExit("the loader's label list differs from the one saved with the weights")
     counts = (d["fit"]["y"] > 0).sum(0)                           # training pictures per label

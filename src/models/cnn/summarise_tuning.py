@@ -11,8 +11,11 @@ team's scorer) and curves/*.csv (per epoch). Writes, in <out>/summary/:
 
 The rule (Gianni, 19 Nov 2026, decision 9, written before any tuning run): among the tuning runs (seed 422, full
 length), keep the best validation top-5; if another run is within 0.5 point of it, keep whichever trained faster.
-The tuning runs are the FIRST seed-422 run of each setting; a later repeat of the same setting and seed never
-replaces it. Seed means follow the team table (vega_table.py): the latest run of each seed counts. A setting and
+The tuning runs are the FIRST seed-422 run of each plain setting at full length and the tuning precision
+(fp32); a later repeat never replaces it, and an earlier shorter or other-precision run (a smoke test, a speed test)
+cannot take its place. Street-photo runs ("-street" tags) are a different model, not a tuning setting: they are
+listed and get their own seed means, but never enter the verdict or the tuning curves (scan, 21 Nov 2026). Only the
+merged label set is read; runs and scores of any other label set are left out. Seed means follow the team table (vega_table.py): the latest run of each seed counts. A setting and
 seed run more than once gets a "repeats" table showing how far the runs differ.
 Only validation pictures are used; the test split plays no part.
 """
@@ -26,11 +29,13 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "shared"))
+sys.path.insert(0, str(HERE))
+import find_shared  # noqa: E402,F401  (puts the shared code on the path)
 import vega_data  # noqa: E402
 
 TUNING_SEED = 422
 MARGIN = 0.5                                                      # points of top-5
+TUNING_PRECISION = "fp32"                                         # the precision the tuning runs used (decision, 20 Nov)
 COLOURS = [(31, 119, 180), (214, 39, 40), (44, 160, 44), (148, 103, 189), (255, 127, 14), (23, 190, 207)]
 
 
@@ -51,11 +56,11 @@ def collect(out):
     scores = {}
     for s in read_jsonl(out / "results.jsonl"):
         name = s.get("pred_file", "").replace("\\", "/").rsplit("/", 1)[-1]   # Windows or Linux path; <tag>-validation-<labels>-seed<seed>.npz
-        if s.get("split") == "validation" and "-validation-" in name:
+        if s.get("split") == "validation" and s.get("labels", "merged") == "merged" and "-validation-merged-" in name:
             scores.setdefault((name.split("-validation-")[0], s["seed"]), []).append(s)
     seen, rows = {}, []
     for r in read_jsonl(out / "runs.jsonl"):
-        if r.get("split") != "validation" or r.get("subset"):
+        if r.get("split") != "validation" or r.get("subset") or r.get("labels", "merged") != "merged":
             continue
         key = (r["tag"], r["seed"])
         k = seen[key] = seen.get(key, 0) + 1
@@ -147,7 +152,12 @@ def main():
     (out / "summary").mkdir(exist_ok=True)
 
     full = max(r["settings"]["epochs"] for r in rows)
-    tuning = [r for r in rows if r["seed"] == TUNING_SEED and r["settings"]["epochs"] == full and r["run"] == 1]
+    tuning, taken = [], set()
+    for r in rows:                                                # in the order made: the first qualifying run counts
+        if (r["seed"] == TUNING_SEED and r["settings"]["epochs"] == full and r["settings"]["precision"] == TUNING_PRECISION
+                and not r["settings"].get("street_weight") and r["tag"] not in taken):
+            tuning.append(r)
+            taken.add(r["tag"])
     lines = ["# CNN runs: tuning and seeds", "",
              f"Folder: `{out}`. Validation split only ({rows[0]['split']}), label set merged. "
              f"Top-5, top-1 and per-label top-5 are percentages.", "",
@@ -161,7 +171,7 @@ def main():
                      f"| {r['top5']:.1f} | {r['top1']:.1f} | {r['mrr']:.3f} | {fmt(r['label_top5'])} | {fmt(r['thin_top5'])} "
                      f"| {r['train_seconds'] / 60:.1f} | {r['train_pictures_per_second']:.0f} "
                      f"| {r['peak_gpu_memory_gb'] if r['peak_gpu_memory_gb'] is not None else '-'} | {r['device']} |")
-    lines += ["", "## Tuning (seed 422, full length, the first run of each setting)", ""]
+    lines += ["", "## Tuning (seed 422, full length, fp32, the first run of each plain setting; street runs excluded)", ""]
     if len(tuning) >= 2:
         winner, why = decide(tuning)
         lines += [f"Rule, written before the runs: keep the best validation top-5; if another run is within {MARGIN} "

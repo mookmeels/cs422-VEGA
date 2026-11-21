@@ -12,7 +12,9 @@ Which photos (Gianni, 20 Nov 2026; no style families, no mapping to wiki aesthet
 tag. Posters with sha1(name) % 10 == 0 form the held-out group, as for Andrew's NN: never trained on, kept to
 measure tag accuracy on posters the network has never seen. Tags kept: those with at least --min-photos (500)
 photos outside the held-out group; photos of other tags are left out. A photo that cannot be opened is skipped
-and listed (two broken JPEGs are known).
+and listed (three broken files are known). If more than --max-failed (default 1%) of the photos fail, the photos
+folder is probably wrong or half-copied: the run stops with an error and does not write street.json, so a
+corrected rerun does the work instead of skipping it.
 
 Writes in --out (default <root>/runs/cnn/prepared/street):
     street-<S>.npy    uint8, rows x S x S x 3, bars zero (written as street-<S>.partial.npy, renamed when complete)
@@ -21,7 +23,8 @@ Writes in --out (default <root>/runs/cnn/prepared/street):
     tags.txt          the kept tags, one per line, in index order (most training photos first)
     failed.txt        photos that could not be opened, with the reason
     street.json       counts, settings, timing; written last, so its presence means the preparation is complete
-A rerun with the same manifest, size and threshold does nothing (add --force to redo it).
+A rerun with the same manifest, size, threshold and photos folder does nothing, as long as street-<S>.npy is still
+there (add --force to redo it).
 """
 import argparse
 import csv
@@ -86,7 +89,10 @@ def main():
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 2))
     ap.add_argument("--limit", type=int, default=None, help="only the first N selected photos (a quick check)")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--max-failed", type=float, default=0.01, help="largest share of photos allowed to fail (default 0.01)")
     a = ap.parse_args()
+    if a.limit is not None and a.limit < 1:
+        raise SystemExit("--limit must be at least 1")
     root = Path(a.root) if a.root else prepare_images.vega_data.ROOT
     out = Path(a.out) if a.out else root / "runs" / "cnn" / "prepared" / ("street" + (f"-limit{a.limit}" if a.limit else ""))
     out.mkdir(parents=True, exist_ok=True)
@@ -94,8 +100,10 @@ def main():
     done = out / "street.json"
     if done.exists() and not a.force:
         old = json.loads(done.read_text(encoding="utf-8"))
-        if (old.get("manifest_sha256"), old.get("size"), old.get("min_photos"), old.get("limit")) == \
-                (manifest_sha, a.size, a.min_photos, a.limit):
+        if (old.get("manifest_sha256"), old.get("size"), old.get("min_photos"), old.get("limit"),
+                old.get("photos_folder", str(Path(a.photos).resolve()))) == \
+                (manifest_sha, a.size, a.min_photos, a.limit, str(Path(a.photos).resolve())) \
+                and (out / f"street-{a.size}.npy").exists():
             print(f"already prepared, nothing to do: {out}  (add --force to redo)")
             return
     done.unlink(missing_ok=True)
@@ -132,10 +140,14 @@ def main():
                 w.writerow([i, r["id"], r["poster"], r["tag"], r["tag_index"], r["group"]])
     (out / "tags.txt").write_text("\n".join(tags) + "\n", encoding="utf-8")
     (out / "failed.txt").write_text("".join(f"{i}\t{e}\n" for i, e in sorted(failed)), encoding="utf-8")
+    if len(failed) > a.max_failed * max(n, 1):
+        raise SystemExit(f"{len(failed)} of {n} photos could not be opened (more than {a.max_failed:.1%}); is --photos "
+                         f"right and fully copied? See {out / 'failed.txt'}. Nothing was marked complete.")
     os.replace(partial, out / f"street-{s}.npy")
     good = [r for i, r in enumerate(keep) if ok[i]]
     summary = {"made": time.strftime("%Y-%m-%d %H:%M:%S %Z"), "manifest": str(a.manifest), "manifest_sha256": manifest_sha,
-               "size": s, "min_photos": a.min_photos, "limit": a.limit, "held_out_group": HELD_OUT, "groups": GROUPS,
+               "size": s, "min_photos": a.min_photos, "limit": a.limit, "photos_folder": str(Path(a.photos).resolve()),
+               "held_out_group": HELD_OUT, "groups": GROUPS,
                "photos": len(good), "failed": len(failed),
                "training_photos": sum(r["group"] != HELD_OUT for r in good),
                "held_out_photos": sum(r["group"] == HELD_OUT for r in good),

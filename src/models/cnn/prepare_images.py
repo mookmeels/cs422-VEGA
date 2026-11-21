@@ -6,8 +6,12 @@ saved exactly (8-bit, no re-compression), so training never decodes a JPEG again
 
 Decisions (Gianni, 19 and 20 Nov 2026, recorded in the CNN plan):
   * every picture becomes 3-channel colour: the first frame of animated pictures, camera rotation tags applied,
-    embedded colour profiles converted to standard sRGB, white behind transparent areas, CMYK converted;
-  * greyscale pictures stay grey (the same value in all three channels; nothing is colourised);
+    embedded colour profiles of colour pictures converted to standard sRGB, white behind transparent areas, CMYK
+    converted;
+  * greyscale pictures stay grey (the same value in all three channels; nothing is colourised) and keep their grey
+    values exactly as stored: a grey picture's own colour profile, if it has one, is not applied (Gianni, 21 Nov
+    2026, answer 2A after the code scan; a non-sRGB grey profile can make such a picture up to about 18 of 255
+    lighter or darker than its profile intends);
   * the whole picture fits inside the square, nothing is cut; the bars are the fit pictures' average colour;
   * prepared once per tested size (128 and 224 px), exact pixels kept.
 The channel scaling (mean and spread of each colour channel) is measured here, on fit pictures only, and saved in
@@ -44,7 +48,8 @@ import PIL
 from PIL import Image, ImageCms, ImageOps
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "shared"))
+sys.path.insert(0, str(HERE))
+import find_shared  # noqa: E402,F401  (puts the shared code on the path)
 import vega_data  # noqa: E402  (the team's shared loader)
 
 ORIENTATION_TAG = 0x0112
@@ -183,8 +188,9 @@ def main():
     stats_file = out / "stats.json"
     if stats_file.exists() and not args.force:
         old = json.loads(stats_file.read_text(encoding="utf-8"))
+        have = all((out / f"{part}-{s}.npy").exists() for part in parts for s in sizes)
         if (old.get("split_sha256"), old.get("ids_sha256"), old.get("sizes"), old.get("labels")) == \
-                (split_hash, id_hash, sizes, args.labels):
+                (split_hash, id_hash, sizes, args.labels) and have:
             print(f"already prepared, nothing to do: {out}  (add --force to redo)")
             return
     stats_file.unlink(missing_ok=True)                            # stats.json is written last: present = complete

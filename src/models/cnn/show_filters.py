@@ -4,8 +4,10 @@
 
 Writes, in <root>/runs/cnn/filters/<weights file name>/:
     first_layer.png     every first-layer filter (7 x 7 x 3 colour numbers), drawn as a small colour square.
-                        Each square is stretched on its own from its smallest to its largest number, so mid-grey
-                        means zero; edges, stripes and colour blobs show up as learned patterns.
+                        Each square is stretched on its own from its smallest to its largest number, so its
+                        darkest and lightest points are that filter's extremes; zero is NOT always mid-grey (only
+                        when the filter's numbers are balanced around zero). Edges, stripes and colour blobs show
+                        up as learned patterns.
     stage1_top.png ...  for each of the 4 stages, a SAMPLE of its filters (default 32; the stages have W, 2W, 4W
     stage4_top.png      and 8W filters, so 64, 128, 256 and 512 in the standard ResNet-18), each with the training
                         pictures that make it fire most. Early stages tend to show colours, edges and textures;
@@ -14,9 +16,11 @@ Writes, in <root>/runs/cnn/filters/<weights file name>/:
                         how strongly each fired.
 The sample is the filters whose response varies most between pictures (the most selective), not chosen by hand.
 Gianni, 20 Nov 2026: all four stages, 32 filters each, labelled as a sample.
-Only training (fit) pictures are shown; validation and test pictures are never used here.
+Only training (fit) pictures are shown; test pictures are never used here. For final weights (trained on train +
+validation) the fit pictures are train + validation, taken from the final preparation.
 """
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -92,22 +96,24 @@ def main():
     if not a.miopen:
         torch.backends.cudnn.enabled = False
     root = Path(a.root) if a.root else vega_data.ROOT
-    ck = torch.load(a.weights, map_location="cpu", weights_only=False)
+    ck = torch.load(a.weights, map_location="cpu", weights_only=True)   # never run code hidden in a file (scan, 21 Nov 2026)
     s = ck["settings"]
     device = train_cnn.pick_device(a.device)
     net = train_cnn.build(ck)
     net.to(device)
-    prepared = Path(a.prepared) if a.prepared else root / "runs" / "cnn" / "prepared" / "validation"
+    final = bool(ck.get("final"))
+    prepared = Path(a.prepared) if a.prepared else root / "runs" / "cnn" / "prepared" / ("final" if final else "validation")
     out = Path(a.out) if a.out else root / "runs" / "cnn" / "filters" / Path(a.weights).stem
     out.mkdir(parents=True, exist_ok=True)
 
     ids = (prepared / "fit-ids.txt").read_text(encoding="utf-8").split()
     pics = train_cnn.Pictures(prepared, "fit", s["size"], ids, ck["colour_mean"], ck["colour_std"], device)
-    d = vega_data.load(labels=ck["labels"], root=root, vectors=False)
+    d = vega_data.load(final=final, labels=ck["labels"], root=root, vectors=False)
     names = {sha: [d["classes"][k] for k in t] for sha, t in zip(d["fit"]["ids"], d["fit"]["truth"])}
 
     first_layer(net, out / "first_layer.png")
-    record = {"weights": str(a.weights), "settings": s, "seed": ck["seed"], "stages": {}}
+    record = {"weights": str(a.weights), "weights_sha256": hashlib.sha256(Path(a.weights).read_bytes()).hexdigest(),
+              "final": final, "settings": s, "seed": ck["seed"], "stages": {}}
     blocks = len(net.stages)                                      # 4 stages of equal length, in order
     for k in range(1, 5):
         label, stage_end = f"stage{k}", k * blocks // 4 - 1

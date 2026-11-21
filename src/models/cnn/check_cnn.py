@@ -5,7 +5,7 @@
 Builds the team's fake project (vega_selftest.py: 240 made-up images, 5 labels) in a temporary folder and draws a
 picture for every image: each label has its own colour and stripe direction, with noise, at assorted sizes and
 shapes, plus one see-through PNG and one greyscale picture. Then checks that:
-  1. picture preparation keeps the loader's order, makes every bar the fit average colour, keeps grey grey,
+  1. picture preparation keeps the loader's order, makes every bar (fit and eval) the fit average colour, keeps grey grey,
      puts white behind see-through areas, does nothing on a rerun, and stops naming the file when a picture
      cannot be opened;
   2. the colour averages come from fit pictures only: making every eval picture bright red changes nothing
@@ -16,12 +16,16 @@ shapes, plus one see-through PNG and one greyscale picture. Then checks that:
   6. the command line runs end to end: validation runs are scored by the team's scorer and get a learning curve;
      a --final run saves test predictions but never scores them and never touches FINAL-RUNS.log; whether
      MIOpen was switched off (--no-miopen) is recorded in the run log, the scorer's note and the weights;
-     a repeat of the same setting and seed into the same folder stops before training (no file replaced).
+     a repeat of the same setting and seed into the same folder stops before training (no file replaced);
+     the final preparation's test pictures have fit-coloured bars; train_cnn.py refuses a seed listed twice,
+     --final --curve, street options without --street, and a preparation made for the other mode.
   7. the final run, option A: --final --fit-only trains with no test pictures present and saves weights only;
      predict_cnn.py gives the same test scores as train_cnn.py's own final prediction, and refuses
-     validation weights and existing files.
+     validation weights and existing files; it also refuses (writing nothing) weights with another colour
+     scaling or split, a validation preparation, and two weights files that would write one prediction file.
   8. street photos: prepare_street.py keeps tags with enough photos, skips a broken photo, marks held-out
-     posters; photos are drawn tag-evenly and never from held-out posters; weight 0 gives exactly the plain
+     posters, and stops without marking anything complete when most photos fail or --limit is 0; photos are
+     drawn tag-evenly and never from held-out posters; weight 0 gives exactly the plain
      CNN; --street learns the tags (held-out posters well above chance); street models load everywhere.
 Runs on the CPU in about a minute or two.
 """
@@ -82,6 +86,17 @@ def draw_pictures(root, rng):
     return special
 
 
+def bars_wrong(folder, part, size, pad):
+    """How many pictures of this prepared part have a bar pixel that is not the padding colour."""
+    arr = np.load(folder / f"{part}-{size}.npy")
+    bad = 0
+    for i, (x0, y0, w, h) in enumerate(np.load(folder / f"boxes-{size}.npz")[part]):
+        m = np.ones((size, size), bool)
+        m[y0:y0 + h, x0:x0 + w] = False
+        bad += int((arr[i][m] != pad).any())
+    return bad
+
+
 def run(args, env):
     return subprocess.run([sys.executable] + [str(a) for a in args], env=env, capture_output=True, text=True)
 
@@ -115,6 +130,7 @@ def main():
             m[y0:y0 + h, x0:x0 + w] = False
             bad += int((fit[i][m] != pad).any()) + int(not (w == 64 or h == 64))
         check(bad == 0, f"every bar is the fit average colour {pad.tolist()}, and each picture's long side fills the square")
+        check(bars_wrong(folder, "eval", 64, pad) == 0, "every eval picture's bar is the fit average colour too (scan, 21 Nov)")
         ids = list(d["fit"]["ids"])
         gx, gy, gw, gh = boxes[ids.index(grey)]
         g = fit[ids.index(grey)][gy:gy + gh, gx:gx + gw]              # the picture itself; the bars are the average colour
@@ -183,6 +199,19 @@ def main():
               "a repeat into the same folder stops before training and replaces nothing")
         out = run(prep + ["--final"], env)
         check(out.returncode == 0, "prepare_images.py --final runs")
+        fpad = np.asarray(json.loads((root / "runs/cnn/prepared/final/stats.json").read_text(encoding="utf-8"))
+                          ["per_size"]["64"]["pad_rgb"], np.uint8)
+        check(bars_wrong(root / "runs/cnn/prepared/final", "eval", 64, fpad) == 0,
+              "in the final preparation every test picture's bar is the fit average colour")
+        refusals = {
+            "a seed is listed twice": run(cmd + ["1"], env),
+            "no learning curve": run(cmd + ["--final", "--curve"], env),
+            "need --street": run(cmd + ["--street-weight", "0.5"], env),
+            "was prepared for a final run": run(cmd + ["--prepared", root / "runs/cnn/prepared/final"], env)}
+        check(all(o.returncode != 0 and why in o.stderr for why, o in refusals.items()),
+              "train_cnn.py refuses a repeated seed, --final --curve, street options without --street, and a "
+              "preparation made for the other mode" + "".join(f"\n{w}: {o.stderr[-300:]}" for w, o in refusals.items()
+                                                            if w not in o.stderr))
         out = run(cmd + ["--final"], env)
         fout = root / "runs" / "cnn" / "final"
         check(out.returncode == 0 and (fout / "preds" / "cnn-r18w8-64-test-merged-seed2.npz").exists()
@@ -191,7 +220,7 @@ def main():
         vruns = [json.loads(line) for line in open(vout / "runs.jsonl", encoding="utf-8")]
         fruns = [json.loads(line) for line in open(fout / "runs.jsonl", encoding="utf-8")]
         vnote = [json.loads(line)["note"] for line in open(vout / "results.jsonl", encoding="utf-8")]
-        vweights = torch.load(vout / "weights" / "cnn-r18w8-64-validation-seed1.pt", map_location="cpu", weights_only=False)
+        vweights = torch.load(vout / "weights" / "cnn-r18w8-64-validation-seed1.pt", map_location="cpu", weights_only=True)   # never run code hidden in a file (scan, 21 Nov 2026)
         check(all(r["miopen"] is False for r in vruns) and all(r["miopen"] is True for r in fruns)
               and all("miopen off" in n for n in vnote) and vweights["miopen"] is False,
               "the MIOpen choice is recorded: off with --no-miopen, on by default (run log, scorer's note, weights)")
@@ -230,6 +259,28 @@ def main():
               and again.returncode != 0 and "exists already" in again.stderr
               and not list(root.rglob("FINAL-RUNS.log")),
               "predict_cnn.py predicts fit-only weights, refuses validation weights and existing files, never scores")
+        good = torch.load(fout / "weights" / "cnn-r18w8-64-test-seed2.pt", map_location="cpu", weights_only=True)
+        tampered = {"colour": dict(good, colour_mean=[v + 0.01 for v in good["colour_mean"]]),
+                    "split": dict(good, split_sha256="0" * 64)}
+        for name, ck in tampered.items():
+            (tmp / f"bad-{name}").mkdir()
+            torch.save(ck, tmp / f"bad-{name}" / "cnn-r18w8-64-test-seed2.pt")
+        (tmp / "twin").mkdir()
+        shutil.copy(fout / "weights" / "cnn-r18w8-64-test-seed2.pt", tmp / "twin" / "cnn-r18w8-64-test-seed2.pt")
+        pred = [HERE / "predict_cnn.py", "--device", "cpu", "--weights"]
+        refused = {
+            "different colour scaling": run(pred + [tmp / "bad-colour" / "cnn-r18w8-64-test-seed2.pt", "--out", tmp / "p1"], env),
+            "another split file": run(pred + [tmp / "bad-split" / "cnn-r18w8-64-test-seed2.pt", "--out", tmp / "p2"], env),
+            "not a final-run preparation": run(pred + [fout / "weights" / "cnn-r18w8-64-test-seed2.pt", "--prepared", folder,
+                                                       "--out", tmp / "p3"], env),
+            "would both write": run(pred + [fout / "weights" / "cnn-r18w8-64-test-seed2.pt",
+                                            tmp / "twin" / "cnn-r18w8-64-test-seed2.pt", "--out", tmp / "p4"], env)}
+        check(all(o.returncode != 0 and why in o.stderr for why, o in refused.items())
+              and not any((tmp / f"p{k}" / "preds").exists() and list((tmp / f"p{k}" / "preds").glob("*.npz"))
+                          for k in range(1, 5)),
+              "predict_cnn.py refuses other colour scaling, another split, a validation preparation, and two weights "
+              "files that would write one prediction file, writing nothing" +
+              "".join(f"\n{w}: {o.stderr[-300:]}" for w, o in refused.items() if w not in o.stderr))
         # 8. street photos (a second output for their own style tags; Gianni, 20 Nov 2026)
         sdir = tmp / "street"
         tags = {"Red": (200, 40, 40), "Green": (40, 160, 60), "Blue": (50, 70, 210), "Rare": (220, 200, 40)}
@@ -264,6 +315,12 @@ def main():
               and run(sprep, env).stdout.startswith("already prepared"),
               "prepare_street.py keeps tags with enough photos, skips and lists a broken photo, marks held-out posters, "
               "does nothing on a rerun" + ("" if out.returncode == 0 else "\n" + out.stderr[-1500:]))
+        wrong = run([HERE / "prepare_street.py", "--photos", tmp / "no-such-folder", "--manifest", sdir / "manifest.csv",
+                     "--size", "64", "--min-photos", "20", "--workers", "2", "--out", tmp / "street-wrong"], env)
+        zero = run(sprep[:-1] + [tmp / "street-zero", "--limit", "0"], env)
+        check(wrong.returncode != 0 and "could not be opened" in wrong.stderr and not (tmp / "street-wrong" / "street.json").exists()
+              and zero.returncode != 0 and "--limit must be at least 1" in zero.stderr,
+              "prepare_street.py stops, marking nothing complete, when most photos fail (a wrong --photos), and refuses --limit 0")
         street = train_cnn.Street(sp, 64, "train", st["pad_rgb"], st["mean"], st["std"], cpu)
         held = train_cnn.Street(sp, 64, "held_out", st["pad_rgb"], st["mean"], st["std"], cpu)
         drawn = street.draw(6000, np.random.default_rng(0))
