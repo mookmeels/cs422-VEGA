@@ -54,7 +54,9 @@ THE RULES THE CODE ENFORCES
 
 THE VECTORS
 
-  d["fit"]["x"] and d["eval"]["x"] come from emb/qwen2beos-448: Qwen3-VL-Embedding-2B, each image shrunk to at most
+  d["fit"]["x"] and d["eval"]["x"] come from emb/qwen2beos-aesthetic-448 (since 20 Nov 2026; before that
+  emb/qwen2beos-448, the same setup with Qwen's default instruction): Qwen3-VL-Embedding-2B, each image embedded
+  with the instruction "Represent the fashion aesthetic of this image.", shrunk to at most
   448 px on its longest edge, 2048 numbers per image, read at the model's end-of-text token.
   Until 17 Nov 2026 the loader used emb/qwen2b-448, which read the vector one token early (a setup error; see
   handoff/WORKLOG.md, 17 Nov). Runs from before the change stay in results.jsonl; the table shows each model's

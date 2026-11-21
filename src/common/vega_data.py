@@ -19,7 +19,7 @@ Label sets: "merged" (default; the wearable catalogue with the audit's merges ap
 "wearable" (544 labels, unmerged). An image keeps every label it has in the chosen set; images with none are
 left out, as is the one wiki image that has no Qwen vector, so every model sees the same rows.
 
-The vectors come from emb/qwen2beos-448 (see VECTORS below for what that is and why it changed on 17 Nov).
+The vectors come from emb/qwen2beos-aesthetic-448 (see VECTORS below for what that is and when it changed).
 """
 import hashlib
 import os
@@ -33,12 +33,15 @@ ROOT = Path(os.environ.get("VEGA_ROOT", "/srv/ml/vega"))
 THIN = 16                      # labels with fewer fit images than this are reported separately as "thin"
 
 # Which saved vectors every model gets: <root>/emb/<VECTORS>-448 (images) and <root>/emb/<VECTORS>-text (texts).
-#   "qwen2beos"  Qwen3-VL-Embedding-2B, vector read at the end-of-text token, as the model is built to be used.
-#                The team's vectors since 17 Nov 2026.
+#   "qwen2beos-aesthetic"  Qwen3-VL-Embedding-2B, vector read at the end-of-text token, each IMAGE embedded with the
+#                instruction "Represent the fashion aesthetic of this image." The team's vectors since 20 Nov 2026
+#                (Andrew's decision; handoff/WORKLOG.md, 20 Nov ~07:38 UTC). Texts keep Qwen's default instruction.
+#   "qwen2beos"  the same with Qwen's default instruction, "Represent the user's input.". The team's vectors from
+#                17 to 20 Nov 2026. Set VEGA_VECTORS=qwen2beos to reproduce results from those days.
 #   "qwen2b"     the same model with the vector read one token early (a setup error found on 17 Nov). Every
 #                result before that date used these. Set VEGA_VECTORS=qwen2b only to reproduce those results.
 # Vectors from different folders must never be mixed in one model or one table.
-VECTORS = os.environ.get("VEGA_VECTORS", "qwen2beos")
+VECTORS = os.environ.get("VEGA_VECTORS", "qwen2beos-aesthetic")
 
 
 def image_dir(root=None):

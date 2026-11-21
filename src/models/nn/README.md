@@ -4,7 +4,7 @@ Owner: Andrew Nguyen. One of the team's three models. It reads its data from the
 
 ## What it is
 
-Every image has already been turned into 2,048 numbers by the frozen Qwen3-VL-Embedding-2B model (the team's shared vectors). The NN takes those numbers and gives a score to each of the 503 labels. It is a multilayer perceptron:
+Every image has already been turned into 2,048 numbers by the frozen Qwen3-VL-Embedding-2B model, with the instruction "Represent the fashion aesthetic of this image." (the team's shared vectors, `emb/qwen2beos-aesthetic-448`, since 20 Nov 2026). The NN takes those numbers and gives a score to each of the 503 labels. It is a multilayer perceptron:
 
     2,048 inputs -> scale each input -> one hidden layer of 1,024 units (ReLU, dropout 0.7) -> 503 scores
 
@@ -39,26 +39,26 @@ These are the same files as `/srv/ml/vega/code/nn/` on ml-db, where the recorded
 
 ## Results so far
 
-Validation split (1,351 images), 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 20 Nov 2026:
+Validation split (1,351 images), 503 labels, seeds 422 to 426 (mean ± standard deviation over the five seeds), measured 20 Nov 2026 on the current vectors:
 
 | | top-5 | top-1 | MRR | per-label top-5 |
 |---|---|---|---|---|
-| NN | 87.6 ± 0.2 | 62.3 ± 0.6 | 0.731 ± 0.003 | 85.7 ± 0.5 |
-| Baseline: nearest centroid | 80.2 | 52.2 | 0.647 | 80.6 |
+| NN | 88.3 ± 0.4 | 62.7 ± 0.5 | 0.741 ± 0.002 | 86.6 ± 0.5 |
+| Baseline: nearest centroid | 82.0 | 53.5 | 0.660 | 82.6 |
 
 **The test split has not been scored.** The full table is `/srv/ml/vega/runs/comparison/table.md`.
 
-These are from the split as fixed on 20 Nov: one validation image that was a near-copy of a test image moved to test (`/srv/ml/vega/handoff/WORKLOG.md`, entries ~04:12 and ~04:24 UTC). The settings sweep (next section) and the error analysis (`/srv/ml/vega/runs/nn/errors/`) were run on the earlier split, whose validation set had that one image more, and have not been re-run.
+Two changes on 20 Nov moved these numbers (`/srv/ml/vega/handoff/WORKLOG.md`, 20 Nov): one validation image that was a near-copy of a test image moved to test, and the vectors switched to the fashion-aesthetic instruction. With Qwen's default instruction the NN had 87.6 ± 0.2 top-5; the difference, +0.7 (95% interval -0.2 to +1.7), is inside noise. The error analysis (`/srv/ml/vega/runs/nn/errors/`) was re-run on the current vectors and split; the settings sweep (next section) was not.
 
 ## How the settings were chosen
 
-On the validation split only: 146 runs over 32 configurations, changing one setting at a time and then combining the best. The winning combination was then run on five fresh seeds (427 to 431) under a rule written into `sweep_nn.py` before that run, and it passed. Record: `/srv/ml/vega/runs/nn/sweep-qwen2beos/summary.md`.
+On the validation split only, with the vectors of 17 Nov (Qwen's default instruction): 146 runs over 32 configurations, changing one setting at a time and then combining the best. The winning combination was then run on five fresh seeds (427 to 431) under a rule written into `sweep_nn.py` before that run, and it passed. Record: `/srv/ml/vega/runs/nn/sweep-qwen2beos/summary.md`.
 
-The gain from tuning is small (about half a point of top-5). The settings are frozen unless the vectors or the label set change.
+The gain from tuning is small (about half a point of top-5). The settings were frozen on 17 Nov and were not re-tuned when the vectors changed on 20 Nov.
 
 ## Repeating a run
 
-Training uses one CPU thread by default. On the same machine with the same package versions, the same seed gives the same scores to the last digit. `--threads 0` uses every core and is faster, but a run may then end a few tenths of a point away. Another machine can differ in the last decimals.
+Training uses one CPU thread by default. On the same machine with the same package versions, the same seed gives the same scores to the last digit. `--threads 0` uses every core and is faster, but a run may then end a few tenths of a point away. Another machine can differ in the last decimals. To repeat a run made before 20 Nov ~13:10 UTC, with the earlier vectors, set `VEGA_VECTORS=qwen2beos`.
 
 ## Versions
 

@@ -16,7 +16,7 @@ These files hand every model its images and labels and score its predictions, so
 The code is here; the data is not in git. The loader reads it from the project folder on ml-db, `/srv/ml/vega`. Set `VEGA_ROOT` to use a copy somewhere else.
 
 - `splits/wiki-split-v2/split.csv`: train, validation or test for every image
-- `emb/qwen2beos-448/` and `emb/qwen2beos-text/`: the image vectors and the text vectors
+- `emb/qwen2beos-aesthetic-448/` and `emb/qwen2beos-aesthetic-text/`: the image vectors and the text vectors, since 20 Nov 2026 (images embedded with the instruction "Represent the fashion aesthetic of this image."). `VEGA_VECTORS=qwen2beos` loads the earlier ones, `emb/qwen2beos-448/`.
 - `wiki/manifest.csv` and `wiki/images/`: which gallery each image comes from, and the image files
 - `runs/labeler-wearable/catalog.csv` and `runs/labeler-wearable-merged/label_map.csv`: the 503 labels
 - for the transfer test: `emb/fashionstyle14/` (the photos' vectors), `runs/transfer/rows.csv` (which styles count as which wiki labels), and the photo files in `/srv/ml/datasets/fashionstyle14/` (`VEGA_DATASETS` changes that folder)
@@ -41,7 +41,7 @@ The usage example in `vega_transfer.py`'s docstring adds `/srv/ml/vega/code/shar
 
 ## These are copies
 
-Copied unchanged on 20 Nov 2026 from `/srv/ml/vega/code/shared/` on ml-db, where the recorded runs were made (`vega_transfer.py` and the current `README.txt` added later that day). Change the files there, then copy them here again. To check that the copies are current (no output means identical):
+Copied unchanged on 20 Nov 2026 from `/srv/ml/vega/code/shared/` on ml-db, where the recorded runs were made (`vega_transfer.py` added later that day; `vega_data.py` and `README.txt` copied again after the vector switch). Change the files there, then copy them here again. To check that the copies are current (no output means identical):
 
     for f in vega_*.py README.txt; do cmp /srv/ml/vega/code/shared/$f $f; done
 
