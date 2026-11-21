@@ -7,9 +7,11 @@ from polars import read_csv, selectors, col # basic polars
 
 from sklearn.metrics.pairwise import cosine_similarity # finds distance between two points
 
-from sklearn import model_selection #stratification k-fold
-from sklearn.metrics import accuracy_score # accurary
 
+sys.path.insert(0, "/srv/ml/vega/code/shared")
+from vega_data import load
+
+d = load()
 
 # update to classes
 classesIndices = d["classes"]
@@ -17,15 +19,15 @@ classesIndices = d["classes"]
 label_to_idx = {label: idx for idx, label in enumerate(classesIndices)}
 ### Hierarchical Clustering function
 
-STYLE_COL = "classes"
-ID_COL = "ids"
+STYLE_COL = "class"
+ID_COL = "id"
 
 """
 knowns: array of training data
 unknowns: array of data to categorize
 cut: the distance threshold
 """
-def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.65):
+def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.75):
     clusters = {}
 
     # convert df to vectors
@@ -57,6 +59,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
         [0.0] * len(classesIndices)
         for _ in range(len(unknown_vectors))
     ]
+
     # create similarity matrix
     known_unknown = cosine_similarity(known_vectors, unknown_vectors)
 
@@ -203,18 +206,21 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
         #update similarities between this merged cluster and others
         for dest in allChanged:
 
-            # avoid checking mergind cluster 
+            # avoid checking merging cluster 
             if dest == removedParent:
                 continue
 
             #dest now encompasses all known clusters that have been changed
 
             for otherUnknown in clusters:
-                if clusters[otherUnknown]["class"] is not None:
+                if clusters[otherUnknown]["class"] is not None and clusters[dest]["class"] is not None:
                     continue
 
-                if(otherUnknown == removedParent):
+                #avoid merging, nor its own unknown class
+                if(otherUnknown in (removedParent, dest)):
                     continue
+
+                
 
                 #merged cluster now encompasses all other unknown clusters
                 key_a = tuple(sorted((otherUnknown, dest)))
@@ -249,7 +255,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
                 clusters[b]["members"] += clusters[a]["members"] # same for here
                 cluster_sizes[b] += cluster_sizes[a]
             else:
-                #when theres a known
+            #when theres a known
                 for styleClass in allChanged:
                     #not inputing into unknown
                     if(clusters[styleClass]["class"] is None):
@@ -260,6 +266,9 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
                     # update size
                     cluster_sizes[styleClass] += cluster_sizes[a]
             # release cluster
+            #print(a, b)
+            #print(clusters[a]["class"], clusters[b]["class"])
+            
             del cluster_sizes[a]
             del clusters[a]
         else:
@@ -280,6 +289,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
                 # update size
                 cluster_sizes[styleClass] += cluster_sizes[b]
             # release cluster
+            #print(b, a)
             
             del cluster_sizes[b]
             del clusters[b]
@@ -294,74 +304,69 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.6
 
 # say df is a dataframe of all the info
 
-dataPath = ".../" 
+
+# Training DataFrame (id to label)
 
 
+def make_long_df(split, duplicate = True):
+    y = split["y"]
+    df = pl.DataFrame({
+        "id": split["ids"],
+        **{
+            label: y[:, i]
+            for i, label in enumerate(d["classes"])
+        }
+    })
 
-df = read_csv(dataPath, separator=",", has_header=False) # contains image vectors
+    return (
+        df
+        .unpivot(
+            on=d["classes"],
+            index="id",
+            variable_name="class",
+            value_name="weight"
+        )
+        .filter(pl.col("weight") > 0)
+        .drop("weight")
+    )
+# create all class rows
+train_df = make_long_df(d["fit"])
 
-### Split Data into training, verification, test /w startification
+eval_df = pl.DataFrame({
+    "id": d["eval"]["ids"],
+    **{f"emb_{i}": d["eval"]["x"][:, i]
+        for i in range(d["eval"]["x"].shape[1])
+    }
+})
+def add_embeddings(df, split):
+    embeddings = pl.DataFrame(
+        split["x"],
+        schema=[f"emb_{i}" for i in range(split["x"].shape[1])],
+        orient="row"
+    ).with_columns(
+        pl.Series("id", split["ids"])
+    )
 
-# split into training + test
-ss = model_selection.StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-X = df.select(pl.exclude(STYLE_COL, ID_COL)).to_numpy() 
-Y = df[STYLE_COL].to_numpy()
+    return df.join(embeddings, on="id")
+# add embeddings to each of the classes
+train_df = add_embeddings(train_df, d["fit"])
 
-for train_index, test_index in ss.split(X, Y):
-    completeTrainDF = df.gather(train_index)
-    skf = model_selection.StratifiedKFold(n_splits=5)
-    X2 = completeTrainDF.select(pl.exclude(STYLE_COL, ID_COL)).to_numpy()
-    # X2ids = completeTrainDF[ID_COL].to_numpy()
-    Y2 = completeTrainDF[STYLE_COL].to_numpy()
+# eval_df = eval_df.head(250)
 
-### verification section
+predictions = find_average_linkage(train_df, eval_df)
 
-    #K Fold
-    for fold, (train_index, ver_index) in enumerate(skf.split(X2, Y2)):
-        trainDF = completeTrainDF.gather(train_index)
-        verifyDF = completeTrainDF.gather(ver_index)
+scores = np.asarray(predictions, dtype=np.float32)
 
-        ### Standarization
-
-        #standardizating features (can be removed if needed)
-        calcDF = trainDF.select(pl.exclude(STYLE_COL, ID_COL))
-        means = calcDF.mean()
-        sds = calcDF.std().fill_null(1).with_columns(pl.all().replace(0, 1))
-        for colName in calcDF.columns:
-            if colName not in (STYLE_COL, ID_COL):
-                trainDF = trainDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
-                verifyDF = verifyDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
-        predictedClasses = find_average_linkage(trainDF, verifyDF)
-
-        #check all clusters
-        trueClass = verifyDF.select(pl.col(STYLE_COL)).to_numpy()
-        ids = verifyDF.select(pl.col(ID_COL)).to_numpy()
-
-        
-
-
-
-
-### testing (edit to include id_col)
+print(scores.shape)
+print(len(d["eval"]["ids"]), len(d["classes"]))
+assert scores.shape == (len(d["eval"]["ids"]), len(d["classes"]))
 
 
-"""
-    testDF = df.gather(test_index)
-
-    predictedClass = ["Unknown"] * testDF.height
-    trueClass = testDF.select(pl.col(STYLE_COL)).to_numpy()
-    #standardizating features (can be removed if needed)
-    means = completeTrainDF.mean()
-    sds = completeTrainDF.std()
-    for colName in completeTrainDF.columns:
-        if colName != STYLE_COL:
-            completeTrainDF = completeTrainDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
-            testDF = testDF.with_columns(((pl.col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
-
-    foundClusters = find_average_linkage(completeTrainDF, testDF)
-    for style, cluster in foundClusters:
-        #check unknown members (cluster[members] is an array of indices)
-        predictedClass[cluster["members"]] = style
-    
-    accuracy = accuracy_score(trueClass, predictedClass)
-"""
+#assert 1 == 0
+# Save in correct format
+np.savez(
+    "my-preds.npz",
+    ids=d["eval"]["ids"],
+    scores=scores,
+    classes=np.asarray(d["classes"])
+)
