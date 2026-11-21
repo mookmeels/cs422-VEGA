@@ -22,9 +22,17 @@ Metrics (an image may have several true labels; the best-ranked one counts):
 Equal scores are ordered by a fixed random order of the labels, the same for every model, so a model that
 gives many labels the same score gains nothing from it.
 
+The family level (added 21 Nov 2026), scored in the same pass from the same predictions, with no retraining:
+every label belongs to one of 20 style families (frozen table runs/family-v1/label_family.csv). Each guessed
+label is replaced by its family, and an image's families are the families of its true labels.
+  family_top1   the first guess's family is one of the image's families
+  family_top3   one of the first three DIFFERENT families along the ranking is right
+If this copy of the project has no family table, or the label set is not the one the table covers, the two
+figures are left out and everything else is scored as before.
+
 Appends one line to <out>/results.jsonl (default <root>/runs/comparison). vega_table.py turns that into the table.
 """
-import argparse, datetime, getpass, hashlib, json, platform, socket, sys
+import argparse, csv, datetime, getpass, hashlib, json, platform, socket, sys
 from pathlib import Path
 
 import numpy as np
@@ -33,12 +41,51 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import vega_data                                                # noqa: E402
 
 TIE_SEED = 422
+FAMILY_TABLE = ("runs", "family-v1", "label_family.csv")        # frozen 21 Nov 2026; see runs/family-v1/FROZEN.md
+
+
+def ranking(scores):
+    """The labels of every image, best first; equal scores in a fixed random order of the labels."""
+    n, k = scores.shape
+    tie = np.random.default_rng(TIE_SEED).permutation(k)
+    return np.lexsort((np.broadcast_to(tie, (n, k)), -scores), axis=1)
+
+
+def family_of(classes, root):
+    """Each label's family (as a number) from the frozen family table, and the table's sha256.
+
+    (None, None) if this copy of the project has no table, or the table does not cover every label given.
+    """
+    path = Path(root).joinpath(*FAMILY_TABLE)
+    if not path.exists():
+        return None, None
+    with open(path, encoding="utf-8", newline="") as f:
+        fam = {r["wiki_label"]: r["family"] for r in csv.DictReader(f)}
+    if any(c not in fam for c in classes):
+        return None, None
+    names = sorted(set(fam.values()))
+    return np.asarray([names.index(fam[c]) for c in classes]), hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def family_metrics(scores, truth, lab_fam):
+    """The same predictions read at the family level. lab_fam: the family of each label (family_of)."""
+    top1 = top3 = 0
+    for row, t in zip(ranking(scores), truth):
+        mine = set(lab_fam[t].tolist())
+        first = []                                                              # the first three different families guessed
+        for f in lab_fam[row].tolist():
+            if f not in first:
+                first.append(f)
+                if len(first) == 3:
+                    break
+        top1 += first[0] in mine
+        top3 += bool(mine & set(first))
+    return {"family_top1": top1 / len(truth), "family_top3": top3 / len(truth), "n_families": int(len(set(lab_fam.tolist())))}
 
 
 def metrics(scores, truth, fit_count, thin=vega_data.THIN):
     n, k = scores.shape
-    tie = np.random.default_rng(TIE_SEED).permutation(k)
-    order = np.lexsort((np.broadcast_to(tie, (n, k)), -scores), axis=1)       # best first; ties by the fixed order
+    order = ranking(scores)                                                    # best first; ties by the fixed order
     pos = np.empty_like(order)
     pos[np.arange(n)[:, None], order] = np.arange(k)[None, :]
     rank = np.asarray([pos[i, t].min() + 1 for i, t in enumerate(truth)])
@@ -84,8 +131,12 @@ def score(pred, model, owner, seed=None, final=False, labels="merged", root=None
     if not np.isfinite(s).all():
         raise SystemExit(f"{pred}: scores contain NaN or infinity.")
     m = metrics(s, truth, fit_count)
+    lab_fam, family_sha = family_of(classes, root)
+    if lab_fam is not None:                                                    # the family level, in the same pass
+        m.update(family_metrics(s, truth, lab_fam))
     row = {"model": model, "owner": owner, "seed": seed, "split": "test" if final else "validation", "labels": labels,
            "n_images": len(ids), "n_labels": len(classes), **{k: (round(v, 6) if isinstance(v, float) else v) for k, v in m.items()},
+           "family_table_sha256": family_sha,
            "note": note, "pred_file": str(pred), "pred_sha256": hashlib.sha256(Path(pred).read_bytes()).hexdigest(),
            "split_sha256": vega_data.split_sha256(root), "vectors": vega_data.VECTORS,
            "when_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
@@ -98,9 +149,11 @@ def score(pred, model, owner, seed=None, final=False, labels="merged", root=None
             f.write(f"{row['when_utc']} UTC  {row['user']}@{row['host']}  test split scored for: {model} (owner {owner}, seed {seed})\n")
     if not quiet:
         thin = "n/a" if m["thin_top5"] is None else f"{m['thin_top5']:.1%}"
+        family = (f"family top-1 {m['family_top1']:.1%}, in top 3 {m['family_top3']:.1%}" if lab_fam is not None
+                  else "no family table for these labels: family scores left out")
         print(f"{model:<34} {row['split']:<10} seed {str(seed):<5} top-5 {m['top5']:.1%}  top-1 {m['top1']:.1%}  MRR {m['mrr']:.3f}  "
               f"per-label top-5 {m['label_top5']:.1%} (thin {thin}, rest {m['rest_top5']:.1%})  coverage {m['coverage5']:.1%}  "
-              f"[{len(ids)} images, {len(classes)} labels]", flush=True)
+              f"{family}  [{len(ids)} images, {len(classes)} labels]", flush=True)
     return row
 
 

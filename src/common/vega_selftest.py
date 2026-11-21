@@ -75,6 +75,17 @@ def main():
     assert abs(flat["top5"] - 0.10) < 1e-12 and abs(flat["top1"] - 0.02) < 1e-12, flat   # all tied = chance, not 100%
     print("metrics: match the hand-worked values; fully tied scores score at chance")
 
+    # 1b. the family level by hand: labels 0 and 1 are family 0, labels 2 and 3 are family 1
+    fam = np.asarray([0, 0, 1, 1])
+    fm = vega_score.family_metrics(scores, truth, fam)
+    first_of_tied = int(np.argmin(tie))                            # image 3: every label tied, so the fixed order decides
+    # image 1: first guess label 0, family 0, right. image 2: first guess label 1 (a wrong label) but family 0, and the
+    # image's labels 0 and 2 make its families {0, 1}: right. image 3: truth label 3, family 1.
+    assert abs(fm["family_top1"] - (2 + (fam[first_of_tied] == 1)) / 3) < 1e-12, fm
+    assert fm["family_top3"] == 1.0 and fm["n_families"] == 2, fm  # only two families, so the right one is always in the first 3
+    assert abs(vega_score.family_metrics(scores, truth, np.asarray([0, 1, 2, 3]))["family_top1"] - m["top1"]) < 1e-12   # one family per label = top-1
+    print("family level: matches the hand-worked values; with one family per label it equals top-1")
+
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         root = Path(tmp)
         fake_project(root, np.random.default_rng(0))
@@ -103,7 +114,25 @@ def main():
         assert len((cmp / "FINAL-RUNS.log").read_text(encoding="utf-8").strip().split("\n")) == 3
         assert subprocess.run([sys.executable, str(HERE / "vega_table.py")], env=env, capture_output=True, text=True).returncode == 0
         assert "| test |" in (cmp / "table.md").read_text(encoding="utf-8")
+        assert all("family_top1" not in r and r["family_table_sha256"] is None for r in rows), "family scores without a family table"
         print("baselines + table: run for validation and for --final; each test scoring is logged")
+
+        # 3b. with a family table in place the same scoring pass adds the family level, for validation and for test
+        (root / "runs" / "family-v1").mkdir(parents=True)
+        (root / "runs" / "family-v1" / "label_family.csv").write_text(
+            'wiki_label,family,family_name\nAlpha,one,"One, the first"\nDelta,one,"One, the first"\nEpsilon,two,Two\nGamma,two,Two\nZeta,two,Two\n', encoding="utf-8")
+        for extra in ([], ["--final"]):
+            out = subprocess.run(base + extra, env=env, capture_output=True, text=True)
+            assert out.returncode == 0, out.stderr[-2000:]
+        rows = [__import__("json").loads(l) for l in open(cmp / "results.jsonl", encoding="utf-8")][6:]
+        assert [r["split"] for r in rows] == ["validation"] * 3 + ["test"] * 3
+        assert all(r["family_top1"] >= r["top1"] and r["family_top3"] == 1.0 and r["n_families"] == 2 and r["family_table_sha256"] for r in rows), rows
+        assert subprocess.run([sys.executable, str(HERE / "vega_table.py")], env=env, capture_output=True, text=True).returncode == 0
+        assert "family top-1" in (cmp / "table.md").read_text(encoding="utf-8")
+        (root / "runs" / "family-v1" / "label_family.csv").write_text("wiki_label,family,family_name\nAlpha,one,One\n", encoding="utf-8")
+        assert vega_score.family_of(d["classes"], root) == (None, None), "a table that misses labels must be ignored, not half-used"
+        (root / "runs" / "family-v1" / "label_family.csv").unlink()
+        print("family table: scored in the same pass for validation and test; left out when the table is missing or incomplete")
 
         # 4. the scorer's refusals
         e, k = d["eval"], np.asarray(d["classes"])

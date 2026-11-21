@@ -5,7 +5,8 @@ Why this exists: the assignment wants all models compared on the same held-out i
 metrics, and with the test split used once. These three files make that automatic.
 
   vega_data.py      hands a model its images and labels
-  vega_score.py     scores a model's predictions and adds them to runs/comparison/results.jsonl
+  vega_score.py     scores a model's predictions (503 labels and, in the same pass, 20 style families)
+                    and adds them to runs/comparison/results.jsonl
   vega_table.py     turns results.jsonl into the comparison table (table.md, table.csv)
   vega_selftest.py  checks the three files above on made-up data (run it after changing them)
   ../baselines/baselines.py   popularity, nearest centroid, zero-shot text; also the shortest full example
@@ -95,3 +96,20 @@ WHAT IS SCORED
 
 The primary metric is a proposal (it is the proposal document's recall@5). The team should confirm it,
 and the label set, before anyone runs --final.
+
+
+THE FAMILY LEVEL (second label level, added 21 Nov)
+
+  Above the 503 labels there are 20 style families (frozen table: runs/family-v1/label_family.csv, accepted by
+  Andrew on 21 Nov; how it was made and the caveat for the report: runs/family-v1/FROZEN.md).
+  You do NOT train anything for it and you do NOT save anything extra. vega_score.py works it out from the same
+  predictions file, in the same pass, for validation and for --final alike:
+
+  family_top1       the family of the first-guessed label is one of the image's families
+  family_top3       one of the first three DIFFERENT families along the ranking is right
+
+  An image's families are the families of its true labels. Always guessing the largest family scores 9.0% on
+  validation. vega_table.py shows both figures as the last two columns; rows scored before 21 Nov show n/a until
+  they are scored again (code/experiments/family_backfill.py adds them to validation rows from the saved files).
+  Whether the family level is the primary metric or a supporting one is the team's decision, before --final.
+  On another machine the two figures are left out unless your copy of the project has runs/family-v1/label_family.csv.
