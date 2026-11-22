@@ -26,3 +26,4 @@
 2026-11-22 08:24:54 UTC  erika@ml-db  test split scored for: CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos (owner Giancarlo Guevarra, seed 424)
 2026-11-22 08:24:55 UTC  erika@ml-db  test split scored for: CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos (owner Giancarlo Guevarra, seed 425)
 2026-11-22 08:24:56 UTC  erika@ml-db  test split scored for: CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos (owner Giancarlo Guevarra, seed 426)
+2026-11-22 09:14:50 UTC  erika@ml-db  test split scored for: Hclustering(standardized 0.16) (owner Si_mpl, seed None)

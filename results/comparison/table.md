@@ -16,6 +16,7 @@ Label set: merged (503 labels). Percentages except MRR. Validation: models fitte
 | test | NN (MLP, 1 hidden layer of 1024) + real outfit photos | Andrew Nguyen | 5 (422, 423, 424, 425, 426) | 87.5 ± 0.2 | 61.2 ± 0.5 | 0.727 ± 0.003 | 85.5 ± 0.2 | 84.4 ± 0.5 | 86.3 ± 0.1 | 99.9 ± 0.1 | 73.7 ± 0.5 | 93.0 ± 0.2 |
 | test | Baseline: nearest centroid | shared (baseline) | 1 (no randomness) | 79.7 | 50.5 | 0.635 | 81.3 | 84.4 | 79.1 | 100.0 | 67.6 | 89.1 |
 | test | Baseline: zero-shot text | shared (baseline) | 1 (no randomness) | 43.4 | 22.0 | 0.325 | 43.4 | 43.6 | 43.2 | 88.7 | 42.2 | 70.5 |
+| test | Hclustering(standardized 0.16) | Si_mpl | 1 (no randomness) | 40.1 | 23.6 | 0.311 | 38.2 | 35.6 | 40.2 | 79.9 | 44.9 | 66.3 |
 | test | CNN (ResNet-18, 224 px) | Giancarlo Guevarra | 5 (422, 423, 424, 425, 426) | 32.7 ± 0.5 | 13.6 ± 0.6 | 0.235 ± 0.004 | 27.6 ± 0.5 | 21.3 ± 1.1 | 32.2 ± 0.4 | 99.9 ± 0.2 | 27.6 ± 0.6 | 53.7 ± 0.6 |
 | test | CNN (ResNet-18, 224 px) + street photos | Giancarlo Guevarra | 5 (422, 423, 424, 425, 426) | 32.6 ± 0.5 | 14.0 ± 0.5 | 0.236 ± 0.003 | 27.0 ± 0.4 | 20.4 ± 0.7 | 31.8 ± 1.0 | 99.9 ± 0.1 | 27.9 ± 0.3 | 53.5 ± 0.4 |
 | test | CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos | Giancarlo Guevarra | 5 (422, 423, 424, 425, 426) | 32.4 ± 0.2 | 13.3 ± 0.3 | 0.232 ± 0.002 | 31.3 ± 0.2 | 29.7 ± 0.7 | 32.6 ± 0.3 | 100.0 ± 0.0 | 28.0 ± 0.4 | 53.9 ± 0.5 |
