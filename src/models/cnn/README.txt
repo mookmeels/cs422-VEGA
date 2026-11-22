@@ -256,7 +256,20 @@ TRAINING OPTIONS AND THE ADOPTED RECIPE (Gianni, 21 Nov 2026)
         --street runs/cnn/prepared/street --crop-min 0.6 --stretch 0.15 --mix mixup-cutmix --smooth 0.1 \
         --sample oversample
     final: the same options with --final --fit-only --prepared <final fit-only folder>, then predict_cnn.py
-  [AFTER RUNS: the five seeds' mean, the final runs' timings.]
+  Results, five seeds (422 to 426), wiki validation, scored on ml-db from the copied predictions (each re-score
+  identical to the PC's):
+                                   top-5         top-1         per-label top-5   rare labels   other labels
+    adopted recipe (street + 4)    30.1 +- 0.9   11.9 +- 0.1   29.0 +- 0.9       28.4 +- 0.9   29.8 +- 0.8
+    street CNN                     31.8 +- 0.8   11.8 +- 0.4   26.7 +- 0.8       21.7 +- 1.3   32.6 +- 1.3
+    plain CNN                      30.9 +- 0.6   12.0 +- 0.3   26.6 +- 0.3       22.5 +- 0.8   31.5 +- 1.2
+  Per seed, top-5 / rare labels: 422 30.1 / 28.3, 423 30.3 / 28.0, 424 29.4 / 27.8, 425 29.1 / 27.7, 426 31.4 / 30.0.
+  So against the street CNN: about 1.7 points less top-5, about 6.7 points more on the rare labels, top-1 level.
+  Street tags on held-out posters stay near chance (top-1 2.9 to 3.4%), as for the street CNN.
+  Times on the PC (fp32, --no-miopen, one run at a time): validation about 2,975 s (about 197 training pictures
+  a second, as for the street CNN; the options cost no measurable time); final about 3,295 s. Two runs at once
+  on the card stalled once (the -mix test, 21 Nov), so every run since was alone.
+  Final runs: weights cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-seed422..426.pt; test predictions made
+  on ml-db with predict_cnn.py, not scored.
 
 REPEATS, TIME, MEMORY
 
