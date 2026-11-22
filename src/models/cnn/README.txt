@@ -1,7 +1,7 @@
 The CNN: a ResNet trained from scratch on the wiki pictures. Owner: Giancarlo Guevarra
 =====================================================================================
 
-DRAFT, 20 Nov 2026. Everything marked [AFTER RUNS] is filled in once the runs on Gianni's PC are done.
+Final, 22 Nov 2026. All runs are done and the test pictures were scored once, by Andrew, on 22 Nov (see TEST RESULTS).
 
 What it is and why. Every other VEGA model starts from the Qwen image vectors, summaries made by a large model
 trained on other data. This one learns only from the pixels of our ~9,400 training pictures: a convolutional
@@ -76,7 +76,8 @@ RUNNING IT
     to ml-db:  the five weights files
     on ml-db:  python predict_cnn.py --weights <the five .pt files>          # test predictions, not scored
     then, once the team freezes settings: vega_score.py --final on each prediction file (scored once).
-  [AFTER RUNS: timings of the final run.]
+  Final-run times on the PC (fp32, --no-miopen, one run at a time, 10,710 pictures): plain CNN 1,532 to 1,536 s a
+  seed (about 419 pictures a second); + street photos 3,248 to 3,279 s; adopted recipe 3,287 to 3,291 s.
 
 
 THE PICTURES (prepare_images.py)
@@ -182,8 +183,7 @@ RESULTS (validation, 1,351 pictures, 503 labels; team table runs/comparison/tabl
   around epoch 43 (31.1 in the seed-422 repeat) and ends at 30.0. The network memorises the training pictures
   late in training. The epoch count stayed at 60, as fixed before the runs; picking the best epoch by looking
   at validation would be tuning on it.
-  [AFTER RUNS: where it goes wrong (error summary, waiting on Andrew's OK for nn/analyse_errors.py); the filter
-  pictures (show_filters.py, being made on the PC).]
+  Where it goes wrong: see ERROR ANALYSIS below.
 
 
 STREET PHOTOS (a second version of the CNN; Gianni, 20 Nov 2026)
@@ -237,7 +237,8 @@ TRAINING OPTIONS AND THE ADOPTED RECIPE (Gianni, 21 Nov 2026)
                                     PC's records of the adopted runs still say shift 0.1 and zoom 0.1, which were
                                     not applied); street photos get the same crop
     --mix mixup-cutmix              per wiki batch, mixup or CutMix at random (Zhang et al. 2018; Yun et al. 2019;
-                                    strengths 0.8 and 1.0 as in DeiT, Touvron et al. 2021); street photos unmixed
+                                    alphas 0.8 and 1.0 and an even chance of either per batch, as in DeiT's
+                                    official code, Touvron et al. 2021); street photos unmixed
     --smooth 0.1                    label smoothing (Szegedy et al. 2016): 10% of each label row spread evenly
     --sample oversample             rare labels' pictures drawn more often (each time freshly distorted) instead
                                     of weighted more in the loss; at balance 1 an epoch sees about half the
@@ -271,6 +272,63 @@ TRAINING OPTIONS AND THE ADOPTED RECIPE (Gianni, 21 Nov 2026)
   Final runs: weights cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-seed422..426.pt; test predictions made
   on ml-db with predict_cnn.py, not scored.
 
+TEST RESULTS (scored once on 22 Nov 2026 by Andrew with vega_score.py --final, after the team froze its settings)
+
+  Each final network was trained on training + validation (10,710 pictures) and scored on the 2,618 test pictures;
+  five seeds (422 to 426), mean +- standard deviation. Log: results/comparison/cnn-final-2026-11-22.log.txt.
+
+                                   top-5         top-1         per-label top-5   rare labels   other labels
+    adopted recipe (street + 4)    32.4 +- 0.2   13.3 +- 0.3   31.3 +- 0.2       29.7 +- 0.7   32.6 +- 0.3
+    street CNN                     32.6 +- 0.5   14.0 +- 0.5   27.0 +- 0.4       20.4 +- 0.7   31.8 +- 1.0
+    plain CNN                      32.7 +- 0.5   13.6 +- 0.6   27.6 +- 0.5       21.3 +- 1.1   32.2 +- 0.4
+
+  ("Rare labels": the 274 of 503 labels with under 16 training pictures, the scorer's "thin" labels.)
+  On test the three versions are level on top-5 (within 0.3 point, inside the seed spread), while the adopted
+  recipe stays 8 to 9 points ahead on the rare labels and about 4 points on per-label top-5. The top-5 cost seen
+  on validation (about 1.7 points) mostly did not carry over to test. Nothing was retuned after the test scores.
+
+
+ERROR ANALYSIS (validation only; Andrew's code/nn/analyse_errors.py, unchanged, with his OK of 20 Nov 2026)
+
+    python analyse_errors.py --preds <folder with the five validation prediction files> \
+        --pattern "cnn-r18w64-224-validation-merged-seed*.npz" --out runs/cnn/errors --sheets
+    (adopted recipe: --pattern "cnn-r18w64-224-street-crop60-st15-mix-ls10-os-validation-merged-seed*.npz"
+     --out runs/cnn/errors-adopted, with the nearest-centroid baseline's validation file linked into the
+     prediction folder so the comparison with it is included)
+
+  The script was written for the NN, so its headings say "NN"; here they mean the CNN. Averages over five seeds:
+
+                                                        plain CNN     adopted recipe
+    top-5 rate, labels with 4 to 7 training pictures       18.8          32.9
+                            8 to 15                         22.7          28.1
+                            16 to 31                        29.5          30.0
+                            32 to 63                        35.3          28.2
+                            64 or more                      46.0          32.3
+    wrong first guesses going to the 50 biggest labels     13.7%          8.1%
+    average confidence of the first guess                   0.33          0.15
+    first guesses right                                     12.0%        11.9%
+    expected calibration error                              0.210         0.032
+    pictures missed (top-5) by every seed                   56.0%        58.4%
+    of the missed pictures, true label below position 50    38.4%        38.6%
+
+  What it shows:
+  - The plain CNN favours popular aesthetics: its top-5 rate climbs with a label's picture count. With the
+    adopted recipe the rate is flat (28 to 33% at every size): oversampling and the other changes trade the most
+    common labels for the rarest.
+  - The plain CNN is over-confident (0.33 average confidence for 12% right); the adopted recipe's confidence
+    matches its hit rate. Which of the four changes does this was not tested separately.
+  - Most misses are far off and the same in every seed: the network has not learned those aesthetics at all.
+  - 85 to 87% of wrong first guesses are labels the wiki does not link to the true one, though linked labels are
+    four to five times as likely as chance (3%). The twelve most confident mistakes (examples-confident-and-wrong.png)
+    include sensible neighbours (a Rococo vase called Tang Dynasty, Dunhuang Feng called Guochao) and colour or
+    mood matches (a red cartoon called Lovecore, a dark room called Vampire); many wiki pictures are not outfits.
+  - Against nearest centroid on the Qwen vectors (adopted recipe, top-5): the CNN is right where the baseline is
+    wrong for about 36 pictures per seed, against 738 the other way round.
+  Outputs on ml-db: runs/cnn/errors/ (plain CNN, 20 Nov) and runs/cnn/errors-adopted/ (22 Nov): summary.md,
+  per_label.csv, confusions.csv, images.csv and three example sheets (pictures whose labels the wiki tags as
+  sensitive are left out).
+
+
 REPEATS, TIME, MEMORY
 
   A graphics card adds numbers in varying order, so the same seed gives nearly, not exactly, the same scores.
@@ -290,9 +348,9 @@ REPEATS, TIME, MEMORY
 
 REFERENCES (each read on 20 Nov 2026; all primary sources)
 
-  He, Zhang, Ren, Sun. "Deep Residual Learning for Image Recognition". arXiv 1512.03385, 10 Dec 2015.
+  He, Zhang, Ren, Sun. "Deep Residual Learning for Image Recognition". CVPR 2016 (arXiv 1512.03385, 10 Dec 2015).
     The layout (Table 1); deeper plain networks train worse, shortcuts fix it (sections 1, 4.1).
-  He, Zhang, Ren, Sun. "Delving Deep into Rectifiers". arXiv 1502.01852, 6 Feb 2015.
+  He, Zhang, Ren, Sun. "Delving Deep into Rectifiers". ICCV 2015 (arXiv 1502.01852, 6 Feb 2015).
     The starting weights for ReLU networks (section 2.2).
   Goyal, Dollár, Girshick, Noordhuis, Wesolowski, Kyrola, Tulloch, Jia, He. "Accurate, Large Minibatch SGD:
     Training ImageNet in 1 Hour". arXiv 1706.02677, 8 Jun 2017. Last BN of each block starts at zero
@@ -306,9 +364,9 @@ REFERENCES (each read on 20 Nov 2026; all primary sources)
   Zagoruyko, Komodakis. "Wide Residual Networks". arXiv 1605.07146, 23 May 2016. Wider, shallower residual
     networks match much deeper thin ones and train faster (abstract, section 1): why width, not depth, is
     what tuning varies.
-  Ioffe, Szegedy. "Batch Normalization". arXiv 1502.03167, 11 Feb 2015.
+  Ioffe, Szegedy. "Batch Normalization". ICML 2015, PMLR 37:448-456 (arXiv 1502.03167, 11 Feb 2015).
   Loshchilov, Hutter. "Decoupled Weight Decay Regularization" (AdamW). ICLR 2019 (arXiv 1711.05101, 14 Nov 2017).
-  Lin, Chen, Yan. "Network In Network". arXiv 1312.4400, 16 Dec 2013. Global average pooling in place of
+  Lin, Chen, Yan. "Network In Network". ICLR 2014 (arXiv 1312.4400, 16 Dec 2013). Global average pooling in place of
     fully connected layers, less prone to overfitting (section 3.2).
   Olah, Mordvintsev, Schubert. "Feature Visualization". Distill, 7 Nov 2017, doi 10.23915/distill.00007.
     "Starting from random noise, we optimize an image to activate a particular neuron"; unregularised results are
@@ -319,3 +377,22 @@ REFERENCES (each read on 20 Nov 2026; all primary sources)
     Saliency Maps". arXiv 1312.6034, 20 Dec 2013. Optimising the input image to maximise a class score, with L2
     regularisation, started from the zero image (section 2). The older Erhan, Bengio, Courville and Vincent 2009
     report (Université de Montréal, no. 1341) introduced the idea but could not be read here, so it is not cited.
+
+  Added 22 Nov 2026 for the training options and the street photos (checked that day: each arXiv paper read in
+  full, venues from CVF Open Access and PMLR, DeiT's settings from its official code, the dataset from Zenodo and
+  Crossref):
+  Zhang, Cisse, Dauphin, Lopez-Paz. "mixup: Beyond Empirical Risk Minimization". ICLR 2018 (arXiv 1710.09412).
+    One share drawn from Beta(alpha, alpha) blends both the pictures and their labels (section 2).
+  Yun, Han, Oh, Chun, Choe, Yoo. "CutMix: Regularization Strategy to Train Strong Classifiers with Localizable
+    Features". ICCV 2019 (arXiv 1905.04899). A box from one picture pasted into another, labels mixed by area
+    (section 3.1).
+  Touvron, Cord, Douze, Massa, Sablayrolles, Jegou. "Training data-efficient image transformers & distillation
+    through attention" (DeiT). ICML 2021, PMLR 139:10347-10357 (arXiv 2012.12877). Table 9 lists the two values
+    as "Mixup prob. 0.8" and "Cutmix prob. 1.0"; the official code (github.com/facebookresearch/deit, main.py)
+    shows they are the mixup and CutMix alphas, switching between the two with probability 0.5 per batch. Those
+    are the values copied here.
+  Szegedy, Vanhoucke, Ioffe, Shlens, Wojna. "Rethinking the Inception Architecture for Computer Vision". CVPR 2016
+    (arXiv 1512.00567). Label smoothing with epsilon 0.1 (section 7).
+  Gu, Wong, Peng, Shou, Chen, Kankanhalli. "Understanding Fashion Trends from Street Photos via Neighbor-Constrained
+    Embedding Learning". ACM Multimedia 2017, pp. 190-198, doi 10.1145/3123266.3123441 (metadata checked; the paper
+    itself could not be opened). The Street Fashion Style dataset: Zenodo, doi 10.5281/zenodo.833051, CC BY-NC 4.0.
