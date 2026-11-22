@@ -1,4 +1,14 @@
 #dependencies: numpy, polars, sklearn, sys
+"""
+Hclustering(unstandardized 0.59)   validation seed 422   
+top-5 36.6%  top-1 24.1%  MRR 0.304  per-label top-5 37.7% (thin 38.2%, rest 37.2%)  
+coverage 71.8%  family top-1 42.3%, in top 3 63.0%  [1351 images, 503 labels]
+
+Hclustering(standardized 0.16)     validation seed 423   
+top-5 44.4%  top-1 26.5%  MRR 0.348  per-label top-5 43.1% (thin 40.6%, rest 46.1%)  
+coverage 80.3%  family top-1 47.2%, in top 3 69.4%  [1351 images, 503 labels]
+"""
+
 
 import sys, numpy as np
 
@@ -31,7 +41,7 @@ cut: the distance threshold
 
 returns an array of all the unknown samples' score to all the classes
 """
-def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.58):
+def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.16):
     clusters = {}
 
     # convert df to vectors
@@ -380,7 +390,7 @@ train_df = add_embeddings(train_df, d["fit"])
 
 # standardizing
 
-"""
+
 means = train_df.mean()
 sds = train_df.std()
 
@@ -389,7 +399,7 @@ for colName in train_df.columns:
         train_df = train_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
         eval_df = eval_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
 # eval_df = eval_df.head(250)
-"""
+
 
 predictions = find_average_linkage(train_df, eval_df)
 
