@@ -30,6 +30,9 @@ FILES
                       (activation maximisation: Olah, Mordvintsev and Schubert 2017; Simonyan et al. 2013)
   dream_labels.py     the same for every one of the 503 labels: a dreamed-up picture that maximises the label's
                       score, 32 labels per page, each captioned with its number of training pictures
+  make_cnn_figure.py  the report's one figure of what the CNN learned, built from the three scripts' outputs above
+                      (no network is run): first-layer filters, two filters per stage with their top training
+                      pictures, and dreams of popular and rare labels with their top validation pictures
 
 Outputs go to runs/cnn/ (prepared/, validation/, final/, filters/).
 
@@ -56,6 +59,13 @@ RUNNING IT
                                                                     # of 32 of the 64, 128, 256 and 512 filters
     python dream_filters.py --weights <the same .pt> --chosen <that run's chosen.json> --no-miopen
     python dream_labels.py --weights <the same .pt> --no-miopen                         # about 3.5 minutes
+    python make_cnn_figure.py --filters <show_filters.py folder> --label-dreams <dream_labels.py folder> \
+        --preds <the same network's validation predictions> --extra-label E-Girl \
+        --extra-note "Picked for its dream: a dark-haired|face shape in pink."      # the report figure, seconds
+      The report's figure (22 Nov 2026) used the adopted recipe's validation network, seed 422
+      (cnn-r18w64-224-street-crop60-st15-mix-ls10-os-validation-seed422.pt, sha256 ca68518ad202); E-Girl was
+      picked by Gianni for its dream. The figure holds wiki pictures, so it is kept on ml-db
+      (runs/cnn/figure/), not in the repository.
 
   The CNN + street photos (Gianni, 20 Nov 2026; see STREET PHOTOS below):
     python prepare_street.py --photos <folder with chictopia/> --manifest <that folder>/manifest.csv
