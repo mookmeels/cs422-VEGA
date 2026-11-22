@@ -32,7 +32,7 @@ FILES
                       score, 32 labels per page, each captioned with its number of training pictures
   make_cnn_figure.py  the report's one figure of what the CNN learned, built from the three scripts' outputs above
                       (no network is run): first-layer filters, two filters per stage with their top training
-                      pictures, and dreams of popular and rare labels with their top validation pictures
+                      pictures, and dreams of popular and hand-picked labels beside their own training pictures
 
 Outputs go to runs/cnn/ (prepared/, validation/, final/, filters/).
 
@@ -59,13 +59,14 @@ RUNNING IT
                                                                     # of 32 of the 64, 128, 256 and 512 filters
     python dream_filters.py --weights <the same .pt> --chosen <that run's chosen.json> --no-miopen
     python dream_labels.py --weights <the same .pt> --no-miopen                         # about 3.5 minutes
-    python make_cnn_figure.py --filters <show_filters.py folder> --label-dreams <dream_labels.py folder> \
-        --preds <the same network's validation predictions> --extra-label E-Girl \
-        --extra-note "Picked for its dream: a dark-haired|face shape in pink."      # the report figure, seconds
-      The report's figure (22 Nov 2026) used the adopted recipe's validation network, seed 422
-      (cnn-r18w64-224-street-crop60-st15-mix-ls10-os-validation-seed422.pt, sha256 ca68518ad202); E-Girl was
-      picked by Gianni for its dream. The figure holds wiki pictures, so it is kept on ml-db
-      (runs/cnn/figure/), not in the repository.
+    python make_cnn_figure.py --filters <show_filters.py folder> --filter-dreams <dream_filters.py folder> \
+        --label-dreams <dream_labels.py folder> \
+        --picked Lumberjack Nu-Goth "Tomato Girl Summer" Naturecore                 # the report figure, seconds
+      The report's figure (22 Nov 2026) uses the adopted recipe's final network, seed 422
+      (cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-seed422.pt, sha256 4d6e10111e00), trained on train +
+      validation. For a final network, show_filters.py needs --prepared pointing at the final run's prepared
+      pictures. The four labels in panel D were picked by Gianni because their dreams look close to the
+      aesthetic. The figure holds wiki pictures, so it is kept on ml-db (runs/cnn/figure/), not in the repository.
 
   The CNN + street photos (Gianni, 20 Nov 2026; see STREET PHOTOS below):
     python prepare_street.py --photos <folder with chictopia/> --manifest <that folder>/manifest.csv

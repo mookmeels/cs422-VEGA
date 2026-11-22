@@ -1,31 +1,31 @@
 """One report figure of what the CNN learned, from pictures the other scripts already made. Owner: Giancarlo Guevarra.
 
     python make_cnn_figure.py --filters <show_filters.py folder> --label-dreams <dream_labels.py folder> \
-        --preds <the same network's validation prediction file> [--out <png>]
+        [--filter-dreams <dream_filters.py folder>] [--picked <label> ...] [--out <png>]
 
-The filter-dream folder is taken as <--filters>-dreams (dream_filters.py's default). Gianni, 22 Nov 2026: one
+The filter-dream folder is <--filters>-dreams (dream_filters.py's default) unless --filter-dreams names it. Gianni, 22 Nov 2026: one
 landscape figure, not a long strip, with filters from every stage and the pictures they fire on most, and dreams
-of popular and rare aesthetics with the pictures they fire on most. Every choice below follows a fixed rule, so
-nothing is picked by hand:
+of aesthetics beside real pictures of them. The report's figure uses the final network (trained on training plus
+validation pictures), so it has no held-out pictures to score; the pictures beside each aesthetic are its own
+training pictures, to compare the dream with what the aesthetic looks like. Panels:
 
   A  every first-layer filter (first_layer.png from show_filters.py, unchanged);
   B  per stage, the two most selective filters (the first two of show_filters.py's sample, which is sorted by
      how much the filter's response varies between pictures) that still have 4 pictures to show once sensitive
      ones are left out, each as its dream (cut from dream_filters.py's sheet) followed by the 4 training pictures
      that make it fire most (from chosen.json);
-  C  the 3 labels with the most training pictures, and
-  D  the 3 labels with the fewest training pictures among those with at least 2 validation pictures (ties broken
-     by name), each as its dream (cut from dream_labels.py's page) followed by the 3 VALIDATION pictures the same
-     network scores highest for it. The network never trained on those pictures. A green frame marks a picture
-     that really is that aesthetic, a grey frame one that is not.
+  C  the 3 labels with the most training pictures, by a fixed rule;
+  D  optional (--picked): labels picked by hand, marked as such. Gianni, 22 Nov 2026, picked Lumberjack, Nu-Goth,
+     Tomato Girl Summer and Naturecore because their dreams look close to the aesthetic.
 
-  E  optional (--extra-label): one label picked by hand, marked as such. Gianni, 22 Nov 2026, picked E-Girl
-     because a face shape shows in its dream. A sensitive label shows its dream only, no real pictures.
+Each label in C and D is its dream (cut from dream_labels.py's page) followed by 3 of the network's own training
+pictures of that label, drawn by a fixed rule (a random order with seed 0, skipping pictures with a sensitive
+label). A sensitive label picked by hand shows its dream only.
 
 Pictures whose labels the wiki tags as sensitive (runs/catalog-audit/aesthetics.csv) are skipped, as in
-nn/analyse_errors.py, and sensitive labels are not chosen for C and D. Only training and validation pictures are
-used; test pictures are never read. Pictures come from a prepared folder that holds both (by default the final
-run's fit pictures, runs/cnn/prepared/final, which are train + validation, 224 px, exact 8-bit pixels).
+nn/analyse_errors.py, and sensitive labels are not chosen for C. Test pictures are never read. Pictures come from a
+prepared folder that holds training and validation pictures (by default the final run's fit pictures,
+runs/cnn/prepared/final, 224 px, exact 8-bit pixels).
 """
 import argparse
 import json
@@ -45,7 +45,6 @@ import vega_data                                                  # noqa: E402
 
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-GREEN, GREY = (40, 150, 60), (170, 170, 170)
 
 # Sheet geometry, copied from the scripts that drew the sheets (dream_filters.grid, dream_labels.page).
 FILTER_SHEET = dict(tile=160, cols=8, x0=6, y0=34, dx=166, dy=182)
@@ -89,55 +88,48 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--filters", required=True, help="show_filters.py's output folder (first_layer.png, chosen.json)")
     ap.add_argument("--label-dreams", required=True, help="dream_labels.py's output folder")
-    ap.add_argument("--preds", required=True, help="validation prediction file of the same network (.npz)")
+    ap.add_argument("--filter-dreams", default=None, help="dream_filters.py's output folder; default <--filters>-dreams")
     ap.add_argument("--prepared", default=None, help="folder with fit-224.npy and fit-ids.txt holding train and "
                                                      "validation pictures; default <root>/runs/cnn/prepared/final")
     ap.add_argument("--root", default=None, help="default $VEGA_ROOT or /srv/ml/vega")
     ap.add_argument("--out", default=None, help="default <root>/runs/cnn/figure/<network>.png")
     ap.add_argument("--tile", type=int, default=150, help="picture size in panel B, pixels")
-    ap.add_argument("--extra-label", default=None, help="one more label, picked by hand, shown as panel E (its dream; "
-                                                        "its top validation pictures only if it is not sensitive)")
-    ap.add_argument("--extra-note", default="", help="a line under panel E saying why it was picked; | starts a new line")
+    ap.add_argument("--picked", nargs="+", default=[], help="labels picked by hand, shown as panel D (at most 4)")
     a = ap.parse_args()
+    if len(a.picked) > 4 or len(set(a.picked)) != len(a.picked):
+        raise SystemExit("--picked takes at most 4 different labels")
 
     root = Path(a.root) if a.root else vega_data.ROOT
     fdir, ldir = Path(a.filters), Path(a.label_dreams)
-    ddir = fdir.parent / (fdir.name + "-dreams")
+    ddir = Path(a.filter_dreams) if a.filter_dreams else fdir.parent / (fdir.name + "-dreams")
     chosen = json.loads((fdir / "chosen.json").read_text(encoding="utf-8"))
     dreams = json.loads((ddir / "dreams.json").read_text(encoding="utf-8"))
     ldreams = json.loads((ldir / "label_dreams.json").read_text(encoding="utf-8"))
     network = Path(chosen["weights"].replace("\\", "/")).stem
 
-    # The three folders and the prediction file must all come from the same network.
+    # The three folders must all come from the same network.
     for name, rec in (("dreams.json", dreams), ("label_dreams.json", ldreams)):
         if Path(str(rec["weights"]).replace("\\", "/")).stem != network:
             raise SystemExit(f"{name} is from {rec['weights']}, not {network}")
-    if chosen.get("final"):
-        raise SystemExit("these pictures come from a final network; the label panels need its validation scores")
-    tag, seed = network.rsplit("-validation-seed", 1)
-    if Path(a.preds).name != f"{tag}-validation-merged-seed{seed}.npz":
-        raise SystemExit(f"{a.preds} is not the validation prediction file of {network}")
+    final = bool(chosen.get("final"))
+    if final != ("-test-seed" in network):
+        raise SystemExit(f"chosen.json says final={final}, but the network is named {network}")
 
+    # The network's own training pictures: train + validation for a final network, train only otherwise.
     d = vega_data.load(final=False, labels="merged", root=root, vectors=False)
     classes = list(d["classes"])
     hide = sensitive_labels(root, classes)
-    fit_count = np.zeros(len(classes), int)
-    for t in d["fit"]["truth"]:
+    parts = ("fit", "eval") if final else ("fit",)
+    train_ids = [str(x) for p in parts for x in d[p]["ids"]]
+    train_truth = [set(t) for p in parts for t in d[p]["truth"]]
+    train_count = np.zeros(len(classes), int)
+    for t in train_truth:
         for k in t:
-            fit_count[k] += 1
-    val_ids = list(d["eval"]["ids"])
-    val_truth = [set(t) for t in d["eval"]["truth"]]
-    val_count = np.zeros(len(classes), int)
-    for t in val_truth:
-        for k in t:
-            val_count[k] += 1
-
-    z = np.load(a.preds, allow_pickle=False)
-    if [str(c) for c in z["classes"]] != classes:
-        raise SystemExit(f"{a.preds}: labels differ from the loader's")
-    where = {str(x): i for i, x in enumerate(z["ids"])}
-    scores = np.asarray(z["scores"], np.float64)[[where[x] for x in val_ids]]
-    top5 = np.argsort(-scores, axis=1, kind="stable")[:, :5]
+            train_count[k] += 1
+    for e in ldreams["labels_dreamed"]:                           # dream_labels.py counted the same pictures
+        if "training_pictures" in e and e["training_pictures"] != train_count[classes.index(e["label"])]:
+            raise SystemExit(f"{e['label']}: {e['training_pictures']} training pictures in label_dreams.json, "
+                             f"{train_count[classes.index(e['label'])]} here")
 
     prepared = Path(a.prepared) if a.prepared else root / "runs" / "cnn" / "prepared" / "final"
     pic_ids = (prepared / "fit-ids.txt").read_text(encoding="utf-8").split()
@@ -168,33 +160,31 @@ def main():
 
     by_name = {e["label"]: e for e in ldreams["labels_dreamed"]}
     ok = [k for k in range(len(classes)) if classes[k] not in hide]
-    popular = sorted(ok, key=lambda k: (-fit_count[k], classes[k]))[:3]
-    rare = sorted([k for k in ok if val_count[k] >= 2], key=lambda k: (fit_count[k], classes[k]))[:3]
+    popular = sorted(ok, key=lambda k: (-train_count[k], classes[k]))[:3]
+    for name in a.picked:
+        if name not in classes:
+            raise SystemExit(f"--picked {name!r} is not one of the {len(classes)} labels")
 
     def label_row(k):
         e = by_name[classes[k]]
+        if e["index"] != k:
+            raise SystemExit(f"{classes[k]}: index {e['index']} in label_dreams.json, {k} here")
         page = Image.open(ldir / f"labels_page{e['page']:02d}.png")
         dream = cut(page, e["index"] % LABEL_SHEET["per_page"], LABEL_SHEET)
-        best = np.argsort(-scores[:, k], kind="stable")
+        mine = sorted(train_ids[i] for i, t in enumerate(train_truth) if k in t)
+        truth = dict(zip(train_ids, train_truth))
+        sensitive = classes[k] in hide
         pics = []
-        for i in best:
-            names = [classes[j] for j in val_truth[i]]
-            if is_hidden(names):
-                continue
-            pics.append((val_ids[i], k in val_truth[i]))
-            if len(pics) == 3:
-                break
-        mine = [i for i, t in enumerate(val_truth) if k in t]
-        found = np.mean([k in top5[i] for i in mine]) if mine else float("nan")
-        return dict(name=classes[k], train=int(fit_count[k]), val=len(mine), found=found, dream=dream, pics=pics)
+        if not sensitive:
+            for pid in np.random.default_rng(0).permutation(mine):
+                if not is_hidden([classes[j] for j in truth[pid]]):
+                    pics.append(str(pid))
+                if len(pics) == 3:
+                    break
+        return dict(name=classes[k], train=int(train_count[k]), sensitive=sensitive, dream=dream, pics=pics)
 
-    pop_rows, rare_rows = [label_row(k) for k in popular], [label_row(k) for k in rare]
-    extra = None
-    if a.extra_label:
-        if a.extra_label not in classes:
-            raise SystemExit(f"--extra-label {a.extra_label!r} is not one of the {len(classes)} labels")
-        extra = label_row(classes.index(a.extra_label))
-        extra["sensitive"] = a.extra_label in hide
+    pop_rows = [label_row(k) for k in popular]
+    picked_rows = [label_row(classes.index(n)) for n in a.picked]
 
     # ---- draw ---------------------------------------------------------------------------------------------
     T, g, pad = a.tile, 6, 36
@@ -206,14 +196,9 @@ def main():
     a_side = b_h - 60
     text_w = 300
     row_cd = text_w + 4 * (T2 + g) + 14
-    width = pad + a_side + 50 + b_w + pad
-    cd_h = 50 + 3 * (T2 + 18)
-    height = pad + 44 + b_h + 40 + 44 + cd_h + pad
-    e_x = pad + 2 * row_cd + 60 + 50                              # panel E, right of D
-    e_tile = 2 * T2 + 10
-    width = max(width, (e_x + max(e_tile, 420) + pad) if extra else (pad + 2 * row_cd + 60 + pad))
-    if extra and not extra["sensitive"]:
-        height = max(height, pad + 44 + b_h + 40 + 210 + e_tile + T + pad)
+    width = max(pad + a_side + 50 + b_w + pad, pad + 2 * row_cd + 60 + pad)
+    cd_h = 84 + max(3, len(picked_rows)) * (T2 + 18)
+    height = pad + 44 + b_h + 40 + cd_h + pad
     img = Image.new("RGB", (width, height), "white")
     dr = ImageDraw.Draw(img)
 
@@ -241,53 +226,39 @@ def main():
             for c, pid in enumerate(pics):
                 img.paste(framed(picture(pid), T), (sx + T + g + 14 + c * (T + g), ry))
 
-    # C and D: labels
+    # C and D: labels, each as its dream and 3 of its own training pictures
     cy = pad + 44 + b_h + 40
-    for col, (title, rows) in enumerate((("C  Popular aesthetics (most training pictures)", pop_rows),
-                                         ("D  Rare aesthetics (fewest training pictures)", rare_rows))):
+    panels = [("C  Popular aesthetics (most training pictures)", pop_rows)]
+    if picked_rows:
+        panels.append(("D  Aesthetics picked by hand", picked_rows))
+    for col, (title, rows) in enumerate(panels):
         cx = pad + col * (row_cd + 60)
         dr.text((cx, cy), title, font=h1, fill="black")
+        dr.text((cx, cy + 42), "dream, then 3 of its training pictures", font=h3, fill=(90, 90, 90))
         for r, row in enumerate(rows):
-            ry = cy + 50 + r * (T2 + 18)
+            ry = cy + 84 + r * (T2 + 18)
             dr.text((cx, ry + 4), row["name"], font=h2, fill="black")
-            found = "n/a" if np.isnan(row["found"]) else f"{100 * row['found']:.0f}%"
-            dr.multiline_text((cx, ry + 38), f"{row['train']} training pictures\n{row['val']} validation pictures\n"
-                                             f"in its top 5 for {found}\nof them (this network)",
-                              font=h3, fill=(90, 90, 90), spacing=4)
+            note = f"{row['train']} training pictures"
+            if row["sensitive"]:
+                note += "\nreal pictures not shown:\nthe wiki tags it as sensitive"
+            dr.multiline_text((cx, ry + 38), note, font=h3, fill=(90, 90, 90), spacing=4)
             x = cx + text_w
             img.paste(framed(row["dream"], T2), (x, ry))
-            for c, (pid, right) in enumerate(row["pics"]):
-                img.paste(framed(picture(pid), T2, GREEN if right else GREY), (x + T2 + g + 14 + c * (T2 + g), ry))
-
-    # E: one label picked by hand (Gianni, 22 Nov 2026: E-Girl, a face shape shows in its dream)
-    if extra:
-        dr.text((e_x, cy), "E  Picked by hand", font=h1, fill="black")
-        dr.text((e_x, cy + 50), extra["name"], font=h2, fill="black")
-        img.paste(framed(extra["dream"], e_tile), (e_x, cy + 84))
-        found = "n/a" if np.isnan(extra["found"]) else f"{100 * extra['found']:.0f}%"
-        note = (f"{extra['train']} training pictures, {extra['val']} validation\n"
-                f"pictures, in its top 5 for {found} of them.")
-        if a.extra_note:
-            note += "\n" + a.extra_note.replace("|", "\n")
-        if extra["sensitive"]:
-            note += "\nIts real pictures are not shown:\nthe wiki tags it as sensitive."
-        dr.multiline_text((e_x, cy + 94 + e_tile), note, font=h3, fill=(90, 90, 90), spacing=4)
-        if not extra["sensitive"]:
-            for c, (pid, right) in enumerate(extra["pics"]):
-                img.paste(framed(picture(pid), T), (e_x + c * (T + g), cy + 210 + e_tile))
+            for c, pid in enumerate(row["pics"]):
+                img.paste(framed(picture(pid), T2), (x + T2 + g + 14 + c * (T2 + g), ry))
 
     out = Path(a.out) if a.out else root / "runs" / "cnn" / "figure" / f"{network}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     if out.exists():
         raise SystemExit(f"{out} exists; choose another --out (nothing is overwritten)")
     img.save(out, optimize=True)
-    record = {"network": network, "weights_sha256": chosen.get("weights_sha256"), "preds": str(a.preds),
+    record = {"network": network, "final": final, "weights_sha256": chosen.get("weights_sha256"),
+              "training_pictures": "train + validation" if final else "train",
               "stages": [{"stage": k, "filters_in_stage": t, "filters": [{"filter": f, "pictures": p}
                                                                          for f, _, p in rows]}
                          for k, t, rows in stages],
               "popular": [{k: v for k, v in r.items() if k != "dream"} for r in pop_rows],
-              "rare": [{k: v for k, v in r.items() if k != "dream"} for r in rare_rows],
-              "picked_by_hand": ({k: v for k, v in extra.items() if k != "dream"} if extra else None),
+              "picked_by_hand": [{k: v for k, v in r.items() if k != "dream"} for r in picked_rows],
               "sensitive_labels_left_out": len(hide)}
     out.with_suffix(".json").write_text(json.dumps(record, indent=1, default=float) + "\n", encoding="utf-8")
     print(f"written: {out} ({img.size[0]} x {img.size[1]} px) and {out.with_suffix('.json').name}")
