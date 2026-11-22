@@ -31,7 +31,7 @@ cut: the distance threshold
 
 returns an array of all the unknown samples' score to all the classes
 """
-def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.78):
+def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.58):
     clusters = {}
 
     # convert df to vectors
@@ -58,7 +58,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
             } # every unknown is their own cluster
     
     
-    # predications for unknown classes
+    # predictions for unknown classes
     predicted_unknowns = [
         [0.0] * len(classesIndices)
         for _ in range(len(unknown_vectors))
@@ -69,7 +69,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
 
     unknown_unknown = cosine_similarity(unknown_vectors)
 
-
+    # initialize cluster sizes
     cluster_sizes = {}
 
     for name, cluster in clusters.items():
@@ -79,6 +79,7 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
             len(cluster["members"])
         )
 
+    #initialize similarilities
     cluster_similarities = {}
 
     for style, known_cluster in clusters.items():
@@ -120,6 +121,14 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
                 tuple(sorted((a, b)))
             ] = similarity
 
+    """
+    checks if the two clusters cna merge
+
+    cluster_a: cluster one
+    cluster_b: cluster two
+
+    returns whether it can merge or not
+    """
     def can_merge(cluster_a, cluster_b):
 
         class_a = cluster_a["class"]
@@ -226,12 +235,12 @@ def find_average_linkage(knowns: pl.DataFrame, unknowns: pl.DataFrame, cut = 0.7
 
                 
 
-                #merged cluster now encompasses all other unknown clusters
-                key_a = tuple(sorted((otherUnknown, dest)))
-                key_b = tuple(sorted((removedParent, dest)))
+                #otherUnknown cluster now encompasses all other unknown clusters
+                key_a = tuple(sorted((dest, otherUnknown)))
+                key_b = tuple(sorted((removedParent, otherUnknown)))
 
                 sim_a = cluster_similarities[key_a]
-                size_a = cluster_sizes[otherUnknown]
+                size_a = cluster_sizes[dest]
 
                 sim_b = cluster_similarities[key_b]
                 size_b = cluster_sizes[removedParent]
@@ -370,6 +379,8 @@ def add_embeddings(df, split):
 train_df = add_embeddings(train_df, d["fit"])
 
 # standardizing
+
+"""
 means = train_df.mean()
 sds = train_df.std()
 
@@ -378,6 +389,7 @@ for colName in train_df.columns:
         train_df = train_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
         eval_df = eval_df.with_columns(((col(colName) - means.get_column(colName)[0]) / sds.get_column(colName)[0]).alias(colName))
 # eval_df = eval_df.head(250)
+"""
 
 predictions = find_average_linkage(train_df, eval_df)
 
