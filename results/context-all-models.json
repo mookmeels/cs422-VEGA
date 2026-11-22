@@ -1,0 +1,1012 @@
+[
+ {
+  "model": "NN, wiki images only",
+  "seeds": [
+   422,
+   423,
+   424,
+   425,
+   426
+  ],
+  "aesthetic_first_outfit": [
+   0.6031007751937985,
+   0.012589443231714487
+  ],
+  "aesthetic_first_equal": [
+   0.9426356589147288,
+   0.010032696981042486
+  ],
+  "aesthetic_first_agree": [
+   0.9682170542635659,
+   0.004245911298489619
+  ],
+  "aesthetic_first_agree_mean": [
+   0.9426356589147288,
+   0.014797371448698533
+  ],
+  "aesthetic_top_outfit": [
+   0.8953488372093024,
+   0.008335586499072328
+  ],
+  "aesthetic_top_equal": [
+   0.9965116279069768,
+   0.0031844334738672505
+  ],
+  "aesthetic_top_agree": [
+   1.0,
+   0.0
+  ],
+  "aesthetic_top_agree_mean": [
+   0.9965116279069768,
+   0.0031844334738672505
+  ],
+  "family_first_outfit": [
+   0.726421052631579,
+   0.0059476012995859275
+  ],
+  "family_first_equal": [
+   0.8485263157894737,
+   0.0065250423205768324
+  ],
+  "family_first_agree": [
+   0.7045263157894737,
+   0.012938165321391486
+  ],
+  "family_first_agree_mean": [
+   0.8897894736842105,
+   0.005961557364060661
+  ],
+  "family_top_outfit": [
+   0.9232631578947368,
+   0.007774523348501742
+  ],
+  "family_top_equal": [
+   0.9897894736842104,
+   0.0016891375300927183
+  ],
+  "family_top_agree": [
+   0.9495789473684211,
+   0.003378275060185509
+  ],
+  "family_top_agree_mean": [
+   0.9927368421052633,
+   0.0012565617248750736
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.10116279069767442,
+   0.04835922417460161,
+   0.15969377578312705
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.0034883720930232553,
+   0.0,
+   0.010910197307763225
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.3395348837209302,
+   0.26430677756885934,
+   0.4147436037101594
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.025581395348837212,
+   0.002307526749477308,
+   0.05199343969829386
+  ],
+  "family_first_equal_minus_outfit": [
+   0.12210526315789473,
+   0.07826981432652164,
+   0.16661730181262274
+  ],
+  "family_first_agree_minus_equal": [
+   -0.144,
+   -0.17283798190440572,
+   -0.11806413640966296
+  ],
+  "family_top_equal_minus_outfit": [
+   0.06652631578947368,
+   0.037232348427250685,
+   0.10131672994000747
+  ],
+  "family_top_agree_minus_equal": [
+   -0.040210526315789474,
+   -0.05046004100902479,
+   -0.03026172481958605
+  ]
+ },
+ {
+  "model": "NN + real outfit photos",
+  "seeds": [
+   422,
+   423,
+   424,
+   425,
+   426
+  ],
+  "aesthetic_first_outfit": [
+   0.60968992248062,
+   0.019067246319765682
+  ],
+  "aesthetic_first_equal": [
+   0.9189922480620154,
+   0.01379921172009138
+  ],
+  "aesthetic_first_agree": [
+   0.960077519379845,
+   0.011595562249342294
+  ],
+  "aesthetic_first_agree_mean": [
+   0.9178294573643411,
+   0.016364210722933755
+  ],
+  "aesthetic_top_outfit": [
+   0.8860465116279069,
+   0.008153365879055297
+  ],
+  "aesthetic_top_equal": [
+   1.0,
+   0.0
+  ],
+  "aesthetic_top_agree": [
+   1.0,
+   0.0
+  ],
+  "aesthetic_top_agree_mean": [
+   1.0,
+   0.0
+  ],
+  "family_first_outfit": [
+   0.7211578947368421,
+   0.013311732271439426
+  ],
+  "family_first_equal": [
+   0.8529473684210526,
+   0.005257892102628283
+  ],
+  "family_first_agree": [
+   0.7183157894736841,
+   0.01317052025844523
+  ],
+  "family_first_agree_mean": [
+   0.8921052631578947,
+   0.00563182488395599
+  ],
+  "family_top_outfit": [
+   0.9197894736842105,
+   0.007067149236994338
+  ],
+  "family_top_equal": [
+   0.9897894736842104,
+   0.0010913916501751042
+  ],
+  "family_top_agree": [
+   0.948421052631579,
+   0.00659471794007459
+  ],
+  "family_top_agree_mean": [
+   0.9914736842105263,
+   0.0015963948303266194
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.11395348837209301,
+   0.06075352057427529,
+   0.17619577231279354
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.30930232558139537,
+   0.23222487634028696,
+   0.38687104787714544
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.041085271317829464,
+   0.008525376969880203,
+   0.07758874458874451
+  ],
+  "family_first_equal_minus_outfit": [
+   0.13178947368421054,
+   0.09051704812274126,
+   0.17394638721165304
+  ],
+  "family_first_agree_minus_equal": [
+   -0.13463157894736844,
+   -0.16030241694511854,
+   -0.11019887202117433
+  ],
+  "family_top_equal_minus_outfit": [
+   0.07,
+   0.04145553182091002,
+   0.10392585381803049
+  ],
+  "family_top_agree_minus_equal": [
+   -0.041368421052631575,
+   -0.05204582052910779,
+   -0.031609984442102744
+  ]
+ },
+ {
+  "model": "Baseline: nearest centroid",
+  "seeds": [
+   null
+  ],
+  "aesthetic_first_outfit": [
+   0.4437984496124031,
+   null
+  ],
+  "aesthetic_first_equal": [
+   0.7984496124031008,
+   null
+  ],
+  "aesthetic_first_agree": [
+   0.9031007751937985,
+   null
+  ],
+  "aesthetic_first_agree_mean": [
+   0.8042635658914729,
+   null
+  ],
+  "aesthetic_top_outfit": [
+   0.7209302325581395,
+   null
+  ],
+  "aesthetic_top_equal": [
+   0.9476744186046512,
+   null
+  ],
+  "aesthetic_top_agree": [
+   0.9883720930232558,
+   null
+  ],
+  "aesthetic_top_agree_mean": [
+   0.9534883720930233,
+   null
+  ],
+  "family_first_outfit": [
+   0.6836842105263158,
+   null
+  ],
+  "family_first_equal": [
+   0.7973684210526316,
+   null
+  ],
+  "family_first_agree": [
+   0.7805263157894737,
+   null
+  ],
+  "family_first_agree_mean": [
+   0.8415789473684211,
+   null
+  ],
+  "family_top_outfit": [
+   0.8826315789473684,
+   null
+  ],
+  "family_top_equal": [
+   0.9768421052631578,
+   null
+  ],
+  "family_top_agree": [
+   0.9752631578947368,
+   null
+  ],
+  "family_top_agree_mean": [
+   0.978421052631579,
+   null
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.22674418604651161,
+   0.14228604158922112,
+   0.3107942311598618
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.040697674418604654,
+   0.01509433962264151,
+   0.07725152218214715
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.3546511627906977,
+   0.2599525451407943,
+   0.44135455978142657
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.10465116279069768,
+   0.057126715092816784,
+   0.1592262349301184
+  ],
+  "family_first_equal_minus_outfit": [
+   0.11368421052631579,
+   0.06651098688521122,
+   0.16252176400702073
+  ],
+  "family_first_agree_minus_equal": [
+   -0.016842105263157894,
+   -0.04077548946680085,
+   0.008454687268843587
+  ],
+  "family_top_equal_minus_outfit": [
+   0.09421052631578947,
+   0.058432998599481506,
+   0.1343453326543177
+  ],
+  "family_top_agree_minus_equal": [
+   -0.0015789473684210526,
+   -0.01111783620999008,
+   0.007809660205677966
+  ]
+ },
+ {
+  "model": "Hierarchical clustering",
+  "seeds": [
+   422
+  ],
+  "aesthetic_first_outfit": [
+   0.2810077519379845,
+   null
+  ],
+  "aesthetic_first_equal": [
+   0.3817829457364341,
+   null
+  ],
+  "aesthetic_first_agree": [
+   0.31976744186046513,
+   null
+  ],
+  "aesthetic_first_agree_mean": [
+   0.37790697674418605,
+   null
+  ],
+  "aesthetic_top_outfit": [
+   0.38953488372093026,
+   null
+  ],
+  "aesthetic_top_equal": [
+   0.5406976744186046,
+   null
+  ],
+  "aesthetic_top_agree": [
+   0.4496124031007752,
+   null
+  ],
+  "aesthetic_top_agree_mean": [
+   0.5426356589147286,
+   null
+  ],
+  "family_first_outfit": [
+   0.44157894736842107,
+   null
+  ],
+  "family_first_equal": [
+   0.43473684210526314,
+   null
+  ],
+  "family_first_agree": [
+   0.26473684210526316,
+   null
+  ],
+  "family_first_agree_mean": [
+   0.4868421052631579,
+   null
+  ],
+  "family_top_outfit": [
+   0.6705263157894736,
+   null
+  ],
+  "family_top_equal": [
+   0.8094736842105263,
+   null
+  ],
+  "family_top_agree": [
+   0.3973684210526316,
+   null
+  ],
+  "family_top_agree_mean": [
+   0.8084210526315789,
+   null
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.1511627906976744,
+   0.0876161746329272,
+   0.21809616256495495
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   -0.09108527131782945,
+   -0.157702438634182,
+   -0.029733021231220957
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.10077519379844961,
+   0.03196768259542623,
+   0.16667475728155334
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   -0.06201550387596899,
+   -0.10451177087304614,
+   -0.019189296687417465
+  ],
+  "family_first_equal_minus_outfit": [
+   -0.006842105263157895,
+   -0.060945212032096664,
+   0.04875698562428104
+  ],
+  "family_first_agree_minus_equal": [
+   -0.17,
+   -0.1983234682252084,
+   -0.14138427320381886
+  ],
+  "family_top_equal_minus_outfit": [
+   0.13894736842105262,
+   0.09281865284974093,
+   0.1869054344718678
+  ],
+  "family_top_agree_minus_equal": [
+   -0.41210526315789475,
+   -0.45205515331127966,
+   -0.373317811221037
+  ]
+ },
+ {
+  "model": "Baseline: zero-shot text",
+  "seeds": [
+   null
+  ],
+  "aesthetic_first_outfit": [
+   0.18023255813953487,
+   null
+  ],
+  "aesthetic_first_equal": [
+   0.3372093023255814,
+   null
+  ],
+  "aesthetic_first_agree": [
+   0.34689922480620156,
+   null
+  ],
+  "aesthetic_first_agree_mean": [
+   0.3372093023255814,
+   null
+  ],
+  "aesthetic_top_outfit": [
+   0.45155038759689925,
+   null
+  ],
+  "aesthetic_top_equal": [
+   0.5523255813953488,
+   null
+  ],
+  "aesthetic_top_agree": [
+   0.5387596899224806,
+   null
+  ],
+  "aesthetic_top_agree_mean": [
+   0.5503875968992248,
+   null
+  ],
+  "family_first_outfit": [
+   0.4052631578947368,
+   null
+  ],
+  "family_first_equal": [
+   0.49736842105263157,
+   null
+  ],
+  "family_first_agree": [
+   0.45,
+   null
+  ],
+  "family_first_agree_mean": [
+   0.5552631578947368,
+   null
+  ],
+  "family_top_outfit": [
+   0.6894736842105263,
+   null
+  ],
+  "family_top_equal": [
+   0.8415789473684211,
+   null
+  ],
+  "family_top_agree": [
+   0.7689473684210526,
+   null
+  ],
+  "family_top_agree_mean": [
+   0.8647368421052631,
+   null
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.10077519379844961,
+   0.03238539898132428,
+   0.17837484842448828
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   -0.013565891472868217,
+   -0.0653061224489796,
+   0.03279729123975404
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.1569767441860465,
+   0.08548283710435797,
+   0.2352997955939132
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.009689922480620155,
+   -0.03366923980533647,
+   0.052003538175046535
+  ],
+  "family_first_equal_minus_outfit": [
+   0.09210526315789473,
+   0.04732207045291158,
+   0.1369265643059061
+  ],
+  "family_first_agree_minus_equal": [
+   -0.04736842105263158,
+   -0.07298808770820156,
+   -0.02205457177231371
+  ],
+  "family_top_equal_minus_outfit": [
+   0.15210526315789474,
+   0.11169355647755046,
+   0.1956433348346139
+  ],
+  "family_top_agree_minus_equal": [
+   -0.07263157894736842,
+   -0.09940533117086953,
+   -0.04559904829198507
+  ]
+ },
+ {
+  "model": "CNN + street photos",
+  "seeds": [
+   422,
+   423,
+   424,
+   425,
+   426
+  ],
+  "aesthetic_first_outfit": [
+   0.10310077519379846,
+   0.008380522600945604
+  ],
+  "aesthetic_first_equal": [
+   0.3193798449612403,
+   0.04653988159946381
+  ],
+  "aesthetic_first_agree": [
+   0.46937984496124036,
+   0.02232470659354141
+  ],
+  "aesthetic_first_agree_mean": [
+   0.3003875968992248,
+   0.03512513364417027
+  ],
+  "aesthetic_top_outfit": [
+   0.31589147286821706,
+   0.017060869051995154
+  ],
+  "aesthetic_top_equal": [
+   0.5531007751937985,
+   0.02160657167778099
+  ],
+  "aesthetic_top_agree": [
+   0.7515503875968992,
+   0.039867878668600885
+  ],
+  "aesthetic_top_agree_mean": [
+   0.5430232558139536,
+   0.029243665906882065
+  ],
+  "family_first_outfit": [
+   0.22673684210526318,
+   0.013228233048464468
+  ],
+  "family_first_equal": [
+   0.28463157894736846,
+   0.012770074089204317
+  ],
+  "family_first_agree": [
+   0.31305263157894736,
+   0.012356657339645647
+  ],
+  "family_first_agree_mean": [
+   0.31168421052631584,
+   0.022568455420240933
+  ],
+  "family_top_outfit": [
+   0.44968421052631574,
+   0.024660015074819092
+  ],
+  "family_top_equal": [
+   0.5531578947368421,
+   0.027941866838807887
+  ],
+  "family_top_agree": [
+   0.5725263157894738,
+   0.015077822131249788
+  ],
+  "family_top_agree_mean": [
+   0.5664210526315789,
+   0.02817485962132629
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.23720930232558138,
+   0.1632789151446869,
+   0.3135075160655194
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.19844961240310077,
+   0.14597696008882854,
+   0.2528365944560913
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.21627906976744185,
+   0.1543331089785941,
+   0.2782655128746306
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.15,
+   0.1039823946617425,
+   0.19770704038796372
+  ],
+  "family_first_equal_minus_outfit": [
+   0.057894736842105256,
+   0.02493986514396942,
+   0.08944240475419893
+  ],
+  "family_first_agree_minus_equal": [
+   0.028421052631578948,
+   0.008972039699001884,
+   0.04801103803051399
+  ],
+  "family_top_equal_minus_outfit": [
+   0.10347368421052633,
+   0.07072065717884046,
+   0.13483575477851686
+  ],
+  "family_top_agree_minus_equal": [
+   0.019368421052631576,
+   -0.010775220741050456,
+   0.0486535190381344
+  ]
+ },
+ {
+  "model": "CNN",
+  "seeds": [
+   422,
+   423,
+   424,
+   425,
+   426
+  ],
+  "aesthetic_first_outfit": [
+   0.10658914728682171,
+   0.01650134337783566
+  ],
+  "aesthetic_first_equal": [
+   0.29844961240310075,
+   0.024628420595230294
+  ],
+  "aesthetic_first_agree": [
+   0.4612403100775194,
+   0.03871120999115927
+  ],
+  "aesthetic_first_agree_mean": [
+   0.28062015503875964,
+   0.017027815997278133
+  ],
+  "aesthetic_top_outfit": [
+   0.2810077519379845,
+   0.022642095824705274
+  ],
+  "aesthetic_top_equal": [
+   0.5414728682170543,
+   0.022625502128211253
+  ],
+  "aesthetic_top_agree": [
+   0.7585271317829457,
+   0.02853513537876891
+  ],
+  "aesthetic_top_agree_mean": [
+   0.5294573643410854,
+   0.023671986797833267
+  ],
+  "family_first_outfit": [
+   0.2283157894736842,
+   0.016198218157196922
+  ],
+  "family_first_equal": [
+   0.3032631578947368,
+   0.013482316313808829
+  ],
+  "family_first_agree": [
+   0.31421052631578944,
+   0.012702650932786498
+  ],
+  "family_first_agree_mean": [
+   0.3317894736842105,
+   0.019828209569621818
+  ],
+  "family_top_outfit": [
+   0.4594736842105263,
+   0.011152431631798486
+  ],
+  "family_top_equal": [
+   0.5769473684210527,
+   0.01445884406670023
+  ],
+  "family_top_agree": [
+   0.5836842105263158,
+   0.02190068239111914
+  ],
+  "family_top_agree_mean": [
+   0.5958947368421053,
+   0.016661864497464148
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.26046511627906976,
+   0.1949457430220961,
+   0.32937688820216715
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.21705426356589147,
+   0.1620027907740294,
+   0.273183908045977
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.1918604651162791,
+   0.12902951399475576,
+   0.2553197809878843
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.16279069767441862,
+   0.11290244019196018,
+   0.2173404271206691
+  ],
+  "family_first_equal_minus_outfit": [
+   0.07494736842105264,
+   0.04310103626943006,
+   0.10793688407432483
+  ],
+  "family_first_agree_minus_equal": [
+   0.010947368421052641,
+   -0.010729994756426747,
+   0.031569842527844484
+  ],
+  "family_top_equal_minus_outfit": [
+   0.11747368421052633,
+   0.08051937595415856,
+   0.15398448735242637
+  ],
+  "family_top_agree_minus_equal": [
+   0.0067368421052631565,
+   -0.023302605956471937,
+   0.03532962250440436
+  ]
+ },
+ {
+  "model": "CNN, adopted recipe + street photos",
+  "seeds": [
+   422,
+   423,
+   424,
+   425,
+   426
+  ],
+  "aesthetic_first_outfit": [
+   0.09651162790697673,
+   0.009824644849330681
+  ],
+  "aesthetic_first_equal": [
+   0.24186046511627907,
+   0.01629521163533172
+  ],
+  "aesthetic_first_agree": [
+   0.35155038759689916,
+   0.022873143602822586
+  ],
+  "aesthetic_first_agree_mean": [
+   0.2248062015503876,
+   0.012180043691837728
+  ],
+  "aesthetic_top_outfit": [
+   0.2437984496124031,
+   0.025615141002751276
+  ],
+  "aesthetic_top_equal": [
+   0.40852713178294575,
+   0.011899287932564928
+  ],
+  "aesthetic_top_agree": [
+   0.6864341085271317,
+   0.01623748842298717
+  ],
+  "aesthetic_top_agree_mean": [
+   0.40852713178294575,
+   0.014973987420218502
+  ],
+  "family_first_outfit": [
+   0.23410526315789473,
+   0.01733010126837979
+  ],
+  "family_first_equal": [
+   0.3183157894736842,
+   0.012124698357044078
+  ],
+  "family_first_agree": [
+   0.31757894736842107,
+   0.006344234191707019
+  ],
+  "family_first_agree_mean": [
+   0.3406315789473684,
+   0.01658270634077827
+  ],
+  "family_top_outfit": [
+   0.4541052631578947,
+   0.018486350433619143
+  ],
+  "family_top_equal": [
+   0.5994736842105264,
+   0.01773145318728738
+  ],
+  "family_top_agree": [
+   0.6010526315789473,
+   0.014533369759456927
+  ],
+  "family_top_agree_mean": [
+   0.6016842105263158,
+   0.02139653323202222
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.16472868217054262,
+   0.09739047539523492,
+   0.23186185237693577
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.27790697674418613,
+   0.22070077583693967,
+   0.337368509325104
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.14534883720930233,
+   0.09857419231233784,
+   0.19332333157729986
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.10968992248062016,
+   0.07053570602119683,
+   0.1500051867219917
+  ],
+  "family_first_equal_minus_outfit": [
+   0.08421052631578947,
+   0.04851552825693198,
+   0.11786499700918047
+  ],
+  "family_first_agree_minus_equal": [
+   -0.0007368421052631604,
+   -0.017652035771843683,
+   0.014153421472530028
+  ],
+  "family_top_equal_minus_outfit": [
+   0.14536842105263156,
+   0.10767545714535844,
+   0.18231469829053923
+  ],
+  "family_top_agree_minus_equal": [
+   0.0015789473684210509,
+   -0.02661451951701189,
+   0.02716235060228107
+  ]
+ },
+ {
+  "model": "Baseline: popularity",
+  "seeds": [
+   null
+  ],
+  "aesthetic_first_outfit": [
+   0.011627906976744186,
+   null
+  ],
+  "aesthetic_first_equal": [
+   0.011627906976744186,
+   null
+  ],
+  "aesthetic_first_agree": [
+   0.011627906976744186,
+   null
+  ],
+  "aesthetic_first_agree_mean": [
+   0.011627906976744186,
+   null
+  ],
+  "aesthetic_top_outfit": [
+   0.05813953488372093,
+   null
+  ],
+  "aesthetic_top_equal": [
+   0.05813953488372093,
+   null
+  ],
+  "aesthetic_top_agree": [
+   0.05813953488372093,
+   null
+  ],
+  "aesthetic_top_agree_mean": [
+   0.05813953488372093,
+   null
+  ],
+  "family_first_outfit": [
+   0.05263157894736842,
+   null
+  ],
+  "family_first_equal": [
+   0.05263157894736842,
+   null
+  ],
+  "family_first_agree": [
+   0.05263157894736842,
+   null
+  ],
+  "family_first_agree_mean": [
+   0.05263157894736842,
+   null
+  ],
+  "family_top_outfit": [
+   0.15789473684210525,
+   null
+  ],
+  "family_top_equal": [
+   0.15789473684210525,
+   null
+  ],
+  "family_top_agree": [
+   0.15789473684210525,
+   null
+  ],
+  "family_top_agree_mean": [
+   0.15789473684210525,
+   null
+  ],
+  "aesthetic_top_equal_minus_outfit": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "aesthetic_top_agree_minus_equal": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "aesthetic_first_equal_minus_outfit": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "aesthetic_first_agree_minus_equal": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "family_first_equal_minus_outfit": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "family_first_agree_minus_equal": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "family_top_equal_minus_outfit": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "family_top_agree_minus_equal": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ }
+]

@@ -1,0 +1,17 @@
+{
+ "what": "How the image vectors were made (src/embed). The encoder is frozen; no model changes it.",
+ "encoder": "Qwen3-VL-Embedding-2B, f16 GGUF (DevQuasar/Qwen.Qwen3-VL-Embedding-2B-GGUF), run with llama.cpp",
+ "longest_edge_pixels": 448,
+ "dimensions": 2048,
+ "pooling": "last",
+ "normalized": true,
+ "add_eos_token": true,
+ "image_prompt": "<|im_start|>system\nRepresent the fashion aesthetic of this image.<|im_end|>\n<|im_start|>user\n<__media__><|im_end|>\n<|im_start|>assistant\n",
+ "images_embedded": 23055,
+ "images_listed": 23056,
+ "unreadable": [
+  "13663589198a828421e7037dd1d48cff1336db7a"
+ ],
+ "seconds_on_rtx_4080": 748.9,
+ "finished": "2026-11-20T05:09:31-0800"
+}

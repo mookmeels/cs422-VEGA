@@ -1,0 +1,35 @@
+{
+ "what": "Andrew Nguyen's model: an MLP on the frozen image vectors (src/models/nn/train_nn.py). These are train_nn.SETTINGS, the defaults of the script.",
+ "settings": {
+  "layers": 1,
+  "hidden": 1024,
+  "dropout": 0.7,
+  "input_dropout": 0.0,
+  "weight_decay": 1.0,
+  "lr": 0.001,
+  "epochs": 40,
+  "batch": 512,
+  "balance": 1.0,
+  "prep": "standardize",
+  "real_weight": 0.25,
+  "real_draw": "tag"
+ },
+ "real_photos_per_step": 512,
+ "poster_groups": 10,
+ "held_out_poster_group": 0,
+ "seeds": [
+  422,
+  423,
+  424,
+  425,
+  426
+ ],
+ "device": "cpu, 1 thread (repeats exactly)",
+ "rows": {
+  "NN (MLP, 1 hidden layer of 1024)": "train_nn.py --seed 422 423 424 425 426 --real-weight 0",
+  "NN (MLP, 1 hidden layer of 1024) + real outfit photos": "train_nn.py --seed 422 423 424 425 426"
+ },
+ "final_run": "the same commands with --final (src/models/nn/nn_final_run.sh), run once on 22 Nov 2026 02:00 UTC",
+ "search": "146 runs over 32 configurations on validation (sweep_nn.py); see src/models/nn/README.md",
+ "train_nn_sha256": "a52bd82724b73587a7deb700ba221f96b365e7890df749a413f9e432a42d4b5d"
+}

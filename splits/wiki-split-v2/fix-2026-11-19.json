@@ -1,0 +1,16 @@
+{
+  "when_utc": "2026-11-20 ~04:12 UTC",
+  "why": "near-duplicate rule re-run on the corrected vectors (runs/split-recheck): one pair crossed validation/test",
+  "moved": {
+    "sha1": "100401c44302a78df3e70fc95ef8920edd0f5c5e",
+    "from": "validation",
+    "to": "test"
+  },
+  "paired_with": "f0df4adba08a7db721d7b6bcde6c58542dd9550d",
+  "cosine_corrected_vectors": 0.8501,
+  "pixel_corr": 0.914,
+  "split_sha256_before": "8c72fbc1eb5992abe7710bbbac0b390ca24afe2eba73d5204a5e9ccc93f85168",
+  "split_sha256_after": "19f1816c1a751aa8b952d0a879310ba546fb521a49be95dbce59d29c40985794",
+  "old_file": "split.before-2026-11-19-fix.csv",
+  "note": "written byte for byte: only the two rows differ from the old file"
+}

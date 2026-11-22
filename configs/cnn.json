@@ -1,0 +1,102 @@
+{
+ "what": "Giancarlo Guevarra's model: a ResNet-18 trained from pixels (src/models/cnn). Settings as recorded by train_cnn.py for the final runs (runs/cnn/final-from-pc/runs.jsonl). The adopted recipe is the row with crop, mixup/CutMix, label smoothing and oversampling.",
+ "note_from_the_cnn_readme": "the records of the adopted runs still say shift 0.1 and zoom 0.1, which were not applied (random crop replaces them)",
+ "runs": {
+  "cnn-r18w64-224": {
+   "model": "CNN (ResNet-18, 224 px)",
+   "settings": {
+    "width": 64,
+    "size": 224,
+    "dropout": 0.3,
+    "epochs": 60,
+    "batch": 128,
+    "lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup": 0.1,
+    "balance": 1.0,
+    "shift": 0.1,
+    "zoom": 0.1,
+    "flip": true,
+    "precision": "fp32"
+   },
+   "seeds": [
+    422,
+    423,
+    424,
+    425,
+    426
+   ],
+   "labels": "merged",
+   "device": "AMD Radeon RX 7900 XTX",
+   "torch": "2.9.1+rocm7.2.1"
+  },
+  "cnn-r18w64-224-street": {
+   "model": "CNN (ResNet-18, 224 px) + street photos",
+   "settings": {
+    "width": 64,
+    "size": 224,
+    "dropout": 0.3,
+    "epochs": 60,
+    "batch": 128,
+    "lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup": 0.1,
+    "balance": 1.0,
+    "shift": 0.1,
+    "zoom": 0.1,
+    "flip": true,
+    "precision": "fp32",
+    "street_weight": 0.25,
+    "street_batch": 128,
+    "street_tags": 39
+   },
+   "seeds": [
+    422,
+    423,
+    424,
+    425,
+    426
+   ],
+   "labels": "merged",
+   "device": "AMD Radeon RX 7900 XTX",
+   "torch": "2.9.1+rocm7.2.1"
+  },
+  "cnn-r18w64-224-street-crop60-st15-mix-ls10-os": {
+   "model": "CNN (ResNet-18, 224 px, stronger distortions, mixup/CutMix, label smoothing 0.1, oversampling) + street photos",
+   "settings": {
+    "width": 64,
+    "size": 224,
+    "dropout": 0.3,
+    "epochs": 60,
+    "batch": 128,
+    "lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup": 0.1,
+    "balance": 1.0,
+    "shift": 0.1,
+    "zoom": 0.1,
+    "flip": true,
+    "precision": "fp32",
+    "crop_min": 0.6,
+    "stretch": 0.15,
+    "mix": "mixup-cutmix",
+    "smooth": 0.1,
+    "sample": "oversample",
+    "street_weight": 0.25,
+    "street_batch": 128,
+    "street_tags": 39
+   },
+   "seeds": [
+    422,
+    423,
+    424,
+    425,
+    426
+   ],
+   "labels": "merged",
+   "device": "AMD Radeon RX 7900 XTX",
+   "torch": "2.9.1+rocm7.2.1"
+  }
+ },
+ "commands": "see src/models/cnn/README.txt"
+}

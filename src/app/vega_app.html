@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEGA</title>
+<style>
+  :root { --ink:#1d1a16; --soft:#6f675c; --paper:#f6f1e7; --card:#fffdf8; --line:#ded5c3; --accent:#b4472b; --accent2:#2f5d62; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.5 Georgia, "Times New Roman", serif; }
+  main { max-width:1040px; margin:0 auto; padding:28px 20px 80px; }
+  h1 { font-size:44px; letter-spacing:.14em; margin:0; font-weight:400; }
+  .tag { color:var(--soft); margin:4px 0 22px; font-style:italic; }
+  h2 { font:600 13px/1 system-ui, sans-serif; letter-spacing:.16em; text-transform:uppercase; color:var(--soft); margin:38px 0 6px; }
+  .why { color:var(--soft); margin:0 0 14px; font-size:15px; }
+  #drop { border:1.5px dashed var(--line); border-radius:14px; background:var(--card); padding:22px; text-align:center; cursor:pointer; }
+  #drop.over { border-color:var(--accent); background:#fff6ee; }
+  #drop b { color:var(--accent); }
+  #thumbs { display:flex; gap:12px; flex-wrap:wrap; margin:16px 0 0; justify-content:center; }
+  .thumb { position:relative; width:120px; height:150px; border-radius:10px; overflow:hidden; background:#e9e1d1; }
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  #thumbs.small { gap:8px; } #thumbs.small .thumb { width:84px; height:105px; }
+  #thumbs.tiny { gap:6px; } #thumbs.tiny .thumb { width:60px; height:75px; } #thumbs.tiny .thumb small { display:none; }
+  #thumbs.tiny .num { width:17px; height:17px; font-size:10px; line-height:17px; left:3px; top:3px; } #thumbs.tiny .thumb button { width:17px; height:17px; font-size:11px; line-height:15px; right:3px; top:3px; }
+  .num { position:absolute; left:6px; top:6px; background:var(--ink); color:#fff; font:600 12px/20px system-ui, sans-serif; width:20px; height:20px; border-radius:50%; text-align:center; }
+  .thumb button { position:absolute; right:5px; top:5px; border:0; background:#fffc; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:14px; line-height:20px; }
+  .thumb small { position:absolute; left:0; right:0; bottom:0; background:#1d1a16cc; color:#fff; font:11px/1.3 system-ui, sans-serif; padding:4px 6px; }
+  #go { margin:18px auto 0; display:block; background:var(--accent); color:#fff; border:0; border-radius:999px; padding:12px 30px; font:600 15px system-ui, sans-serif; letter-spacing:.04em; cursor:pointer; }
+  #go:disabled { background:#c9bfae; cursor:default; }
+  #status { text-align:center; color:var(--soft); min-height:24px; margin-top:12px; font-size:15px; }
+  #status.bad { color:var(--accent); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+  .a { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+  .a h3 { margin:0; font-size:22px; font-weight:400; }
+  .fam { color:var(--soft); font:12px system-ui, sans-serif; margin:2px 0 10px; }
+  .ex { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; }
+  .ex img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; background:#e9e1d1; display:block; }
+  .bar { height:6px; background:#ebe3d3; border-radius:3px; margin:10px 0 6px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:var(--accent2); }
+  .surprise .bar i { background:var(--accent); }
+  .because { display:flex; align-items:center; gap:8px; color:var(--soft); font:13px system-ui, sans-serif; margin-top:8px; }
+  .because img { width:34px; height:42px; object-fit:cover; border-radius:5px; }
+  .note { background:#fff6ee; border:1px solid #efc9b3; border-radius:12px; padding:12px 14px; margin-top:18px; font-size:15px; }
+  .quiet { color:var(--soft); font-style:italic; }
+  footer { color:var(--soft); font:12px/1.5 system-ui, sans-serif; margin-top:46px; border-top:1px solid var(--line); padding-top:12px; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>VEGA</h1>
+  <p class="tag">A few photos in. Your aesthetic, what sits near it, and what might surprise you.</p>
+
+  <div id="drop">Drop photos here, or <b>choose them</b>. An outfit, your room, your desk, things you love. Three to five is plenty; up to fifty.
+    <input id="file" type="file" accept="image/*" multiple hidden>
+    <div id="thumbs"></div>
+  </div>
+  <button id="go" disabled>Read my aesthetic</button>
+  <div id="status"></div>
+
+  <div id="out" hidden>
+    <div id="lowconf" class="note" hidden></div>
+
+    <h2>Your aesthetics</h2>
+    <p class="why">All of your photos together; photos that agree with each other count more. The small photo is the one that points to it most.</p>
+    <div id="profile" class="grid"></div>
+
+    <h2>Nearby</h2>
+    <p class="why">Aesthetics that sit closest to your first one on the map of all 503.</p>
+    <div id="nearest" class="grid"></div>
+
+    <h2>Surprising</h2>
+    <p class="why">A style family far from your main one that one of your photos clearly belongs to (with more than ten photos: about a tenth of them), shown by the aesthetic in it that a photo matches most.</p>
+    <div id="surprising" class="grid"></div>
+    <p id="nosurprise" class="quiet" hidden></p>
+  </div>
+
+  <footer>A CS 422 course project. 503 aesthetics from the Aesthetics Wiki; example pictures are wiki gallery images. Your photos are read on this computer and deleted straight after. Suggestions, not verdicts.</footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const MAX = 50;
+let photos = [];                       // data URLs, at most MAX
+
+function shrink(file) {                // resize in the browser: at most 1024 px on the long side
+  return new Promise((ok, bad) => {
+    const img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, 1024 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      ok(c.toDataURL('image/jpeg', 0.9));
+    };
+    img.onerror = () => bad(new Error('could not read ' + file.name));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function add(files) {
+  for (const f of files) {
+    if (photos.length >= MAX) { say('That is the limit: ' + MAX + ' photos.', true); break; }
+    if (!f.type.startsWith('image/')) continue;
+    try { photos.push(await shrink(f)); } catch (e) { say(e.message, true); }
+  }
+  draw();
+}
+
+function draw(labels) {
+  $('thumbs').innerHTML = photos.map((u, i) =>
+    `<div class="thumb"><img src="${u}" alt="photo ${i + 1}"><span class="num">${i + 1}</span>` +
+    `<button data-i="${i}" title="remove">&times;</button>${labels && labels[i] ? `<small>${labels[i]}</small>` : ''}</div>`).join('');
+  $('thumbs').className = photos.length > 24 ? 'tiny' : photos.length > 8 ? 'small' : '';
+  $('go').disabled = photos.length === 0;
+}
+
+function say(text, bad) { $('status').textContent = text; $('status').className = bad ? 'bad' : ''; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const examples = a => `<div class="ex">${a.examples.map(e => `<img src="${e}" alt="" loading="lazy">`).join('')}</div>`;
+const because = (a, text) => `<div class="because"><img src="${photos[a.photo]}" alt=""><span>${text} photo ${a.photo + 1}</span></div>`;
+
+function show(r) {
+  $('profile').innerHTML = r.profile.map(a =>
+    `<div class="a"><h3>${esc(a.name)}</h3><div class="fam">${esc(a.family)}</div>${examples(a)}` +
+    `<div class="bar"><i style="width:${Math.round(a.share * 100)}%"></i></div><span class="fam">${(a.share * 100).toFixed(0)}% of your profile</span>` +
+    because(a, 'mostly from') + `</div>`).join('');
+  $('nearest').innerHTML = r.nearest.map(a =>
+    `<div class="a"><h3>${esc(a.name)}</h3><div class="fam">${esc(a.family)}</div>${examples(a)}</div>`).join('');
+  $('surprising').innerHTML = r.surprising.map(a =>
+    `<div class="a surprise"><h3>${esc(a.name)}</h3><div class="fam">${esc(a.family)}</div>${examples(a)}` +
+    `<div class="bar"><i style="width:${Math.round(a.score * 100)}%"></i></div>` +
+    `<span class="fam">${photos.length > 10 ? 'about a tenth of your photos are at least' : 'that photo is'} ${(a.relevance * 100).toFixed(0)}% this family &middot; distance from your main family ${(a.unexpected * 100).toFixed(0)}%</span>` +
+    because(a, photos.length > 10 ? 'most of all' : 'suggested because of') + `</div>`).join('');
+  $('nosurprise').hidden = r.surprising.length > 0;
+  $('nosurprise').textContent = 'Nothing surprising in these photos: they all point the same way.';
+  const low = r.photos.filter(p => p.closeness < 0.4).length;
+  $('lowconf').hidden = low < r.photos.length;
+  $('lowconf').textContent = 'None of these photos looks much like anything in the catalogue, so treat what follows as a guess.';
+  draw(r.photos.map(p => `${p.first} ${(p.share * 100).toFixed(0)}%`));
+  $('out').hidden = false;
+  say(`Read ${r.photos.length} photo${r.photos.length > 1 ? 's' : ''} in ${r.seconds.everything} seconds.`);
+}
+
+$('drop').addEventListener('click', e => { if (e.target.dataset.i === undefined) $('file').click(); });
+$('thumbs').addEventListener('click', e => { if (e.target.dataset.i !== undefined) { photos.splice(+e.target.dataset.i, 1); draw(); e.stopPropagation(); } });
+$('file').addEventListener('change', e => { add(e.target.files); e.target.value = ''; });
+['dragover', 'dragenter'].forEach(n => $('drop').addEventListener(n, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(n => $('drop').addEventListener(n, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => add(e.dataTransfer.files));
+$('go').addEventListener('click', async () => {
+  $('go').disabled = true; say('Looking at your photos… about ' + Math.round(4 + photos.length / 3) + ' seconds.');
+  try {
+    const res = await fetch('/analyse', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({photos})});
+    const r = await res.json();
+    if (!res.ok) throw new Error(r.error || 'something went wrong');
+    show(r);
+  } catch (e) { say(e.message, true); }
+  $('go').disabled = photos.length === 0;
+});
+window.vegaTest = async urls => { photos = urls; draw(); $('go').click(); };   // for checking the page without a file picker
+</script>
+</body>
+</html>

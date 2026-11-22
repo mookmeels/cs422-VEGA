@@ -1,0 +1,11 @@
+{
+ "what": "Edmond Luong's model: hierarchical (average-linkage) clustering on the image vectors (src/models/hclustering/hclustering.py).",
+ "vectors": "standardized with the mean and standard deviation of the fit images",
+ "similarity": "cosine",
+ "linkage": "average",
+ "cut": 0.16,
+ "seeds": "none: the method has no randomness, so one run",
+ "hclustering_sha256": "8b883aaa08d24d1608f6458d7ea61a40ed5db3e79826afac21de9c18cfd5ae53",
+ "validation": "python hclustering.py, then vega_score.py --pred my-preds.npz --model 'Hclustering(standardized 0.16)'",
+ "final_run": "src/experiments/hclustering_final_run.sh: the script unedited, with the loader switched to final by src/experiments/hclustering_run.py"
+}

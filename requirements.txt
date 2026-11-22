@@ -2,7 +2,7 @@
 # the course requires dependencies and versions for reproducing results.
 #
 # Versions of the team's environment on ml-db (/srv/ml/vega/.venv, Python 3.12.3), where every recorded
-# result so far was made. They cover src/common, src/baselines and src/models/nn.
+# result in the team table was scored. They cover src/common, src/baselines, src/models/nn and src/models/hclustering.
 #
 #   pip install -r requirements.txt
 #
@@ -14,5 +14,9 @@ torch==2.15.0
 # only for the example image sheets: src/models/nn/analyse_errors.py --sheets
 pillow==13.0.0
 
-# Not pinned yet: src/models/hclustering/hclustering.py imports scikit-learn, which is not installed in the
-# ml-db environment. Its owner should add the version used here, as scikit-learn==x.y.z.
+# src/models/hclustering/hclustering.py (cosine_similarity); the version in the ml-db environment, where its
+# validation and test rows were made
+scikit-learn==1.9.1
+
+# The CNN (src/models/cnn) was trained on a separate PC with AMD's PyTorch 2.9.1 + ROCm 7.2.1 wheels;
+# see src/models/cnn/README.txt. Its test predictions were made on ml-db with the torch pinned above.

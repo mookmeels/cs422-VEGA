@@ -1,0 +1,34 @@
+{
+ "what": "The shared protocol every model uses (src/common).",
+ "split_file": "splits/wiki-split-v2/split.csv",
+ "split_sha256": "19f1816c1a751aa8b952d0a879310ba546fb521a49be95dbce59d29c40985794",
+ "images": {
+  "train": 9359,
+  "validation": 1351,
+  "test": 2618
+ },
+ "labels": 503,
+ "label_set": "merged",
+ "image_vectors": "qwen2beos-aesthetic-448",
+ "family_table": "runs/family-v1/label_family.csv",
+ "family_table_sha256": "fc9d825bd99b6cf2bab8b9613051d6d2a5b4ff817681eca1aab3da353b7cce2d",
+ "primary_metric": "top5 (recall@5)",
+ "supporting_metrics": [
+  "top1",
+  "mrr",
+  "label_top5",
+  "coverage5",
+  "family_top1",
+  "family_top3"
+ ],
+ "ties": "equal scores are ordered by a fixed random order of the labels, seed 422 (vega_score.TIE_SEED)",
+ "seeds_for_stochastic_models": [
+  422,
+  423,
+  424,
+  425,
+  426
+ ],
+ "validation": "fit on train, score validation",
+ "test": "fit on train + validation, score test once (results/comparison/FINAL-RUNS.log.txt)"
+}

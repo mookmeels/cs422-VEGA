@@ -1,0 +1,73 @@
+The CNN's final test scoring. Started 2026-11-22 08:18:04 UTC on ml-db.
+code (sha256):
+776d12e927d1439c45db346b186c0c825937e2ecbdd41bea697fde9c49bd4188  /srv/ml/vega/code/cnn/predict_cnn.py
+9670ce60027b744bbf3fbb81e881194fb8735dc087d82f50864a48762cdb98b6  /srv/ml/vega/code/cnn/train_cnn.py
+85b0314dfc5632079565e0ab872ae0e3f3ce724b65179da5883fd5b98b7e2f1f  /srv/ml/vega/code/shared/vega_data.py
+2356f43f0185ddb439d9cd6536bac27d4a640a5205e61c6cf5bdff020c4fc8bd  /srv/ml/vega/code/shared/vega_score.py
+
+Predicting the plain CNN's missing seeds (4 weights files):
+vega_data: FINAL RUN. Fitting on train + validation; test images are returned without labels.
+cnn-r18w64-224-test-seed423.pt: width 64, 224 px, 60 epochs, no street photos, seed 423 -> cnn-r18w64-224-test-merged-seed423.npz
+cnn-r18w64-224-test-seed424.pt: width 64, 224 px, 60 epochs, no street photos, seed 424 -> cnn-r18w64-224-test-merged-seed424.npz
+cnn-r18w64-224-test-seed425.pt: width 64, 224 px, 60 epochs, no street photos, seed 425 -> cnn-r18w64-224-test-merged-seed425.npz
+cnn-r18w64-224-test-seed426.pt: width 64, 224 px, 60 epochs, no street photos, seed 426 -> cnn-r18w64-224-test-merged-seed426.npz
+seed 423: 2618 test pictures predicted in 144s -> cnn-r18w64-224-test-merged-seed423.npz (NOT scored; score once with vega_score.py --final after the team freezes settings)
+seed 424: 2618 test pictures predicted in 104s -> cnn-r18w64-224-test-merged-seed424.npz (NOT scored; score once with vega_score.py --final after the team freezes settings)
+seed 425: 2618 test pictures predicted in 76s -> cnn-r18w64-224-test-merged-seed425.npz (NOT scored; score once with vega_score.py --final after the team freezes settings)
+seed 426: 2618 test pictures predicted in 75s -> cnn-r18w64-224-test-merged-seed426.npz (NOT scored; score once with vega_score.py --final after the team freezes settings)
+
+prediction files (sha256):
+8d012e4e26dc214d683cda9c96a0fba9d7e89a2a8c6671fb737644ffdc893db9  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-merged-seed422.npz
+760ecd78d9a269df0a25540eaf1fba4d3e59c7df466da8c385308108c6b2e1e5  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-merged-seed423.npz
+f8eb27a2f47496d69705c0e9e7c625a31d92eff3082522619dfd6e0b2f551d76  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-merged-seed424.npz
+04ca83baa27224ddc604fcfe153dba937f0c195494091e95cc555866feb7e93e  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-merged-seed425.npz
+14f3eab78cd1504aed7673427caae79aed883efe8a02a8baaf85ad01d6c61151  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-crop60-st15-mix-ls10-os-test-merged-seed426.npz
+0783b282362e14f7639f33f1e9459f60bf04ccabd3620ecc99c2daa799eb5516  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-test-merged-seed422.npz
+d6bd0ff5bb86322aa03ab855b3ac2e325d47db5f59cd46ed77c25a8bcf8aa47b  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-test-merged-seed423.npz
+0e22fad712e84a19537d2aadd6f52f2f018eb6d99cffb16ded6173bd4528280d  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-test-merged-seed424.npz
+8250294f28c9199f73b8c8b052f8e7021404e775105f598dd672853c09ea0bbd  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-test-merged-seed425.npz
+7d3f1016e263fb3d210f582dce05b200282247e687eae7c68d1e0e3d8590de19  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-street-test-merged-seed426.npz
+7f711d2356297ce24470913b79883404585dc4f3c397f95c167a1db1f1597a67  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-test-merged-seed422.npz
+2cd7fa2b2a828726b3e4127b7f014bbcd4df8056fb6de4a93425ea10147ab741  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-test-merged-seed423.npz
+ccd8230e304d5c3057ebcdb0dc546f02ca73779cce84ffb7afa09a23e66ffad5  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-test-merged-seed424.npz
+c22111b63e5d313c87cb7b066aed777e60fd47e4e06f715dd203087dc0e9568e  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-test-merged-seed425.npz
+5877fe0f0423a07d56e0804e4647822c44a5a02fa30d6a40109676d22fea3a47  /srv/ml/vega/runs/cnn/final/preds/cnn-r18w64-224-test-merged-seed426.npz
+
+CNN (ResNet-18, 224 px)            test       seed 422   top-5 32.6%  top-1 13.2%  MRR 0.232  per-label top-5 28.2% (thin 22.7%, rest 32.2%)  coverage 100.0%  family top-1 27.4%, in top 3 53.9%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px)            test       seed 423   top-5 33.2%  top-1 12.7%  MRR 0.230  per-label top-5 28.0% (thin 22.1%, rest 32.3%)  coverage 100.0%  family top-1 27.0%, in top 3 54.2%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px)            test       seed 424   top-5 32.2%  top-1 13.8%  MRR 0.236  per-label top-5 26.9% (thin 20.3%, rest 31.8%)  coverage 100.0%  family top-1 27.8%, in top 3 53.3%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px)            test       seed 425   top-5 33.0%  top-1 14.4%  MRR 0.240  per-label top-5 27.7% (thin 20.5%, rest 32.9%)  coverage 100.0%  family top-1 28.6%, in top 3 54.0%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px)            test       seed 426   top-5 32.2%  top-1 13.9%  MRR 0.235  per-label top-5 27.3% (thin 21.0%, rest 31.9%)  coverage 99.6%  family top-1 27.4%, in top 3 52.9%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px) + street photos test       seed 422   top-5 31.8%  top-1 13.8%  MRR 0.233  per-label top-5 26.3% (thin 20.6%, rest 30.6%)  coverage 99.8%  family top-1 27.5%, in top 3 52.9%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px) + street photos test       seed 423   top-5 32.5%  top-1 14.0%  MRR 0.235  per-label top-5 26.9% (thin 20.0%, rest 32.0%)  coverage 100.0%  family top-1 28.2%, in top 3 53.6%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px) + street photos test       seed 424   top-5 32.7%  top-1 14.8%  MRR 0.242  per-label top-5 27.2% (thin 21.4%, rest 31.5%)  coverage 100.0%  family top-1 27.8%, in top 3 53.7%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px) + street photos test       seed 425   top-5 32.8%  top-1 14.1%  MRR 0.237  per-label top-5 27.0% (thin 20.4%, rest 31.9%)  coverage 100.0%  family top-1 28.3%, in top 3 53.6%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px) + street photos test       seed 426   top-5 33.2%  top-1 13.4%  MRR 0.234  per-label top-5 27.4% (thin 19.4%, rest 33.3%)  coverage 99.8%  family top-1 27.8%, in top 3 53.9%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos test       seed 422   top-5 32.1%  top-1 13.6%  MRR 0.235  per-label top-5 31.1% (thin 29.0%, rest 32.6%)  coverage 100.0%  family top-1 27.9%, in top 3 53.7%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos test       seed 423   top-5 32.4%  top-1 12.9%  MRR 0.229  per-label top-5 31.4% (thin 29.9%, rest 32.5%)  coverage 100.0%  family top-1 28.0%, in top 3 53.1%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos test       seed 424   top-5 32.5%  top-1 13.3%  MRR 0.231  per-label top-5 31.4% (thin 29.1%, rest 33.1%)  coverage 100.0%  family top-1 28.2%, in top 3 54.1%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos test       seed 425   top-5 32.2%  top-1 13.4%  MRR 0.235  per-label top-5 31.3% (thin 29.6%, rest 32.6%)  coverage 100.0%  family top-1 28.4%, in top 3 54.2%  [2618 images, 503 labels]
+CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos test       seed 426   top-5 32.5%  top-1 13.0%  MRR 0.232  per-label top-5 31.6% (thin 30.8%, rest 32.2%)  coverage 100.0%  family top-1 27.3%, in top 3 54.3%  [2618 images, 503 labels]
+
+Label set: merged (503 labels). Percentages except MRR. Validation: models fitted on the training split. Test: fitted on train + validation, scored once. Split file sha256 19f1816c1a75. Image vectors: emb/qwen2beos-aesthetic-448. Family columns: the same predictions with each guessed label replaced by its style family (20 families, runs/family-v1); n/a = scored before 21 Nov and not re-scored.
+
+split       model                                                                                                                    owner               runs (seeds)                 top-5       top-1       MRR            per-label top-5  thin labels top-5  other labels top-5  label coverage  family top-1  family in top 3
+validation  NN (MLP, 1 hidden layer of 1024)                                                                                         Andrew Nguyen       5 (422, 423, 424, 425, 426)  88.3 ± 0.4  62.7 ± 0.5  0.741 ± 0.002  86.6 ± 0.5       85.1 ± 0.8         88.4 ± 0.3          100.0 ± 0.0     75.6 ± 0.5    94.1 ± 0.2     
+validation  NN (MLP, 1 hidden layer of 1024) + real outfit photos                                                                    Andrew Nguyen       5 (422, 423, 424, 425, 426)  87.9 ± 0.1  62.3 ± 0.6  0.736 ± 0.003  86.1 ± 0.1       84.5 ± 0.4         88.0 ± 0.3          99.9 ± 0.1      75.3 ± 0.4    93.9 ± 0.3     
+validation  Baseline: nearest centroid                                                                                               shared (baseline)   1 (no randomness)            82.0        53.5        0.660          82.6             83.5               81.6                99.8            69.6          91.5           
+validation  Hclustering(standardized 0.16)                                                                                           Si_mpl              5 (422, 423, 424, 425, 426)  44.4 ± 0.0  26.5 ± 0.0  0.348 ± 0.000  43.1 ± 0.0       40.6 ± 0.0         46.1 ± 0.0          80.3 ± 0.0      47.2 ± 0.0    69.4 ± 0.0     
+validation  Baseline: zero-shot text                                                                                                 shared (baseline)   1 (no randomness)            41.7        21.0        0.315          41.1             38.2               44.5                82.3            42.4          71.4           
+validation  Hclustering(standardized 0.25)                                                                                           Si_mpl              1 (426)                      39.0        26.4        0.326          41.5             43.4               39.3                76.5            45.9          61.5           
+validation  CNN (ResNet-18, 224 px) + street photos                                                                                  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  31.8 ± 0.8  11.8 ± 0.4  0.221 ± 0.004  26.7 ± 0.8       21.7 ± 1.3         32.6 ± 1.3          99.8 ± 0.2      26.6 ± 1.1    53.1 ± 1.0     
+validation  CNN (ResNet-18, 224 px)                                                                                                  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  30.9 ± 0.6  12.0 ± 0.3  0.220 ± 0.003  26.6 ± 0.3       22.5 ± 0.8         31.5 ± 1.2          99.8 ± 0.3      26.8 ± 1.0    52.9 ± 0.7     
+validation  CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  30.1 ± 0.9  11.9 ± 0.1  0.216 ± 0.002  29.0 ± 0.9       28.4 ± 0.9         29.8 ± 0.8          99.4 ± 0.2      27.0 ± 0.9    52.2 ± 0.9     
+validation  Baseline: popularity                                                                                                     shared (baseline)   1 (no randomness)            5.8         1.4         0.047          1.0              0.0                2.2                 1.0             8.1           22.9           
+test        NN (MLP, 1 hidden layer of 1024)                                                                                         Andrew Nguyen       5 (422, 423, 424, 425, 426)  87.9 ± 0.2  61.0 ± 0.1  0.726 ± 0.001  85.9 ± 0.3       85.3 ± 0.4         86.4 ± 0.3          100.0 ± 0.0     73.9 ± 0.2    93.1 ± 0.2     
+test        NN (MLP, 1 hidden layer of 1024) + real outfit photos                                                                    Andrew Nguyen       5 (422, 423, 424, 425, 426)  87.5 ± 0.2  61.2 ± 0.5  0.727 ± 0.003  85.5 ± 0.2       84.4 ± 0.5         86.3 ± 0.1          99.9 ± 0.1      73.7 ± 0.5    93.0 ± 0.2     
+test        Baseline: nearest centroid                                                                                               shared (baseline)   1 (no randomness)            79.7        50.5        0.635          81.3             84.4               79.1                100.0           67.6          89.1           
+test        Baseline: zero-shot text                                                                                                 shared (baseline)   1 (no randomness)            43.4        22.0        0.325          43.4             43.6               43.2                88.7            42.2          70.5           
+test        CNN (ResNet-18, 224 px)                                                                                                  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  32.7 ± 0.5  13.6 ± 0.6  0.235 ± 0.004  27.6 ± 0.5       21.3 ± 1.1         32.2 ± 0.4          99.9 ± 0.2      27.6 ± 0.6    53.7 ± 0.6     
+test        CNN (ResNet-18, 224 px) + street photos                                                                                  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  32.6 ± 0.5  14.0 ± 0.5  0.236 ± 0.003  27.0 ± 0.4       20.4 ± 0.7         31.8 ± 1.0          99.9 ± 0.1      27.9 ± 0.3    53.5 ± 0.4     
+test        CNN (ResNet-18, 224 px, random crop 0.6, stretch 0.15, mixup/CutMix, label smoothing 0.1, oversampling) + street photos  Giancarlo Guevarra  5 (422, 423, 424, 425, 426)  32.4 ± 0.2  13.3 ± 0.3  0.232 ± 0.002  31.3 ± 0.2       29.7 ± 0.7         32.6 ± 0.3          100.0 ± 0.0     28.0 ± 0.4    53.9 ± 0.5     
+test        Baseline: popularity                                                                                                     shared (baseline)   1 (no randomness)            6.0         1.5         0.048          1.0              0.0                1.7                 1.0             8.6           23.4           
+Finished 2026-11-22 08:24:56 UTC.

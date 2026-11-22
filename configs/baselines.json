@@ -1,0 +1,7 @@
+{
+ "what": "The three shared baselines (src/baselines/baselines.py). No settings and no randomness.",
+ "popularity": "labels ranked by their number of fit images",
+ "nearest_centroid": "cosine to the mean fit vector of each label",
+ "zero_shot_text": "cosine to the vector of each label's wiki introduction (emb/qwen2beos-aesthetic-text, field intro)",
+ "final_run": "src/baselines/baselines_final_run.sh, once on 22 Nov 2026 07:09 UTC"
+}

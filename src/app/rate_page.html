@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEGA: does the suggestion fit?</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1c1c1a;--mut:#666;--card:#fff;--line:#d9d8d2;--acc:#8a3b12;--sel:#fde9dc;--yes:#2f6b4f;--no:#8f2f2f}
+@media (prefers-color-scheme: dark){:root{--bg:#161614;--fg:#ecece6;--mut:#a3a39b;--card:#20201d;--line:#3a3a35;--acc:#f0a070;--sel:#3a2a20;--yes:#7fc7a0;--no:#e08a8a}}
+*{box-sizing:border-box} html,body{margin:0;height:100%} [hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+#app{height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1.35fr) minmax(0,1fr) auto;max-width:1100px;margin:0 auto;padding:8px 12px;gap:8px}
+#app.other{grid-template-rows:auto minmax(0,1fr)}
+#bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap} #where{font-weight:600;font-variant-numeric:tabular-nums;min-width:64px}
+#prog{flex:1;min-width:60px;height:6px;background:var(--line);border-radius:3px;overflow:hidden} #prog i{display:block;height:100%;background:var(--acc)}
+button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+button.main{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0}
+.card h2{margin:0;font-size:14px;font-weight:600;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .card h2 b{color:var(--fg);font-size:20px}
+.pics{display:grid;gap:8px;min-height:0;grid-template-rows:minmax(0,1fr)}
+#photos{grid-template-columns:repeat(4,minmax(0,1fr))} #examples{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pics div{min-height:0;min-width:0;border-radius:8px;overflow:hidden;position:relative;border:3px solid transparent}
+.pics img{width:100%;height:100%;object-fit:contain;display:block}
+.pics div.mark{border-color:var(--acc)}
+.pics div.mark::after{content:"closest match";position:absolute;left:0;bottom:0;background:var(--acc);color:var(--bg);font-size:11px;font-weight:600;padding:2px 7px;border-radius:0 6px 0 0}
+#foot{display:grid;gap:6px} #rule{color:var(--mut);font-size:13px;text-align:center}
+#answer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#answer button{padding:14px 6px;font-size:17px;font-weight:600;border-width:2px}
+#answer button small{display:block;font-weight:400;font-size:11px;color:var(--mut)}
+#answer button[data-v=f]{border-color:var(--yes);color:var(--yes)} #answer button[data-v=n]{border-color:var(--no);color:var(--no)}
+#answer button.sel{background:var(--sel);box-shadow:inset 0 0 0 2px currentColor}
+#page{overflow-y:auto;min-height:0;max-width:680px;margin:0 auto;width:100%} #page h1{font-size:26px;margin:14px 0 6px} #page p{margin:8px 0}
+#out{width:100%;font:12px/1.3 ui-monospace,monospace;border:1px solid var(--line);border-radius:6px;padding:6px;background:var(--card);color:var(--fg);margin:8px 0;word-break:break-all}
+#who{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+#chips{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0} #chips button{padding:3px 0;width:34px;font-size:12px}
+#chips .f{border-color:var(--yes);color:var(--yes)} #chips .n{border-color:var(--no);color:var(--no)} #chips .u{color:var(--mut)} #chips .none{border-style:dashed;color:var(--mut)}
+@media (max-width:600px){#app{grid-template-rows:auto minmax(0,2.1fr) minmax(0,1fr) auto} #photos{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))} .card h2 b{font-size:17px} #answer button{padding:11px 4px;font-size:15px} #rule{font-size:12px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar"><button id="prev">&larr; Back</button><span id="where"></span><div id="prog"><i></i></div><button id="next">Skip &rarr;</button><button id="finish">Finish</button></div>
+
+  <div id="person" class="card"><h2>Four photos one person picked</h2><div id="photos" class="pics"></div></div>
+  <div id="style" class="card"><h2>Suggested for them: <b id="name"></b></h2><div id="examples" class="pics"></div></div>
+  <div id="foot">
+    <div id="rule">It fits if the example pictures look like the four photos together, or clearly like the outlined photo.</div>
+    <div id="answer">
+      <button data-v="f">Fits<small>key 1</small></button>
+      <button data-v="n">Doesn't fit<small>key 2</small></button>
+      <button data-v="u">Can't tell<small>key 3</small></button>
+    </div>
+  </div>
+
+  <div id="page" hidden>
+    <div id="intro">
+      <h1>Does the suggestion fit?</h1>
+      <p>VEGA is a course project that reads a few photos and suggests fashion aesthetics. This page checks its suggestions with human eyes.</p>
+      <p>Each screen shows <b>four photos one person picked</b> and <b>one style suggested for them</b>, with three example pictures of that style. Click <b>Fits</b>, <b>Doesn't fit</b> or <b>Can't tell</b>. That is all.</p>
+      <p>Say it fits if the example pictures look like the four photos together, or clearly like the one outlined photo. Go with your first impression; no fashion knowledge is needed. Some of the suggestions are deliberately bad, so "doesn't fit" is often the right answer.</p>
+      <p><span id="count"></span> screens, a few seconds each. You can stop at any point: press Finish and what you did still counts.</p>
+      <p><button id="begin" class="main">Start</button></p>
+    </div>
+    <div id="end">
+      <h1>Thank you</h1>
+      <p id="summary"></p>
+      <p><label>Your name (optional) <input id="who" size="14"></label></p>
+      <p>Copy this line and send it to Andrew:</p>
+      <textarea id="out" readonly rows="3"></textarea>
+      <button id="copy" class="main">Copy my answers</button>
+      <p style="color:var(--mut);font-size:13px">Click a number to go back to that screen.</p>
+      <div id="chips"></div>
+    </div>
+  </div>
+</div>
+<script>
+const D = __DATA__, N = D.items.length, $ = id => document.getElementById(id);
+let ans = {}, i = 0, started = false, who = '';
+try { const s = JSON.parse(localStorage.getItem(D.key) || '{}'); ans = s.ans || {}; i = Math.min(s.i || 0, N); started = !!s.started; who = s.who || ''; } catch (e) {}
+function save() { try { localStorage.setItem(D.key, JSON.stringify({ans, i, started, who})); } catch (e) {} }
+const src = b => 'data:image/webp;base64,' + b;
+function line() { return 'VEGA ratings ' + D.key + ' | ' + (who.replace(/[|]/g, ' ').trim() || 'no name') + ' | ' + D.items.map(t => ans[t.n] || '-').join(''); }
+function go(k) { i = Math.max(0, Math.min(N, k)); save(); render(); }
+function choose(v) {
+  if (!started || i >= N) return;
+  const at = i; ans[D.items[at].n] = v; save(); render();
+  setTimeout(() => { if (i === at) go(at + 1); }, 200);
+}
+function render() {
+  const done = D.items.filter(t => ans[t.n]).length, end = i >= N, other = !started || end;
+  $('app').classList.toggle('other', other);
+  ['person', 'style', 'foot'].forEach(id => $(id).hidden = other);
+  $('page').hidden = !other; $('intro').hidden = started; $('end').hidden = !started || !end; $('bar').hidden = !started;
+  $('where').textContent = (end ? N : i + 1) + ' / ' + N; $('prog').firstChild.style.width = (100 * done / N) + '%';
+  $('count').textContent = N;
+  if (!started) return;
+  if (end) {
+    const c = v => D.items.filter(t => ans[t.n] === v).length;
+    $('summary').textContent = 'You rated ' + done + ' of ' + N + ': ' + c('f') + ' fit, ' + c('n') + ' do not, ' + c('u') + ' you could not tell.';
+    $('out').value = line();
+    $('chips').innerHTML = D.items.map((t, k) => '<button class="' + (ans[t.n] || 'none') + '" data-k="' + k + '">' + (k + 1) + '</button>').join('');
+    $('chips').querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.k));
+    return;
+  }
+  const t = D.items[i];
+  $('photos').innerHTML = D.sets[t.set].map((b, k) => '<div class="' + (k === t.photo ? 'mark' : '') + '"><img alt="photo ' + (k + 1) + '" src="' + src(b) + '"></div>').join('');
+  $('name').textContent = t.name;
+  $('examples').innerHTML = t.ex.map(b => '<div><img alt="" src="' + src(b) + '"></div>').join('');
+  document.querySelectorAll('#answer button').forEach(b => b.classList.toggle('sel', b.dataset.v === ans[t.n]));
+}
+document.querySelectorAll('#answer button').forEach(b => b.onclick = () => choose(b.dataset.v));
+$('prev').onclick = () => go(i - 1); $('next').onclick = () => go(i + 1); $('finish').onclick = () => go(N);
+$('begin').onclick = () => { started = true; save(); render(); };
+$('who').value = who; $('who').oninput = () => { who = $('who').value; save(); $('out').value = line(); };
+$('copy').onclick = () => { $('out').value = line(); $('out').select(); (navigator.clipboard ? navigator.clipboard.writeText($('out').value) : Promise.reject()).catch(() => document.execCommand('copy')); $('copy').textContent = 'Copied'; };
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || !started) return;
+  if (e.key === 'ArrowLeft') go(i - 1); if (e.key === 'ArrowRight') go(i + 1);
+  if (e.key === '1') choose('f'); if (e.key === '2') choose('n'); if (e.key === '3') choose('u');
+});
+render();
+</script>
+</body>
+</html>
