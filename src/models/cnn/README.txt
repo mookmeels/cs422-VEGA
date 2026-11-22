@@ -133,7 +133,8 @@ TRAINING, EVERY SETTING
     batch, epochs         128 pictures, 60 epochs             Gianni, decision 7
     augmentation          random left-right flip, shift up    Gianni (training only; scoring sees the
                           to 10%, zoom in or out up to 10%,   plain picture)
-                          gaps filled with the average colour
+                          gaps filled with the average colour (the plain and street CNNs; the adopted
+                                                              recipe replaces it, see TRAINING OPTIONS)
     precision             fp32 (full precision)               Gianni, decision 8: bf16 only if at least
                                                               1.3x as fast and its epoch-2 loss within
                                                               0.05 of fp32's at both sizes. Measured (2
@@ -227,6 +228,35 @@ STREET PHOTOS (a second version of the CNN; Gianni, 20 Nov 2026)
   Times per run on the PC (fp32, --no-miopen): validation about 2,955 s (49 to 50 min; about 197 training
     pictures a second, each step 128 wiki pictures + 128 street photos read from disk); final about 3,265 s
     (54 min). Roughly twice the plain CNN's time.
+
+TRAINING OPTIONS AND THE ADOPTED RECIPE (Gianni, 21 Nov 2026)
+
+  Four options, all off by default (off = exactly the plain and street CNNs above, checked bit for bit):
+    --crop-min 0.6 --stretch 0.15   a random crop keeping 60 to 100% of the picture, anywhere inside it, its
+                                    width-to-height ratio between 1/1.15 and 1.15 (replaces shift and zoom; the
+                                    PC's records of the adopted runs still say shift 0.1 and zoom 0.1, which were
+                                    not applied); street photos get the same crop
+    --mix mixup-cutmix              per wiki batch, mixup or CutMix at random (Zhang et al. 2018; Yun et al. 2019;
+                                    strengths 0.8 and 1.0 as in DeiT, Touvron et al. 2021); street photos unmixed
+    --smooth 0.1                    label smoothing (Szegedy et al. 2016): 10% of each label row spread evenly
+    --sample oversample             rare labels' pictures drawn more often (each time freshly distorted) instead
+                                    of weighted more in the loss; at balance 1 an epoch sees about half the
+                                    pictures, the common labels' pictures about a quarter as often as before
+  Tests (seed 422, plain CNN, top-5 / rare-label top-5; plain 30.6 / 23.0): crop and stretch 30.9 / 22.9; mixup
+  30.8 / 23.7 (its loss weights were mixed in a way that weakened the balancing; fixed after the test, see the
+  code scan); label smoothing 31.2 / 23.4 (seed 423: 31.2 / 24.6); oversampling 32.1 / 20.2. No single change
+  reached the 1-point mark written before the tests.
+  All four together on the street CNN, seeds 422 and 423: top-5 30.1 and 30.3 (street CNN 31.8 and 31.2),
+  per-label top-5 29.0 and 29.0 (26.7), rare labels 28.3 and 28.0 (about 22.7). The rule written before this
+  test (two-seed mean at least 32.5) failed; Gianni adopted the recipe anyway, 21 Nov about 15:20: "We want a
+  model that can identify things, not just the most common aesthetics." So the team's CNN gives up about 1.3
+  points of top-5 for about 5.5 points on the rare labels.
+  The adopted recipe:
+    python train_cnn.py --width 64 --size 224 --seed 422 423 424 425 426 --curve --no-miopen --precision fp32 \
+        --street runs/cnn/prepared/street --crop-min 0.6 --stretch 0.15 --mix mixup-cutmix --smooth 0.1 \
+        --sample oversample
+    final: the same options with --final --fit-only --prepared <final fit-only folder>, then predict_cnn.py
+  [AFTER RUNS: the five seeds' mean, the final runs' timings.]
 
 REPEATS, TIME, MEMORY
 

@@ -189,13 +189,22 @@ def main():
                  for k in range(3)]
         check(torch.allclose(same, xb, atol=1e-3) and all(c.shape == xb.shape and not torch.allclose(c, xb) for c in crops),
               "a crop keeping the whole picture changes nothing, and real crops and stretches change the pictures")
-        yb = torch.from_numpy(d["fit"]["y"][:16])
-        wb = torch.ones(16)
-        mx, my, mw = train_cnn.mix_batch(fitp.batch(torch.arange(16)), yb, wb, np.random.default_rng(0), torch.Generator().manual_seed(0))
-        mx2, my2, _ = train_cnn.mix_batch(fitp.batch(torch.arange(16)), yb, wb, np.random.default_rng(1), torch.Generator().manual_seed(1))
-        check(torch.allclose(my.sum(1), torch.ones(16, dtype=my.dtype)) and torch.allclose(my2.sum(1), torch.ones(16, dtype=my2.dtype))
-              and torch.allclose(mw, wb) and mx.shape == (16, 3, 64, 64),
-              "mixup and CutMix keep every mixed picture's labels summing to one")
+        yb = torch.from_numpy(d["fit"]["y"][:16]).double()
+        wb = torch.arange(1, 17, dtype=torch.float64)                 # uneven weights, as in a weighted run
+        branch_seeds = {"mixup": next(k for k in range(100) if np.random.default_rng(k).random() < 0.5),
+                        "CutMix": next(k for k in range(100) if np.random.default_rng(k).random() >= 0.5)}
+        mixed_ok = []
+        for k in branch_seeds.values():
+            mx, my, mw = train_cnn.mix_batch(fitp.batch(torch.arange(16)), yb, wb, np.random.default_rng(k),
+                                             torch.Generator().manual_seed(k))
+            ones = train_cnn.mix_batch(fitp.batch(torch.arange(16)), yb, torch.ones(16, dtype=torch.float64),
+                                       np.random.default_rng(k), torch.Generator().manual_seed(k))
+            mixed_ok.append(torch.allclose(my.sum(1), torch.ones(16, dtype=my.dtype))
+                            # each picture's label weight is kept in total: a batch-wide sum is unchanged by mixing
+                            and torch.allclose((mw[:, None] * my).sum(0), (wb[:, None] * yb).sum(0))
+                            and torch.allclose(ones[2], torch.ones(16, dtype=torch.float64)) and mx.shape == (16, 3, 64, 64))
+        check(all(mixed_ok), "mixup and CutMix (both branches) keep every mixed picture's labels summing to one, "
+                             "and keep each picture's own loss weight on its own labels")
 
         # 6. the command line, validation and final
         cmd = [HERE / "train_cnn.py", "--width", "8", "--size", "64", "--epochs", "12", "--batch", "16", "--lr", "0.003",
@@ -223,7 +232,7 @@ def main():
                           "--sample", "oversample", "--out", root / "runs/cnn/options"], env)
         orow = [json.loads(line) for line in open(root / "runs/cnn/options/results.jsonl", encoding="utf-8")] if opts.returncode == 0 else []
         check(opts.returncode == 0 and len(orow) == 2 and all(r["top1"] > 0.6 for r in orow)
-              and all("stronger distortions" in r["model"] and "oversampling" in r["model"] for r in orow)
+              and all("random crop 0.6" in r["model"] and "stretch 0.15" in r["model"] and "oversampling" in r["model"] for r in orow)
               and (root / "runs/cnn/options/preds/cnn-r18w8-64-crop60-st15-mix-ls10-os-validation-merged-seed1.npz").exists(),
               "all four test options together still learn the made-up labels, under their own name and file tag"
               + ("" if opts.returncode == 0 else "\n" + opts.stderr[-1500:]))

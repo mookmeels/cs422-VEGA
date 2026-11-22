@@ -299,8 +299,11 @@ MIXUP_ALPHA, CUTMIX_ALPHA = 0.8, 1.0                              # DeiT's setti
 def mix_batch(x, y, w, rng, perm_gen):
     """Mixup (Zhang et al. 2018) or CutMix (Yun et al. 2019), one of the two at random for the whole batch.
 
-    Pictures, label rows and loss weights are all mixed by the same share, so a picture's soft labels (a picture
-    in two galleries is half each) mix naturally. Returns the mixed batch, labels and weights."""
+    Pictures and label rows are mixed by the same share, and each picture's label term keeps its OWN loss weight:
+    the loss is lam * w_i * CE(y_i) + (1 - lam) * w_j * CE(y_j) (scan, 21 Nov 2026; mixing the weights themselves
+    pulled rare labels' weights toward the average). Returned as one label row (the weighted mix, normalised) and
+    one weight (its total), so the usual weighted loss computes exactly that. With all weights 1 (oversampling)
+    this is the plain mix. Returns the mixed batch, labels and weights."""
     n = x.shape[0]
     perm = torch.randperm(n, generator=perm_gen).to(x.device)
     if rng.random() < 0.5:                                        # mixup: blend whole pictures
@@ -315,7 +318,11 @@ def mix_batch(x, y, w, rng, perm_gen):
         x = x.clone()
         x[:, :, y0:y1, x0:x1] = x[perm][:, :, y0:y1, x0:x1]
         lam = 1 - (y1 - y0) * (x1 - x0) / (H * W)                 # the share of the picture actually kept
-    return x, lam * y + (1 - lam) * y[perm], lam * w + (1 - lam) * w[perm]
+    if bool((w == 1).all()):                                      # unweighted (oversampling): the plain mix, exactly
+        return x, lam * y + (1 - lam) * y[perm], w
+    yw = lam * w[:, None] * y + (1 - lam) * w[perm][:, None] * y[perm]   # each label row weighted by its picture
+    total = yw.sum(1)
+    return x, yw / total.clamp(min=1e-12)[:, None], total
 
 
 def image_weights(fit_y, balance):
@@ -341,8 +348,10 @@ def pick_device(want):
 def model_name(s):
     w = {64: "", 32: ", half width"}.get(s["width"], f", width {s['width']}")
     extra = []
-    if s.get("crop_min") or s.get("stretch"):
-        extra.append("stronger distortions")
+    if s.get("crop_min"):
+        extra.append(f"random crop {s['crop_min']:g}")
+    if s.get("stretch"):
+        extra.append(f"stretch {s['stretch']:g}")
     if s.get("mix", "none") != "none":
         extra.append("mixup/CutMix")
     if s.get("smooth"):
@@ -537,9 +546,22 @@ def main():
     if a.street_weight < 0 or a.street_batch < 1:
         raise SystemExit("--street-weight must be 0 or more and --street-batch at least 1")
     s = {k: getattr(a, k) for k in SETTINGS}
-    if not 0 <= a.crop_min < 1 or a.stretch < 0 or not 0 <= a.smooth < 1:
+    if not all(math.isfinite(v) for v in (a.crop_min, a.stretch, a.smooth)) \
+            or not 0 <= a.crop_min < 1 or a.stretch < 0 or not 0 <= a.smooth < 1:
         raise SystemExit("--crop-min and --smooth must be from 0 to below 1, and --stretch 0 or more")
+    if any(abs(100 * v - round(100 * v)) > 1e-6 or 0 < v < 0.01 for v in (a.crop_min, a.stretch, a.smooth)):
+        raise SystemExit("--crop-min, --stretch and --smooth go in steps of 0.01 (their file tags use the value x 100)")
+    if a.crop_min and a.crop_min * (1 + a.stretch) > 1:
+        raise SystemExit(f"--crop-min {a.crop_min:g} with --stretch {a.stretch:g} cannot be kept: a stretched crop "
+                         f"would have to leave the picture; keep --crop-min at most {1 / (1 + a.stretch):.2f}")
+    if a.sample == "oversample" and a.balance == 0:
+        raise SystemExit("--sample oversample with --balance 0 draws every picture alike, with replacement; "
+                         "use the default --sample weights instead")
     s.update({k: getattr(a, k) for k, off in EXTRAS.items() if getattr(a, k) != off})   # recorded only when used
+    if a.crop_min:                                               # the crop replaces shift and zoom: record them as off
+        if (a.shift, a.zoom) != (SETTINGS["shift"], SETTINGS["zoom"]):
+            print("note: --crop-min replaces --shift and --zoom; the values given are not used", flush=True)
+        s.update(shift=0.0, zoom=0.0)
     if not a.miopen:
         torch.backends.cudnn.enabled = False                     # before any work on the graphics card
     if a.threads:
