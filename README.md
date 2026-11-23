@@ -105,7 +105,7 @@ The logs of these four runs, with the sha256 of the code and of each prediction 
 
 | Result | Script | Saved output |
 |---|---|---|
-| NN error analysis | `src/models/nn/analyse_errors.py` | on ml-db, `runs/nn/errors-real-photos/` |
+| NN error analysis (final network, validation) | `src/models/nn/analyse_errors.py` | `results/nn-errors-final/` |
 | Real outfit photos in training | `src/experiments/real_photos_nn.py` | `results/real-photos.md` |
 | Encoders compared (Qwen, CLIP ViT-B/32, CLIP ViT-L/14) | `src/experiments/clip_compare.py` | `results/encoders-wiki.md`, `results/encoders-outfit-photos.md` |
 | The 20 style families | `src/experiments/family_v1.py`, `family_v1_freeze.py` | `results/family-table.csv`, `results/family-table-frozen.md` |
@@ -113,8 +113,12 @@ The logs of these four runs, with the sha256 of the code and of each prediction 
 | The three input settings for every model | `src/experiments/context_all_models.py` | `results/context-all-models.md` |
 | Fairness checks | `src/experiments/fairness_spread.py`, `fairness_head.py` | `results/fairness-spread.md`, `results/fairness-head.md` |
 | The demo page and the rating page | `src/app/vega_app.py`, `rate_build.py`, `rate_score.py` | `src/app/README.md` |
+| Human ratings, page 1 (do suggestions fit) | `src/app/rate_build.py`, `rate_score.py` | `results/ratings-page-1.md`, `results/ratings-page-1-answers.txt` |
+| Human ratings, page 2 (precision@5) | `src/experiments/rate5_build.py`, `rate5_score.py` | `results/ratings-page-2.md`, `results/ratings-page-2-answers.txt` |
 
 Scripts that need a GPU say so at the top; they ran on the PC that made the vectors.
+
+Rescoring the rating answers needs each page's key file. The keys name the dataset posters whose photos are shown, so they stay on the team server and out of this repository.
 
 ## Course submission notes
 

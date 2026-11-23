@@ -1,0 +1,834 @@
+true_label,first_guess,images_per_seed,validation_images_of_true_label,training_images_of_true_label,training_images_of_guess,wiki_link
+Kawaii,Babycore,2.2,12,75,18,family / sub-style
+Nymphet,Cherry Emoji Twitter,2.0,3,21,14,related
+UrBling,Post-Grunge Maximalism,2.0,5,37,28,related
+Cinnamon Girl,Vanilla Girl,2.0,3,19,11,related
+Rococo,Spanish Golden Age,2.0,16,115,28,related
+Dunhuang Feng,Shenxian-fu,2.0,3,19,13,no wiki link
+Edwardian,Victorian,1.8,3,19,48,related
+Dark Cabaret,Burlesque,1.8,2,11,7,related
+Visual Kei,Hair Metal,1.8,8,81,48,related
+Mafia Aesthetic,Hellenic,1.6,4,25,19,related
+Rococo,Victorian,1.6,16,115,48,no wiki link
+Nu-Metal,Corporate Grunge,1.4,4,31,81,related
+Paty de SP,Milipili,1.4,4,30,24,related
+Victorian,Rococo,1.3,8,48,115,no wiki link
+Soft Grunge,Sadgirl,1.2,12,84,23,family / sub-style
+Goth,Horror Punk,1.2,6,45,11,family / sub-style
+Victorian,Royalcore,1.2,8,48,44,no wiki link
+Mermaidcore,Ethereal,1.2,3,18,39,family / sub-style
+Bubblegum Bitch,McBling,1.2,6,39,41,family / sub-style
+Coquette,Morute,1.2,15,103,30,family / sub-style
+Soft Grunge,Hipster,1.2,12,84,36,no wiki link
+Dreamy Indie Girlhood,Cottagecore,1.2,3,19,53,no wiki link
+Candycore,Kawaii,1.2,3,19,75,related
+Space Age,Raygun Gothic,1.0,2,15,18,related
+Indie Kid,Candycore,1.0,2,15,19,no wiki link
+Danish Pastel,Kawaii,1.0,4,22,75,related
+2010s Summer Nostalgia,Tropical,1.0,3,23,33,no wiki link
+Delicate Sweet,Waif,1.0,4,25,66,family / sub-style
+Vacation Dadcore,Cleancore,1.0,5,32,77,related
+Larme Kei,Mote Kei,1.0,2,15,10,related
+Raygun Gothic,Retrofuturism,1.0,2,18,14,related
+Spanish Golden Age,Neoclassicism,1.0,4,28,16,no wiki link
+Metalhead,Biker,1.0,2,11,28,related
+Clowncore,Nordic Twee,1.0,19,141,26,no wiki link
+Olderbrothercore,Poster Gal,1.0,5,31,24,related
+Corporate Grunge,Surf Crush,1.0,12,81,54,no wiki link
+Weimar Cabaret,Dark Cabaret,1.0,2,11,11,related
+Qin and Han Dynasties,Tang Dynasty,1.0,3,21,22,no wiki link
+Nautical,Tropical,1.0,2,17,33,related
+Coquette,Mochette,1.0,15,103,34,family / sub-style
+Witchcore,Vampire,1.0,4,30,14,family / sub-style
+Tropical,Ethno-Chic,1.0,4,33,11,no wiki link
+Slavic Doll,Antwerp Six,1.0,2,11,11,no wiki link
+McBling,Candy Sleaze,1.0,6,41,25,no wiki link
+Kawaii,Decora,1.0,12,75,9,family / sub-style
+Frazzled English Woman,Sloanie,1.0,2,14,12,no wiki link
+Adventurecore,Granola,1.0,5,37,13,related
+Renaissance Revival,Knightcore,1.0,8,60,21,family / sub-style
+Galaxy Print,Jejemon,1.0,2,16,23,no wiki link
+Soft Girl,Kawaii,1.0,2,17,75,related
+Indie,Madchester,1.0,4,24,11,related
+Cyber Angel,Fallen Angel,1.0,3,21,17,no wiki link
+Steampunk,Dieselpunk,1.0,3,21,16,related
+Granola,Boho-Chic,1.0,2,13,9,related
+Movida Madrileña,Goth,1.0,2,14,45,family / sub-style
+Heroin Chic,Hedi Boy,1.0,1,9,11,no wiki link
+Rave,Acid House,1.0,5,32,11,family / sub-style
+Cybersigilism,Neoperreo,1.0,2,14,14,no wiki link
+Keller Synth,Neofolk,1.0,2,14,11,no wiki link
+2000s Tuscan Mom,Boujee,1.0,1,7,35,related
+Hyperpop,Goth Punk,1.0,8,29,12,no wiki link
+Forestpunk,Rainforest Chic,1.0,2,11,24,no wiki link
+Wizard,Starrflesh,1.0,3,18,19,no wiki link
+Cleancore,Soft Grunge,1.0,11,77,84,no wiki link
+Garçonne,Art Deco,1.0,1,9,53,related
+Y2K,Olderbrothercore,1.0,14,102,31,related
+Mall Ninja,Post-Grunge Maximalism,1.0,2,12,28,no wiki link
+Country,Trailer Park Princess,1.0,1,8,52,no wiki link
+Werewolf,Ghostcore,1.0,4,29,18,no wiki link
+Rococo,Starrflesh,1.0,16,115,19,no wiki link
+Angelcore,Fallen Angel,1.0,4,24,17,family / sub-style
+Hyperpop,Neo-Y2K,1.0,8,29,21,no wiki link
+Fantasy,Naturecore,1.0,2,12,18,no wiki link
+Danish Pastel,Soft Girl,1.0,4,22,17,related
+Ghostcore,Starrflesh,1.0,2,18,19,no wiki link
+Soft Grunge,Café Aesthetic,1.0,12,84,12,no wiki link
+Superflat Pop,Neo-Y2K,1.0,13,91,21,no wiki link
+Hyperpop,Superflat Pop,1.0,8,29,91,no wiki link
+Club Kids,New Romantic,1.0,2,17,14,related
+Earthy Black Girl,Afrofuturism,1.0,2,16,10,related
+Femme Fatale,Sadgirl,1.0,3,11,23,no wiki link
+Yuppie,Power Dressing,1.0,2,11,9,related
+Yabi,Candy Sleaze,1.0,2,11,25,no wiki link
+Scene,Tweencore,1.0,8,55,25,no wiki link
+Tudor,Dark Academia,1.0,2,15,55,no wiki link
+Nyashka,Nu-Goth,1.0,3,21,19,no wiki link
+Soft Grunge,Aliencore,1.0,12,84,17,no wiki link
+Junglist,Skater,1.0,2,12,19,no wiki link
+Dark Fantasy,Ghostcore,1.0,2,16,18,no wiki link
+LOLcore,Space Age,1.0,2,11,15,no wiki link
+Key West Kitten,Beach Day,1.0,4,26,10,no wiki link
+Femboy,Poppare,1.0,2,14,14,no wiki link
+Neofolk,Keller Synth,1.0,2,11,14,no wiki link
+VSCO Girl,Tropical,1.0,2,14,33,no wiki link
+Cyberpunk,Techwear,1.0,3,24,18,related
+Yé-yé,Flower Power,1.0,4,25,28,related
+Knightcore,Romanticism,1.0,3,21,23,no wiki link
+Rivethead,Gothabilly,1.0,2,14,38,no wiki link
+Millennium Disco,Gen X Soft Club,1.0,5,33,37,related
+Glitchcore,Magical Girl,1.0,2,14,23,no wiki link
+Sloanie,2000s Preppy,1.0,2,12,13,no wiki link
+Quinqui,Indie,1.0,1,9,24,no wiki link
+Tang Dynasty,Song Dynasty,1.0,3,22,49,related
+Rococo,Neoclassicism,1.0,16,115,16,related
+Larme Kei,Mori Kei,1.0,2,15,11,no wiki link
+Buckle Bunny,Trailer Park Princess,1.0,3,11,52,family / sub-style
+McBling,Millennium Orientalism,1.0,6,41,25,no wiki link
+Hipster,Urbancore,1.0,5,36,21,no wiki link
+Sadboi,Sadgirl,1.0,3,21,23,related
+Bubblegum Dance,Millennium Orientalism,1.0,3,19,25,no wiki link
+Jirai Kei,Olderbrothercore,1.0,3,22,31,no wiki link
+50s Suburbia,Twee,1.0,2,16,19,no wiki link
+Buchón,Bodikon,1.0,2,14,61,no wiki link
+Christian Girl Autumn,Plazacore,1.0,3,20,9,no wiki link
+Autumn Aesthetic,Cozycore,1.0,4,26,19,related
+Visual Kei,Horror,1.0,8,81,13,no wiki link
+Space Age,Trailer Park Princess,1.0,2,15,52,no wiki link
+Avant Apocalypse,Yabi,1.0,1,10,11,no wiki link
+Draincore,Hyperpop,1.0,3,23,29,no wiki link
+Haunted Mound,Cryptidcore,1.0,2,11,26,no wiki link
+2010s Bright Kawaii,Kawaii,1.0,2,9,75,family / sub-style
+Darkest Academia,Light Academia,1.0,2,12,17,related
+French Girly,Y3K,1.0,2,10,39,no wiki link
+Blokette,Tumbette,1.0,2,10,9,family / sub-style
+Recession Pop,Space Age,1.0,2,16,15,no wiki link
+Yuppie,Boujee,1.0,2,11,35,related
+Morute,Trailer Park Princess,1.0,6,30,52,family / sub-style
+Hellenic,Romanticism,1.0,4,19,23,no wiki link
+Funk,Pacific Punk Wave,1.0,2,11,35,no wiki link
+Lulicore,Plazacore,1.0,2,11,9,no wiki link
+Christmas,Winter Aesthetic,1.0,15,103,11,related
+Guido,Fjortis,1.0,2,11,14,family / sub-style
+Bootleg Aesthetic,Blokette,1.0,3,23,10,no wiki link
+Dark Academia,"Bon Chic, Bon Genre",1.0,8,55,9,no wiki link
+Bro Hoe,Rocker Grrl Diva,1.0,2,11,9,no wiki link
+Café Aesthetic,Maid,1.0,2,12,31,no wiki link
+Genderless Kei,Decora,1.0,2,11,9,no wiki link
+UK Garage,Bling Era,1.0,2,11,28,no wiki link
+Northern Soul,Sharpies,1.0,2,11,11,no wiki link
+Trailer Park Princess,Morute,1.0,8,52,30,family / sub-style
+Romantic Italian,Rococo,1.0,2,12,115,no wiki link
+Avantropop,Flat Design,1.0,3,23,32,related
+Olderbrothercore,2010s Gamer Kid,1.0,5,31,12,related
+Yallternative,Hippie Goth,1.0,2,17,22,no wiki link
+Jojifuku,Amekaji,1.0,3,19,7,no wiki link
+Memphis Lite,Pacific Punk Wave,1.0,5,34,35,related
+Surf Crush,Tropicalcore,1.0,8,54,14,related
+Living Doll,Waif,1.0,2,11,66,no wiki link
+Dollette,2014 Girly,1.0,3,19,18,family / sub-style
+Neko,Kawaii Gamer,1.0,3,19,19,no wiki link
+Cleancore,Cherry Emoji Twitter,1.0,11,77,14,no wiki link
+Bootleg Aesthetic,Choco Girl,1.0,3,23,9,no wiki link
+Gothic Lolita,Dolly Kei,1.0,1,8,7,no wiki link
+Waif,Thought Daughter,1.0,10,66,11,related
+Marshmallow Girl,Hime Gyaru,1.0,1,7,13,no wiki link
+Romantic Italian,Hellenic,1.0,2,12,19,related
+Jejemon,Flogger,1.0,3,23,9,related
+Renaissance Revival,Tropicabana,1.0,8,60,37,family / sub-style
+Millennium Disco,McBling,1.0,5,33,41,family / sub-style
+Clowncore,Superflat Pop,1.0,19,141,91,no wiki link
+Y3K,Stargirl,1.0,6,39,8,no wiki link
+Hyperpop,Stargirl,1.0,8,29,8,no wiki link
+Hot Rod,Vintage Americana,1.0,1,9,14,related
+Pink Parisian,Pink Princess,1.0,2,14,26,related
+Boujee,Bubblegum Bitch,1.0,5,35,39,no wiki link
+Forestpunk,Hipster,1.0,2,11,36,no wiki link
+Shenxian-fu,Dunhuang Feng,1.0,2,13,19,no wiki link
+Neo-Y2K,Bubblegum Bling,1.0,3,21,16,family / sub-style
+Coquette,Bubblegum Bling,1.0,15,103,16,no wiki link
+Mandrake,Cumbiero,1.0,1,9,9,no wiki link
+Renaissance Revival,Fairycore,1.0,8,60,18,family / sub-style
+Nerdcore,Bootleg Aesthetic,1.0,2,10,23,no wiki link
+Wishcore,Cacareco Girl,1.0,4,25,11,no wiki link
+Tropical,Key West Kitten,1.0,4,33,26,family / sub-style
+Northerness,Christmas,1.0,2,18,103,no wiki link
+Cleancore,Babycore,1.0,11,77,18,related
+Trxsh,Dark Fantasy,1.0,3,20,16,no wiki link
+UK Garage,Groovival,1.0,2,11,41,no wiki link
+Fjortis,Après-ski,1.0,2,14,9,no wiki link
+Milipili,McBling,1.0,4,24,41,related
+Dark Academia,Plazacore,1.0,8,55,9,no wiki link
+Kawaii,Fairy Kei,1.0,12,75,49,family / sub-style
+Buchón,Bro Hoe,1.0,2,14,11,no wiki link
+Pink Princess,Coquette,1.0,4,26,103,no wiki link
+Winter Aesthetic,Chic Modernist,1.0,2,11,17,no wiki link
+Dadcore,Poverty Chic,1.0,6,39,12,no wiki link
+Berlin Techno Fashion,Antwerp Six,1.0,2,10,11,no wiki link
+Trxsh,Horror,1.0,3,20,13,no wiki link
+Fairycore,Ethereal,1.0,2,18,39,family / sub-style
+Dollcore,Girly Kei,1.0,2,10,33,related
+Dopamine Dressing,Art Hoe,1.0,1,9,24,no wiki link
+Goth,Afropunk,1.0,6,45,7,family / sub-style
+Royalcore,Dark Academia,1.0,7,44,55,related
+Vintage Americana,Coquette,1.0,4,14,103,family / sub-style
+Dark Academia,Art Academia,1.0,8,55,19,related
+Cabincore,Forestpunk,1.0,2,11,11,related
+Acid Pixie,Spacecore,1.0,2,10,16,no wiki link
+Coquette,McBling,1.0,15,103,41,no wiki link
+Plaguecore,Darkest Academia,1.0,1,7,12,related
+Nordic Twee,Superflat Pop,1.0,4,26,91,related
+Cyberprep,Lunarpunk,1.0,2,13,15,no wiki link
+Atompunk,Cyberprep,1.0,1,9,13,no wiki link
+Bakala,Quinqui,1.0,3,23,9,related
+Babycore,Cutecore,1.0,3,18,28,family / sub-style
+Neofolk,Dungeon Synth,1.0,2,11,11,related
+Autumn Aesthetic,Christian Girl Autumn,1.0,4,26,20,related
+Barbiecore,Granola,1.0,3,19,13,no wiki link
+Wonderland,Rococo,1.0,4,24,115,no wiki link
+Bubblegum Dance,Y2K,1.0,3,19,102,family / sub-style
+Hadeko,Clowncore,1.0,1,8,141,related
+Nymphet,Dollette,1.0,3,21,19,family / sub-style
+Cyber Grunge,Hyperpop,1.0,1,10,29,no wiki link
+Tropical,Beach Day,1.0,4,33,10,related
+Swag,Bling Era,1.0,1,9,28,family / sub-style
+Dark Nautical,Coastal Grandmother,1.0,2,11,14,family / sub-style
+Cyberbabes,Japanese Horror Game Protagonist,1.0,2,12,14,no wiki link
+Brat Summer,Slimepunk,1.0,2,13,12,no wiki link
+Soft Grunge,Qianxi Feng,1.0,12,84,16,no wiki link
+Morute,Mochette,1.0,6,30,34,family / sub-style
+Grunge,Biker,1.0,5,34,28,related
+Yallternative,Strega,1.0,2,17,15,no wiki link
+Wartime Austerity,Dolly Girl,1.0,2,14,9,no wiki link
+Britpop,Indie,1.0,2,14,24,related
+Corporate Grunge,Y2K,1.0,12,81,102,related
+Blokette,Coquette,1.0,2,10,103,family / sub-style
+Pink Princess,Cleancore,1.0,4,26,77,no wiki link
+Skinhead,Feralcore,1.0,2,10,10,no wiki link
+Guochao,Chinese New Year,1.0,2,16,23,related
+Surf Crush,Tropical,1.0,8,54,33,related
+Fairy Grunge,Gloomcore,1.0,3,19,33,related
+Goblincore,Cottagecore,1.0,2,14,53,related
+Magical Girl,Seapunk,1.0,3,23,17,no wiki link
+Crowcore,Whimsy Twee,1.0,3,18,25,related
+Kawaii,Bubblegum Coquette,1.0,12,75,24,related
+Gloomcore,Darkest Academia,1.0,7,33,12,no wiki link
+Korean Cozy Beige,Café Aesthetic,1.0,1,7,12,related
+Key West Kitten,Soft Girl,1.0,4,26,17,no wiki link
+LOLcore,Groovival,1.0,2,11,41,no wiki link
+Welwitschia Goth,Mallgoth,1.0,5,32,12,related
+Boujee,Barbiecore,1.0,5,35,19,no wiki link
+Yami Kawaii,Medicalcore,1.0,3,18,10,related
+Oi! Skinhead,Skinhead,1.0,1,9,10,family / sub-style
+Preacher's Daughter,Granola,1.0,2,17,13,no wiki link
+Rocker Grrl Diva,Groovival,1.0,1,9,41,no wiki link
+Britishcore,Twilightcore,1.0,2,11,24,no wiki link
+Cyber Ghetto,Neo-Y2K,1.0,3,23,21,no wiki link
+Art Hoe,Art Academia,1.0,3,24,19,related
+Delicate Sweet,Babycore,1.0,4,25,18,related
+Brazilcore (fashion trend),Blokette,1.0,1,9,10,no wiki link
+Strega,Gothabilly,1.0,2,15,38,no wiki link
+Soft Boy,Bloomcore,1.0,2,11,28,no wiki link
+Milipili,Brat Summer,1.0,4,24,13,related
+Witchcore,Green Academia,1.0,4,30,15,no wiki link
+Boujee,Regencycore,1.0,5,35,12,no wiki link
+Performative Male,Metrosexual,1.0,1,9,9,no wiki link
+Horror,Haunted Mound,1.0,2,13,11,family / sub-style
+Key West Kitten,Tropical,0.9,4,26,33,family / sub-style
+Gen X Soft Club,Corporate Grunge,0.9,6,37,81,related
+Dadcore,Earthy Black Girl,0.8,6,39,16,no wiki link
+Recession Pop,Y3K,0.8,2,16,39,no wiki link
+Dark Fantasy,Darkest Academia,0.8,2,16,12,family / sub-style
+Tweencore,Cutecore,0.8,4,25,28,no wiki link
+Hellenic,Art Academia,0.8,4,19,19,no wiki link
+Fairy Kei,Tweencore,0.8,7,49,25,no wiki link
+Antwerp Six,Metrosexual,0.8,2,11,9,no wiki link
+Wizard,Dark Academia,0.8,3,18,55,related
+Rockstar GF,Mafia Aesthetic,0.8,2,10,25,no wiki link
+Superflat Pop,Shibuya Punk,0.8,13,91,36,related
+Cottagecore,Wartime Austerity,0.8,8,53,14,no wiki link
+Power Dressing,Bodikon,0.8,1,9,61,no wiki link
+Shuimo Feng,Guochao,0.8,2,16,16,no wiki link
+Ethereal,Romantic Academia,0.8,6,39,18,no wiki link
+Craftcore,Clowncore,0.8,3,19,141,no wiki link
+Uchuu Kei,Fairy Kei,0.8,3,22,49,family / sub-style
+Pastel Goth,Gyaru,0.8,2,15,19,no wiki link
+Emo,Gurokawa,0.8,4,23,18,no wiki link
+Preacher's Daughter,Grandmacore,0.8,2,17,9,no wiki link
+Tecktonik,Post-Grunge Maximalism,0.8,2,12,28,no wiki link
+Soviet Nostalgia,Dark Academia,0.8,1,9,55,no wiki link
+Gutter Punk,Afropunk,0.8,2,13,7,family / sub-style
+Rainforest Chic,Safari Chic,0.8,4,24,12,related
+Punk,Gutter Punk,0.8,3,19,13,family / sub-style
+Naturecore,Gloomcore,0.8,2,18,33,no wiki link
+Sweet Lolita,Fairy Kei,0.8,1,8,49,related
+Wishcore,Pianocore,0.8,4,25,23,related
+Indie,Industrial,0.8,4,24,43,no wiki link
+Whimsigothic,Darkest Academia,0.8,4,25,12,no wiki link
+Disco,Funk,0.8,2,13,11,related
+Sadgirl,Soft Grunge,0.8,3,23,84,family / sub-style
+Peach Girl,Cinnamon Girl,0.8,2,11,19,no wiki link
+Millennium Disco,Disco,0.8,5,33,13,family / sub-style
+Werewolf,Hippie Goth,0.8,4,29,22,no wiki link
+Cottagecore,Dollette,0.8,8,53,19,related
+Dungeon Synth,Goth,0.8,2,11,45,no wiki link
+Cryptidcore,B-Movie Horror,0.8,4,26,11,no wiki link
+Cybergoth,Goth Punk,0.8,2,17,12,no wiki link
+Vacation Dadcore,Tropicabana,0.8,5,32,37,no wiki link
+Dark Academia,Frazzled English Woman,0.8,8,55,14,no wiki link
+French Girl,Art Academia,0.8,2,17,19,no wiki link
+Superflat Pop,50s Suburbia,0.8,13,91,16,no wiki link
+Balletcore,Japanese Horror Game Protagonist,0.8,1,13,14,family / sub-style
+Cacareco Girl,Sanriocore,0.8,2,11,17,no wiki link
+Waif,McBling,0.8,10,66,41,no wiki link
+Werewolf,Northerness,0.8,4,29,18,no wiki link
+Playground Prep,Tropicabana,0.8,1,7,37,no wiki link
+Whimsicraft,Groovival,0.8,2,18,41,no wiki link
+Flapper,Wartime Austerity,0.8,2,12,14,no wiki link
+Kawaii,Soft Girl,0.8,12,75,17,related
+Techwear,Yabi,0.8,3,18,11,no wiki link
+Biker,E-Boy,0.8,4,28,13,no wiki link
+McBling,Bubblegum Bitch,0.8,6,41,39,family / sub-style
+Beach Day,Seapunk,0.8,2,10,17,no wiki link
+PMC Ryodan,Soft Grunge,0.8,1,7,84,no wiki link
+Whimsicraft,Rave,0.8,2,18,32,no wiki link
+Horror Punk,Metalhead,0.8,2,11,11,no wiki link
+Pastel Grunge,Cybertwee,0.8,1,7,14,no wiki link
+Tropicabana,Groovival,0.8,5,37,41,no wiki link
+Junkpunk,Whimsicraft,0.8,2,14,18,no wiki link
+Morute,Junkpunk,0.8,6,30,14,no wiki link
+Kinderwhore,Mote Kei,0.8,2,11,10,no wiki link
+Draincore,Cyber Angel,0.8,3,23,21,no wiki link
+Mochette,Morute,0.8,5,34,30,family / sub-style
+Baddie,Blokette,0.8,3,10,10,no wiki link
+Bubblegum Coquette,Fairy Kei,0.8,3,24,49,no wiki link
+Beach Day,Tropical,0.8,2,10,33,related
+Slimepunk,Vaporwave,0.8,2,12,28,related
+Barbiecore,Trailer Park Princess,0.8,3,19,52,no wiki link
+Hedi Boy,Antwerp Six,0.8,2,11,11,no wiki link
+Uchuu Kei,Scene,0.8,3,22,55,no wiki link
+Christian Girl Autumn,Soft Girl,0.8,3,20,17,no wiki link
+Soft Grunge,Werewolf,0.8,12,84,29,no wiki link
+Adventurecore,Gloomcore,0.8,5,37,33,no wiki link
+Mote Kei,Bodikon,0.8,2,10,61,no wiki link
+Uchuu Kei,Decora,0.8,3,22,9,family / sub-style
+Clowncore,Gothabilly,0.8,19,141,38,no wiki link
+Wishcore,Kawaii,0.8,4,25,75,family / sub-style
+Gen X Soft Club,Neo-Y2K,0.8,6,37,21,family / sub-style
+Dark Circus,Magician,0.8,2,12,10,no wiki link
+Art Deco,Neoclassicism,0.8,8,53,16,no wiki link
+Dadcore,Blokette,0.8,6,39,10,no wiki link
+E-Boy,Roadman,0.8,3,13,13,no wiki link
+Futurism,Art Deco,0.8,2,12,53,related
+Raygun Gothic,Dieselpunk,0.8,2,18,16,family / sub-style
+New Beat,Neofolk,0.8,2,11,11,family / sub-style
+Gloomcore,Dark Fantasy,0.8,7,33,16,related
+Cleancore,Seapunk,0.8,11,77,17,no wiki link
+Cutecore,Animecore,0.8,4,28,16,related
+80s-90s Afrocentrism,Graffiti Pop,0.8,2,18,19,no wiki link
+Y2K,Y3K,0.8,14,102,39,family / sub-style
+Pink Princess,Winter Bimbo,0.8,4,26,7,no wiki link
+Twee,Wartime Austerity,0.8,3,19,14,no wiki link
+Cyber Angel,Skater,0.6,3,21,19,no wiki link
+Fairy Kei,Unicorn Trend,0.6,7,49,16,related
+Bubblegum Dance,Tecktonik,0.6,3,19,12,no wiki link
+Coastal Grandmother,Beach Day,0.6,2,14,10,no wiki link
+Goth,Punk,0.6,6,45,19,family / sub-style
+Plazacore,"Bon Chic, Bon Genre",0.6,1,9,9,no wiki link
+Soft Grunge,Gen X Soft Club,0.6,12,84,37,no wiki link
+Gurokawa,Clowncore,0.6,2,18,141,family / sub-style
+Thought Daughter,Coquette,0.6,2,11,103,no wiki link
+Trap Metal,Emo,0.6,3,22,23,no wiki link
+Kawaii,Cutecore,0.6,12,75,28,family / sub-style
+Pin-up,Gothabilly,0.6,2,14,38,related
+Pacific Punk Wave,Memphis Lite,0.6,5,35,34,related
+Lumberjack,Dadcore,0.6,1,9,39,related
+Acid House,Junglist,0.6,2,11,12,family / sub-style
+Bakala,Industrial,0.6,3,23,43,related
+Groovival,Tweencore,0.6,6,41,25,related
+Australiana,LOLcore,0.6,1,9,11,no wiki link
+Takenokozoku,Cholombiano,0.6,1,8,9,no wiki link
+Gen X Soft Club,UrBling,0.6,6,37,37,family / sub-style
+Grunge,Memphis Lite,0.6,5,34,34,no wiki link
+Starrflesh,Cleancore,0.6,3,19,77,no wiki link
+Chicago Drill,Blokecore,0.6,1,10,8,no wiki link
+Trxsh,Witch House,0.6,3,20,12,no wiki link
+Wishcore,Clowncore,0.6,4,25,141,no wiki link
+Preppy,Boujee,0.6,2,10,35,no wiki link
+Boho-Chic,Earthy Black Girl,0.6,1,9,16,related
+Hyperpop,Vaporwave,0.6,8,29,28,no wiki link
+Angelcore,Cleancore,0.6,4,24,77,no wiki link
+Dreamy Indie Girlhood,Coquette,0.6,3,19,103,related
+Cottagecore,Green Academia,0.6,8,53,15,no wiki link
+Clowncore,Whimsy Twee,0.6,19,141,25,related
+Craftcore,Whimsy Twee,0.6,3,19,25,no wiki link
+Spacecore,Ethereal,0.6,2,16,39,no wiki link
+Corporate Grunge,Millennium Disco,0.6,12,81,33,no wiki link
+Halloween,Autumn Aesthetic,0.6,5,36,26,related
+Cyber Stylin',Animecore,0.6,5,38,16,no wiki link
+Memphis Lite,Y2K,0.6,5,34,102,no wiki link
+Electroclash,Industrial,0.6,2,14,43,related
+Piratecore,Dieselpunk,0.6,1,7,16,no wiki link
+Visual Kei,Superflat Pop,0.6,8,81,91,no wiki link
+Taqwacore,Tecktonik,0.6,2,11,12,no wiki link
+Y2K,Shibuya Punk,0.6,14,102,36,family / sub-style
+Neoperreo,Guido,0.6,2,14,11,no wiki link
+Mote Kei,Geek Chic,0.6,2,10,9,no wiki link
+Holosexual,Cybertwee,0.6,2,14,14,no wiki link
+Bubbleglam,New Romantic,0.6,3,18,14,no wiki link
+Strega,Witch House,0.6,2,15,12,no wiki link
+Cyber Ghetto,Trxsh,0.6,3,23,20,no wiki link
+Superflat Pop,Nordic Twee,0.6,13,91,26,related
+Tumbette,Genderless Kei,0.6,1,9,11,no wiki link
+Bubblegum Bitch,Fjortis,0.6,6,39,14,family / sub-style
+Shibuya-Kei,Pacific Punk Wave,0.6,2,14,35,no wiki link
+Dark Academia,Hipster,0.6,8,55,36,no wiki link
+Fantasy,Renaissance Revival,0.6,2,12,60,family / sub-style
+McBling,Bubble Bujo,0.6,6,41,16,no wiki link
+Himekaji,Girly Kei,0.6,2,11,33,family / sub-style
+Cozycore,Lovecore,0.6,3,19,19,no wiki link
+Thai Modern,Danish Pastel,0.6,1,9,22,no wiki link
+Genderless Kei,Gyaruo,0.6,2,11,32,no wiki link
+Junkpunk,Avant Apocalypse,0.6,2,14,10,related
+Clowncore,2010s Gamer Kid,0.6,19,141,12,no wiki link
+Trap Metal,Goth,0.6,3,22,45,no wiki link
+Bobby-Soxer,Wartime Austerity,0.6,2,14,14,no wiki link
+Gothic Belly Dance,Avant Apocalypse,0.6,2,11,10,no wiki link
+Feralcore,Bastardcore,0.6,1,10,23,related
+Twilightcore,Herki,0.6,3,24,9,no wiki link
+Soft Girl,Nyashka,0.6,2,17,21,no wiki link
+Yami Kawaii,Superflat Pop,0.6,3,18,91,no wiki link
+Mallgoth,Trap Metal,0.6,2,12,22,no wiki link
+Gyaruo,Tecktonik,0.6,4,32,12,no wiki link
+Indie Sleaze,Club Kids,0.6,4,20,17,no wiki link
+Renaissance Revival,Whimsigothic,0.6,8,60,25,related
+2020 Alt,Scene,0.6,3,18,55,family / sub-style
+Halloween,Horror,0.6,5,36,13,family / sub-style
+Dark Academia,Dadcore,0.6,8,55,39,related
+Grocery Girl Fall,Grandmillennial,0.6,1,9,11,no wiki link
+Groovival,Surf Crush,0.6,6,41,54,no wiki link
+Hair Metal,Rocker Grrl Diva,0.6,7,48,9,no wiki link
+Arcadecore,Decora,0.6,2,14,9,no wiki link
+Pastel Goth,Femboy,0.6,2,15,14,no wiki link
+Neko,Magical Girl,0.6,3,19,23,no wiki link
+Olderbrothercore,Sadboi,0.6,5,31,21,no wiki link
+Dollcore,Ethereal,0.6,2,10,39,no wiki link
+Cottagecore,Coquette,0.6,8,53,103,no wiki link
+Sanriocore,Babycore,0.6,2,17,18,related
+Psychedelia,Weimar Cabaret,0.6,4,24,11,no wiki link
+Nu-Metal,UrBling,0.6,4,31,37,related
+Wonderland,Keller Synth,0.6,4,24,14,no wiki link
+E-Girl,Femboy,0.6,2,16,14,related
+Aggrotech,Rivethead,0.6,2,11,14,family / sub-style
+Soft Countriana,Memphis Lite,0.6,2,14,34,no wiki link
+Waif,Dark Academia,0.6,10,66,55,no wiki link
+Mad Scientist,Horror,0.6,4,27,13,no wiki link
+Coquette,Catholic Mexican Girl,0.6,15,103,9,family / sub-style
+Diner,Vintage Americana,0.6,2,14,14,related
+Seapunk,Vaporwave,0.6,3,17,28,related
+Nyashka,PMC Ryodan,0.6,3,21,7,related
+Teenpunk,Nu-Metal,0.6,2,11,31,no wiki link
+Coquette,Boho-Chic,0.5,15,103,9,no wiki link
+Farmer's Daughter,Boho-Chic,0.5,2,13,9,no wiki link
+Dark Naturalism,Gloomcore,0.5,2,14,33,related
+Fallen Angel,Gloomcore,0.5,2,17,33,no wiki link
+Coquette,Tropical,0.5,15,103,33,no wiki link
+Femme Fatale,Vampire,0.5,3,11,14,no wiki link
+Mafia Aesthetic,Vampire,0.5,4,25,14,no wiki link
+Hipster,Guido,0.5,5,36,11,no wiki link
+Indie Sleaze,Guido,0.5,4,20,11,no wiki link
+Groovival,Blokette,0.4,6,41,10,no wiki link
+French Girly,Mote Kei,0.4,2,10,10,no wiki link
+Girly Kei,Mote Kei,0.4,5,33,10,related
+Bubbleglam,Milipili,0.4,3,18,24,no wiki link
+Y2K,Yami Kawaii,0.4,14,102,18,no wiki link
+Gothic Belly Dance,Hippie Goth,0.4,2,11,22,family / sub-style
+Candy Sleaze,Dopamine Dressing,0.4,4,25,9,related
+New Beat,Industrial,0.4,2,11,43,family / sub-style
+Bubblegum Bitch,2014 Girly,0.4,6,39,18,no wiki link
+Mochette,Soft Countriana,0.4,5,34,14,no wiki link
+Romanticism,Rococo,0.4,4,23,115,no wiki link
+Soft Countriana,Cleancore,0.4,2,14,77,no wiki link
+Yami Kawaii,Horror,0.4,3,18,13,no wiki link
+Udoli,Nu-Goth,0.4,1,7,19,no wiki link
+Waif,Coquette,0.4,10,66,103,family / sub-style
+Mad Scientist,Gurokawa,0.4,4,27,18,no wiki link
+Preppy,Mid-Century Medieval,0.4,2,10,25,no wiki link
+Mallgoth,Welwitschia Goth,0.4,2,12,32,related
+Buffalo Style,Dadcore,0.4,2,16,39,no wiki link
+Light Academia,Coquette,0.4,2,17,103,no wiki link
+2014 Girly,Soft Girl,0.4,3,18,17,no wiki link
+Antwerp Six,Cyberbabes,0.4,2,11,12,no wiki link
+French Girl,Blokette,0.4,2,17,10,no wiki link
+Frazzled English Woman,Cyber Grunge,0.4,2,14,10,no wiki link
+Crowcore,Forestpunk,0.4,3,18,11,no wiki link
+Wuxia,Solarpunk,0.4,3,24,14,no wiki link
+Coquette,Wonderland,0.4,15,103,24,no wiki link
+Pop Art,Sadgirl,0.4,1,10,23,no wiki link
+Ethno-Chic,Tropicabana,0.4,2,11,37,no wiki link
+McBling,Bubblegum Dance,0.4,6,41,19,family / sub-style
+Whimsy Twee,Picniccore,0.4,4,25,17,related
+Pacific Punk Wave,Bubbleglam,0.4,5,35,18,no wiki link
+Dark Academia,Indie Kid,0.4,8,55,15,no wiki link
+Vintage Americana,Gothabilly,0.4,4,14,38,family / sub-style
+Rave,Blokette,0.4,5,32,10,no wiki link
+Flower Power,Psychedelia,0.4,4,28,24,related
+Rivethead,Goth,0.4,2,14,45,related
+Bastardcore,Olderbrothercore,0.4,3,23,31,related
+Nordic Twee,Halloween,0.4,4,26,36,no wiki link
+Yugo-Nostalgia,Yé-yé,0.4,2,14,25,no wiki link
+Soft Countriana,Twee,0.4,2,14,19,no wiki link
+Mermaidcore,Angelcore,0.4,3,18,24,family / sub-style
+Aggrotech,Nu-Metal,0.4,2,11,31,no wiki link
+Coquette,Key West Kitten,0.4,15,103,26,family / sub-style
+Trailer Park Princess,Key West Kitten,0.4,8,52,26,family / sub-style
+Dadcore,Chic Modernist,0.4,6,39,17,family / sub-style
+Clowncore,Dopamine Dressing,0.4,19,141,9,related
+Arcadecore,Cyber Ghetto,0.4,2,14,23,no wiki link
+Neko,Cutecore,0.4,3,19,28,no wiki link
+Olderbrothercore,Quinqui,0.4,5,31,9,no wiki link
+Uchuu Kei,Kawaii,0.4,3,22,75,family / sub-style
+Dollcore,Delicate Sweet,0.4,2,10,25,no wiki link
+Cottagecore,Morute,0.4,8,53,30,no wiki link
+Incelcore,PMC Ryodan,0.4,2,15,7,no wiki link
+Romantic Goth,Hippie Goth,0.4,2,16,22,family / sub-style
+Teenpunk,Corporate Grunge,0.4,2,11,81,related
+2010s Bright Kawaii,Wonyoungism,0.4,2,9,19,no wiki link
+Wonderland,Psychedelia,0.4,4,24,24,no wiki link
+Grunge,Punk,0.4,5,34,19,related
+Groovival,Australiana,0.4,6,41,9,no wiki link
+Millennium Disco,80s-90s Afrocentrism,0.4,5,33,18,no wiki link
+Bubblegum Dance,Rave,0.4,3,19,32,related
+Cyber Ghetto,Cybergoth,0.4,3,23,17,no wiki link
+Ethereal,Royalcore,0.4,6,39,44,family / sub-style
+New Beat,Witch House,0.4,2,11,12,no wiki link
+Tang Dynasty,Renaissance Revival,0.4,3,22,60,no wiki link
+Y2K,Cyberpunk,0.4,14,102,24,related
+Rave,Uchuu Kei,0.4,5,32,22,related
+Romanticism,Victorian,0.4,4,23,48,related
+Mermaidcore,Victorian,0.4,3,18,48,no wiki link
+Australiana,Indie Sleaze,0.4,1,9,20,no wiki link
+Starrflesh,Mermaidcore,0.4,3,19,18,no wiki link
+Chicago Drill,Buchón,0.4,1,10,14,no wiki link
+Hyperpop,Y2K,0.4,8,29,102,no wiki link
+Ethereal,Medievalcore,0.4,6,39,23,family / sub-style
+Fairy Kei,Sweet Lolita,0.4,7,49,8,related
+Corporate Grunge,Graffiti Pop,0.4,12,81,19,related
+Maid,Girly Kei,0.4,4,31,33,no wiki link
+Rave,Groovival,0.4,5,32,41,related
+Gothabilly,Vampire,0.4,5,38,14,family / sub-style
+Neoperreo,Cyber Ghetto,0.4,2,14,23,no wiki link
+Flapper,Garçonne,0.4,2,12,9,related
+Hair Metal,Goth,0.4,7,48,45,no wiki link
+Dadcore,Performative Male,0.4,6,39,9,no wiki link
+Whimsigothic,Magician,0.4,4,25,10,no wiki link
+Clowncore,Australiana,0.4,19,141,9,no wiki link
+Afrofuturism,Gloomcore,0.4,1,10,33,no wiki link
+Tropicalcore,Key West Kitten,0.4,2,14,26,related
+Cyber Angel,Surf Crush,0.4,3,21,54,no wiki link
+Avantropop,Pacific Punk Wave,0.4,3,23,35,no wiki link
+Guido,Krocha,0.4,2,11,10,no wiki link
+Vampire,Mafia Aesthetic,0.4,2,14,25,no wiki link
+Strawberry Girl,Cherry Emoji Twitter,0.4,2,13,14,no wiki link
+Himekaji,Larme Kei,0.4,2,11,15,family / sub-style
+Cozycore,Art Hoe,0.4,3,19,24,no wiki link
+Thai Modern,Indie Kid,0.4,1,9,15,no wiki link
+Vintage Americana,Hot Rod,0.4,4,14,9,related
+Y2K,Animecore,0.4,14,102,16,no wiki link
+Coastal Grandmother,Nautical,0.4,2,14,17,family / sub-style
+Candy Sleaze,Rave,0.4,4,25,32,no wiki link
+Plazacore,Corpcore,0.4,1,9,18,no wiki link
+Emo,Poster Gal,0.4,4,23,24,related
+Tang Dynasty,Dunhuang Feng,0.4,3,22,19,related
+Cinnamon Girl,Cacareco Girl,0.4,3,19,11,no wiki link
+Udoli,Poppare,0.4,1,7,14,no wiki link
+Whimsy Twee,Cacareco Girl,0.4,4,25,11,family / sub-style
+Grunge,80s-90s Afrocentrism,0.4,5,34,18,no wiki link
+2014 Girly,Kinderwhore,0.4,3,18,11,no wiki link
+Mori Kei,Gorpcore,0.4,2,11,12,no wiki link
+Yami Kawaii,Morute,0.4,3,18,30,related
+French Girl,Boujee,0.4,2,17,35,no wiki link
+Wuxia,Dunhuang Feng,0.4,3,24,19,no wiki link
+Ethereal,Antwerp Six,0.4,6,39,11,no wiki link
+Spacecore,Y3K,0.4,2,16,39,no wiki link
+Memphis Lite,Uchuu Kei,0.4,5,34,22,no wiki link
+Electroclash,UrBling,0.4,2,14,37,no wiki link
+Rivethead,Punk,0.4,2,14,19,related
+Bastardcore,Dark Academia,0.4,3,23,55,no wiki link
+Corporate Goth,Gothabilly,0.4,1,9,38,family / sub-style
+Yugo-Nostalgia,Wartime Austerity,0.4,2,14,14,no wiki link
+Soft Countriana,Dreamy Indie Girlhood,0.4,2,14,19,no wiki link
+Bubbleglam,Electroclash,0.4,3,18,14,no wiki link
+Goth Punk,Gothic Lolita,0.4,2,12,8,no wiki link
+Corporate Grunge,Groovival,0.4,12,81,41,no wiki link
+Femboy,Maid,0.4,2,14,31,related
+Avantropop,Recession Pop,0.4,3,23,16,related
+Poster Gal,Scene,0.4,3,24,55,related
+Bubbleglam,Brazilian Bombshell,0.4,3,18,19,no wiki link
+Urbancore,Gen X Soft Club,0.4,3,21,37,no wiki link
+Bastardcore,Soft Grunge,0.4,3,23,84,no wiki link
+Gothabilly,Dark Fantasy,0.4,5,38,16,no wiki link
+Cyber Ghetto,Hyperpop,0.4,3,23,29,no wiki link
+Tumbette,Soft Girl,0.4,1,9,17,no wiki link
+Mid-Century Medieval,Memphis Lite,0.4,4,25,34,no wiki link
+Soft Grunge,Dark Academia,0.4,12,84,55,no wiki link
+Baddie,Cyber Stylin',0.3,3,10,38,no wiki link
+Bubblegum Bitch,Cyber Stylin',0.3,6,39,38,family / sub-style
+Vacation Dadcore,Memphis Lite,0.2,5,32,34,no wiki link
+Cottagecore,Fairycore,0.2,8,53,18,related
+Feralcore,Aliencore,0.2,1,10,17,related
+Witch House,Nu-Goth,0.2,2,12,19,related
+Dieselpunk,Steampunk,0.2,2,16,21,related
+Twilightcore,Sadgirl,0.2,3,24,23,no wiki link
+Cottagecore,Adventurecore,0.2,8,53,37,related
+Adventurecore,Dark Naturalism,0.2,5,37,14,no wiki link
+Dark Academia,Waif,0.2,8,55,66,no wiki link
+Cleancore,Beach Day,0.2,11,77,10,no wiki link
+Mochette,Cottagecore,0.2,5,34,53,no wiki link
+Clowncore,Goth,0.2,19,141,45,no wiki link
+Gyaruo,Post-Grunge Maximalism,0.2,4,32,28,no wiki link
+Yami Kawaii,Mochette,0.2,3,18,34,no wiki link
+Craftcore,Bootleg Aesthetic,0.2,3,19,23,no wiki link
+Royalcore,Romantic Academia,0.2,7,44,18,related
+Coquette,Spanish Golden Age,0.2,15,103,28,no wiki link
+Flogger,Indie Sleaze,0.2,1,9,20,related
+Coquette,Buckle Bunny,0.2,15,103,11,family / sub-style
+Farmer's Daughter,Buckle Bunny,0.2,2,13,11,family / sub-style
+Ethereal,Boujee,0.2,6,39,35,no wiki link
+Dreamy Indie Girlhood,Mochette,0.2,3,19,34,no wiki link
+Art Deco,Victorian,0.2,8,53,48,no wiki link
+Maid,Femboy,0.2,4,31,14,related
+Health Goth,Cyberprep,0.2,2,10,13,no wiki link
+Dadcore,Mori Kei,0.2,6,39,11,no wiki link
+E-Boy,Chic Modernist,0.2,3,13,17,no wiki link
+Futurism,Hellenic,0.2,2,12,19,no wiki link
+Gothabilly,Romantic Goth,0.2,5,38,16,family / sub-style
+Art Hoe,Indie Kid,0.2,3,24,15,no wiki link
+Neoperreo,Shibuya Punk,0.2,2,14,36,no wiki link
+New Beat,Coquette,0.2,2,11,103,no wiki link
+Gloomcore,Welwitschia Goth,0.2,7,33,32,no wiki link
+Neo-Y2K,Urbancore,0.2,3,21,21,no wiki link
+Key West Kitten,Surf Crush,0.2,4,26,54,related
+Pink Princess,Après-ski,0.2,4,26,9,no wiki link
+Cyber Angel,Boho-Chic,0.2,3,21,9,no wiki link
+Nu-Metal,Superflat Pop,0.2,4,31,91,no wiki link
+Strawberry Girl,Nymphet,0.2,2,13,21,no wiki link
+Dadcore,Boho-Chic,0.2,6,39,9,no wiki link
+Cyber Angel,Blokette,0.2,3,21,10,no wiki link
+Fairy Kei,Kawaii,0.2,7,49,75,family / sub-style
+Bubbleglam,Y3K,0.2,3,18,39,family / sub-style
+Recession Pop,Health Goth,0.2,2,16,10,no wiki link
+VSCO Girl,Indie Kid,0.2,2,14,15,related
+Candy Sleaze,Danish Pastel,0.2,4,25,22,no wiki link
+Wizard,Green Academia,0.2,3,18,15,no wiki link
+Dark Cabaret,Gothabilly,0.2,2,11,38,family / sub-style
+Movida Madrileña,Tango,0.2,2,14,10,no wiki link
+Nu-Goth,Biker,0.2,3,19,28,no wiki link
+Flat Design,Gen X Soft Club,0.2,5,32,37,related
+Power Dressing,Buffalo Style,0.2,1,9,16,no wiki link
+Romanticism,Northerness,0.2,4,23,18,no wiki link
+Gurokawa,Kawaii,0.2,2,18,75,family / sub-style
+Punk,Rivethead,0.2,3,19,14,related
+Cottagecore,Dark Academia,0.2,8,53,55,no wiki link
+Lumberjack,Rocker Grrl Diva,0.2,1,9,9,no wiki link
+Preppy,Flower Power,0.2,2,10,28,no wiki link
+Light Academia,Dollette,0.2,2,17,19,no wiki link
+Vaporwave,Seapunk,0.2,4,28,17,related
+Green Academia,Goblincore,0.2,3,15,14,related
+2014 Girly,Femboy,0.2,3,18,14,no wiki link
+Naturecore,Mochette,0.2,2,18,34,no wiki link
+Mori Kei,Palewave,0.2,2,11,7,no wiki link
+Antwerp Six,Bastardcore,0.2,2,11,23,no wiki link
+Sweet Lolita,Kawaii,0.2,1,8,75,related
+Urbancore,Biker,0.2,3,21,28,no wiki link
+Craftcore,Nordic Twee,0.2,3,19,26,no wiki link
+Disco,Recession Pop,0.2,2,13,16,no wiki link
+French Girl,Soft Grunge,0.2,2,17,84,no wiki link
+Baddie,Bubblegum Coquette,0.2,3,10,24,no wiki link
+Bubblegum Bitch,Bubblegum Coquette,0.2,6,39,24,related
+Soviet Chic,Indie,0.2,4,24,24,no wiki link
+Wuxia,Adventurecore,0.2,3,24,37,related
+Angelcore,Romantic Italian,0.2,4,24,12,related
+Werewolf,Nu-Goth,0.2,4,29,19,no wiki link
+Medieval Fantasy,Knightcore,0.2,1,10,21,family / sub-style
+Mafia Aesthetic,Romantic Italian,0.2,4,25,12,no wiki link
+Fairycore,Renaissance Revival,0.2,2,18,60,family / sub-style
+Waif,Fjortis,0.2,10,66,14,no wiki link
+Werewolf,Forestpunk,0.2,4,29,11,no wiki link
+Poster Gal,Bootleg Aesthetic,0.2,3,24,23,no wiki link
+Neoperreo,Avantropop,0.2,2,14,23,no wiki link
+Techwear,Cyber Grunge,0.2,3,18,10,no wiki link
+PMC Ryodan,Performative Male,0.2,1,7,9,no wiki link
+Paninaro,Indie,0.2,1,9,24,no wiki link
+Romantic Goth,Medievalcore,0.2,2,16,23,family / sub-style
+Uchuu Kei,Kandi Raver,0.2,3,22,15,related
+Skinhead,Sharpies,0.2,2,10,11,related
+Groovival,Bubbleglam,0.2,6,41,18,related
+Goth,Gothabilly,0.2,6,45,38,family / sub-style
+Metalhead,Hair Metal,0.2,2,11,48,related
+Tweencore,Animecore,0.2,4,25,16,no wiki link
+Feralcore,Plaguecore,0.2,1,10,7,no wiki link
+VSCO Girl,2020s Preppy,0.2,2,14,11,related
+Witchcore,Dark Academia,0.2,4,30,55,no wiki link
+New Beat,Corporate Grunge,0.2,2,11,81,no wiki link
+Rockstar GF,Sadgirl,0.2,2,10,23,no wiki link
+Bubblegum Bitch,Bubblegum Bling,0.2,6,39,16,family / sub-style
+Twilightcore,Witch House,0.2,3,24,12,no wiki link
+Brazilian Bombshell,Slavic Doll,0.2,3,19,11,related
+Thought Daughter,Waif,0.2,2,11,66,related
+Cottagecore,Chic Modernist,0.2,8,53,17,no wiki link
+Ethereal,Cottagecore,0.2,6,39,53,related
+Craftcore,Indie Kid,0.2,3,19,15,no wiki link
+Preppy,Dreamy Indie Girlhood,0.2,2,10,19,no wiki link
+Clowncore,Danish Pastel,0.2,19,141,22,related
+Green Academia,Cottagecore,0.2,3,15,53,no wiki link
+Gyaruo,Cyber Ghetto,0.2,4,32,23,no wiki link
+Antwerp Six,Slimepunk,0.2,2,11,12,no wiki link
+Craftcore,Poster Gal,0.2,3,19,24,no wiki link
+Preppy,Romantic Italian,0.2,2,10,12,no wiki link
+Angelcore,Soft Grunge,0.2,4,24,84,no wiki link
+Cottagecore,Dreamy Indie Girlhood,0.2,8,53,19,no wiki link
+Coquette,Witchcore,0.2,15,103,30,no wiki link
+Ethno-Chic,Romantic Italian,0.2,2,11,12,no wiki link
+Rave,Graffiti Pop,0.2,5,32,19,related
+Cacareco Girl,Cutecore,0.2,2,11,28,no wiki link
+Groovival,Art Hoe,0.2,6,41,24,related
+Britishcore,Urbancore,0.2,2,11,21,no wiki link
+Neoperreo,LOLcore,0.2,2,14,11,no wiki link
+Mote Kei,Christian Girl Autumn,0.2,2,10,20,no wiki link
+Art Hoe,Geek Chic,0.2,3,24,9,no wiki link
+Dadcore,Café Aesthetic,0.2,6,39,12,no wiki link
+Whimsigothic,Whimsicraft,0.2,4,25,18,related
+Incelcore,2020 Alt,0.2,2,15,18,no wiki link
+Romantic Goth,Renaissance Revival,0.2,2,16,60,family / sub-style
+Cyber Angel,Tropical,0.2,3,21,33,no wiki link
+Baddie,Skater,0.2,3,10,19,no wiki link
+Christian Girl Autumn,Mote Kei,0.2,3,20,10,no wiki link
+Coquette,Trailer Park Princess,0.2,15,103,52,family / sub-style
+VSCO Girl,Coquette,0.2,2,14,103,no wiki link
+Morute,Delicate Sweet,0.2,6,30,25,family / sub-style
+Scandi Girl Winter,Cinnamon Girl,0.2,1,9,19,related
+Pacific Punk Wave,Industrial,0.2,5,35,43,related
+Flat Design,Y2K,0.2,5,32,102,no wiki link
+Rococo,Romantic Italian,0.2,16,115,12,no wiki link
+Mochette,Cleancore,0.2,5,34,77,no wiki link
+Shuimo Feng,Wuxia,0.2,2,16,24,no wiki link
+Romanticism,Minimalism,0.2,4,23,18,no wiki link
+Gurokawa,Superflat Pop,0.2,2,18,91,no wiki link
+Cottagecore,Japanese Ivy Style,0.2,8,53,11,no wiki link
+Bling Era,Hip-Hop,0.2,4,28,14,family / sub-style
+Emo,Cutecore,0.2,4,23,28,no wiki link
+Rave,Millennium Disco,0.2,5,32,33,no wiki link
+Neoclassicism,Victorian,0.2,2,16,48,no wiki link
+Tecktonik,Metrosexual,0.2,2,12,9,no wiki link
+Buffalo Style,Antwerp Six,0.2,2,16,11,no wiki link
+Light Academia,Dark Academia,0.2,2,17,55,related
+Bodikon,Brazilian Bombshell,0.2,9,61,19,no wiki link
+Mori Kei,Japanese Ivy Style,0.2,2,11,11,no wiki link
+Spanish Golden Age,Romantic Italian,0.2,4,28,12,no wiki link
+Indie,Punk,0.2,4,24,19,no wiki link
+Preppy,Tango,0.2,2,10,10,no wiki link
+Millennium Disco,Funk,0.2,5,33,11,related
+Pacific Punk Wave,Pianocore,0.2,5,35,23,no wiki link
+Coquette,Cryptidcore,0.2,15,103,26,no wiki link
+Whimsy Twee,Grocery Girl Fall,0.2,4,25,9,related
+Millennium Orientalism,Dunhuang Feng,0.2,4,25,19,no wiki link
+Haunted Mound,Welwitschia Goth,0.2,2,11,32,no wiki link
+Whimsicraft,Earthy Black Girl,0.2,2,18,16,no wiki link
+Soft Countriana,Soviet Nostalgia,0.2,2,14,9,no wiki link
+Art Hoe,Dadcore,0.2,3,24,39,no wiki link
+Neoperreo,Goth Punk,0.2,2,14,12,no wiki link
+Mote Kei,Frazzled English Woman,0.2,2,10,14,no wiki link
+Sprezzatura,Metrosexual,0.2,2,11,9,related
+Art Hoe,Tumbette,0.2,3,24,9,no wiki link
+Rave,Afropunk,0.2,5,32,7,no wiki link
+Beach Day,Cleancore,0.2,2,10,77,no wiki link
+Whimsicraft,Cyber Ghetto,0.2,2,18,23,no wiki link
+Paninaro,Yé-yé,0.2,1,9,25,no wiki link
+Fairy Kei,Barbiecore,0.2,7,49,19,no wiki link
+Bubblegum Bitch,Bro Hoe,0.2,6,39,11,no wiki link
+Tudor,Rococo,0.2,2,15,115,related
+Draincore,Cyberpunk,0.2,3,23,24,no wiki link
+Romantic Goth,Antwerp Six,0.2,2,16,11,related
+Beach Day,2010s Summer Nostalgia,0.2,2,10,23,no wiki link
+Fantasy,Fairycore,0.2,2,12,18,family / sub-style
+Slimepunk,Incelcore,0.2,2,12,15,no wiki link
+Nu-Metal,Graffiti Pop,0.2,4,31,19,related
+Barbiecore,Bubblegum Bitch,0.2,3,19,39,related
+Oshare Kei,Visual Kei,0.2,1,9,81,family / sub-style
+Cottagecore,Bloomcore,0.2,8,53,28,family / sub-style
+Witchcore,Fantasy,0.2,4,30,12,family / sub-style
+Flat Design,Post-Grunge Maximalism,0.2,5,32,28,no wiki link
+Welwitschia Goth,Fallen Angel,0.2,5,32,17,no wiki link
+Romanticism,Darkest Academia,0.2,4,23,12,no wiki link
+Dark Nautical,Piratecore,0.2,2,11,7,family / sub-style
+Thought Daughter,Preacher's Daughter,0.2,2,11,17,no wiki link
+Cottagecore,Dadcore,0.2,8,53,39,no wiki link
+Cinnamon Girl,Puppygirl,0.2,3,19,12,no wiki link
+Tropicabana,Guido,0.2,5,37,11,family / sub-style
+Preppy,Peacock Revolution,0.2,2,10,22,no wiki link
+Rave,Y3K,0.2,5,32,39,no wiki link
+Preacher's Daughter,Soft Countriana,0.2,2,17,14,no wiki link
+Whimsy Twee,Earthy Black Girl,0.2,4,25,16,no wiki link
+Buffalo Style,Après-ski,0.2,2,16,9,no wiki link
+Light Academia,Angelcore,0.2,2,17,24,no wiki link
+Takenokozoku,Graffiti Pop,0.2,1,8,19,no wiki link
+Soviet Nostalgia,Twee,0.2,1,9,19,no wiki link
+Gutter Punk,Flogger,0.2,2,13,9,no wiki link
+Bodikon,Guido,0.2,9,61,11,no wiki link
+Antwerp Six,Cuntry,0.2,2,11,9,no wiki link
+Industrial,Soviet Chic,0.2,6,43,24,family / sub-style
+Ostalgie,Twee,0.2,1,9,19,no wiki link
+Craftcore,Crowcore,0.2,3,19,18,no wiki link
+Grandmillennial,Chinoiserie,0.2,2,11,14,no wiki link
+Cybergoth,Rokku,0.2,2,17,16,no wiki link
+Fairy Kei,Cult Party Kei,0.2,7,49,9,family / sub-style
+Mafia Aesthetic,Romanticism,0.2,4,25,23,no wiki link
+Vacation Dadcore,Rainforest Chic,0.2,5,32,24,no wiki link
+Flower Power,Peacock Revolution,0.2,4,28,22,related
+Waif,Bodikon,0.2,10,66,61,no wiki link
+Playground Prep,Earthy Black Girl,0.2,1,7,16,no wiki link
+Poster Gal,Superflat Pop,0.2,3,24,91,no wiki link
+Yugo-Nostalgia,Mod,0.2,2,14,9,no wiki link
+Neoperreo,Electroclash,0.2,2,14,14,no wiki link
+Horror Punk,Hair Metal,0.2,2,11,48,no wiki link
+Pastel Grunge,Galaxy Print,0.2,1,7,16,no wiki link
+Pastel Goth,2020 Alt,0.2,2,15,18,no wiki link
+Tropicalcore,Mermaidcore,0.2,2,14,18,no wiki link
+Flower Power,Ethno-Chic,0.2,4,28,11,no wiki link
+Witch House,Keller Synth,0.2,2,12,14,related
+Hip-Hop,Bling Era,0.1,2,14,28,family / sub-style
+Pen & Pixel,Bling Era,0.1,2,11,28,family / sub-style
+Buckle Bunny,Western,0.1,3,11,21,related
+Coquette,Western,0.1,15,103,21,no wiki link
+Y2K,Corporate Grunge,0.1,14,102,81,related
+Art Deco,Pink Parisian,0.1,8,53,14,no wiki link
+Victorian,Pink Parisian,0.1,8,48,14,no wiki link
+Gen X Soft Club,Bastardcore,0.1,6,37,23,no wiki link
+Y2K,Bastardcore,0.1,14,102,23,no wiki link
+Art Deco,Rococo,0.1,8,53,115,no wiki link
+Gen X Soft Club,Urbancore,0.1,6,37,21,no wiki link
+Y2K,Urbancore,0.1,14,102,21,no wiki link
+Gen X Soft Club,Soft Grunge,0.1,6,37,84,no wiki link
+Y2K,Soft Grunge,0.1,14,102,84,no wiki link

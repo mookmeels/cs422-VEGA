@@ -1,0 +1,504 @@
+label,training_images,validation_images,nn_top5,nn_first_guess,centroid_top5,wrong_first_guesses_received_per_seed,most_often_mistaken_for
+2 Tone,11,2,1.0,1.0,1.0,0.0,""
+2000s Preppy,13,2,1.0,1.0,1.0,1.0,""
+2000s Tuscan Mom,7,1,1.0,0.0,1.0,0.0,Boujee
+2000s Yoga Mom,15,2,1.0,1.0,1.0,0.0,""
+2010s Bright Kawaii,9,2,0.8,0.3,1.0,0.0,Kawaii
+2010s Gamer Kid,12,2,1.0,1.0,1.0,1.6,""
+2010s Summer Nostalgia,23,3,1.0,0.6667,1.0,0.2,Tropical
+2014 Girly,18,3,0.6667,0.6667,0.6667,1.4,Soft Girl
+2020 Alt,18,3,1.0,0.8,1.0,0.4,Scene
+2020s Preppy,11,2,1.0,1.0,1.0,0.2,""
+50s Suburbia,16,2,1.0,0.5,1.0,0.8,Twee
+80s-90s Afrocentrism,18,2,1.0,0.6,1.0,0.8,Graffiti Pop
+90s Butter Mom,7,1,1.0,1.0,1.0,0.0,""
+Acid House,11,2,1.0,0.7,1.0,1.0,Junglist
+Acid Pixie,10,2,1.0,0.5,1.0,0.0,Spacecore
+Adventurecore,37,5,1.0,0.6,1.0,0.4,Granola
+Afrofuturism,10,1,1.0,0.6,0.0,1.0,Gloomcore
+Afropunk,7,1,1.0,1.0,1.0,2.0,""
+Aggrotech,11,2,1.0,0.5,1.0,0.0,Rivethead
+Agro Style,9,1,1.0,1.0,1.0,0.0,""
+Aliencore,17,3,1.0,1.0,1.0,1.2,""
+Amekaji,7,1,1.0,1.0,1.0,1.0,""
+Angelcore,24,4,0.8,0.5,0.5,0.6,Fallen Angel
+Angura Kei,9,1,1.0,1.0,1.0,0.0,""
+Animecore,16,2,1.0,1.0,1.0,2.0,""
+Antwerp Six,11,2,0.5,0.1,0.5,3.6,Metrosexual
+Après-ski,9,1,1.0,1.0,1.0,1.4,""
+Arcadecore,14,2,0.5,0.5,0.5,0.0,Decora
+Art Academia,19,3,1.0,1.0,1.0,3.6,""
+Art Deco,53,8,0.975,0.75,0.75,1.8,Neoclassicism
+Art Hoe,24,3,1.0,0.4,0.6667,1.6,Art Academia
+Atompunk,9,1,1.0,0.0,1.0,0.0,Cyberprep
+Australiana,9,1,1.0,0.0,0.0,0.8,LOLcore
+Autumn Aesthetic,26,4,0.75,0.25,0.5,0.6,Cozycore
+Avant Apocalypse,10,1,1.0,0.0,1.0,1.2,Yabi
+Avantropop,23,3,0.6667,0.4,0.6667,0.2,Flat Design
+B-Movie Horror,11,2,1.0,1.0,1.0,0.8,""
+Babycore,18,3,0.8,0.6667,0.6667,4.8,Cutecore
+Baddie,10,3,0.6667,0.3333,0.6667,0.0,Blokette
+Bakala,23,3,1.0,0.4667,0.6667,0.0,Quinqui
+Ballet,14,2,1.0,1.0,1.0,0.0,""
+Balletcore,13,1,1.0,0.2,1.0,0.0,Japanese Horror Game Protagonist
+Barbiecore,19,3,0.6667,0.3333,0.6667,1.2,Granola
+Bastardcore,23,3,1.0,0.6,1.0,1.0,Olderbrothercore
+Beach Day,10,2,0.1,0.0,1.0,2.8,Seapunk
+Berlin Techno Fashion,10,2,0.8,0.5,1.0,0.0,Antwerp Six
+Biker,28,4,1.0,0.8,1.0,2.4,E-Boy
+Biopunk,15,2,1.0,1.0,1.0,0.0,""
+Bling Era,28,4,1.0,0.95,1.0,2.2,Hip-Hop
+Blokecore,8,1,1.0,1.0,1.0,0.6,""
+Blokette,10,2,0.9,0.0,1.0,5.0,Tumbette
+Bloomcore,28,4,1.0,1.0,1.0,1.2,""
+Bobby-Soxer,14,2,1.0,0.7,1.0,0.0,Wartime Austerity
+Bodikon,61,9,1.0,0.9556,1.0,2.8,Brazilian Bombshell
+Boho-Chic,9,1,1.0,0.4,1.0,2.4,Earthy Black Girl
+"Bon Chic, Bon Genre",9,1,1.0,1.0,1.0,1.6,""
+Bootleg Aesthetic,23,3,0.8,0.3333,0.3333,1.4,Blokette
+Boujee,35,5,0.92,0.4,0.8,3.2,Bubblegum Bitch
+Brat Summer,13,2,0.6,0.5,1.0,1.0,Slimepunk
+Bravú,9,1,1.0,1.0,1.0,0.0,""
+Brazilcore (fashion trend),9,1,1.0,0.0,1.0,0.0,Blokette
+Brazilian Bombshell,19,3,1.0,0.9333,1.0,0.6,Slavic Doll
+Brazilian Carnival,9,1,1.0,1.0,1.0,0.0,""
+Bright Tertiaries,24,4,1.0,1.0,1.0,0.0,""
+British Countryside,18,3,1.0,1.0,1.0,0.0,""
+Britishcore,11,2,1.0,0.4,1.0,0.0,Twilightcore
+Britpop,14,2,1.0,0.5,1.0,0.0,Indie
+Bro Hoe,11,2,0.5,0.5,1.0,1.2,Rocker Grrl Diva
+Bronze Age China,16,2,1.0,1.0,1.0,0.0,""
+Bubble Bujo,16,2,1.0,1.0,1.0,0.6,""
+Bubbleglam,18,3,0.6667,0.3333,1.0,0.6,New Romantic
+Bubblegum Bitch,39,6,0.8333,0.4,0.8333,2.0,McBling
+Bubblegum Bling,16,2,1.0,1.0,1.0,2.2,""
+Bubblegum Coquette,24,3,1.0,0.7333,1.0,1.4,Fairy Kei
+Bubblegum Dance,19,3,0.4667,0.0,0.0,0.4,Millennium Orientalism
+Buchón,14,2,0.0,0.0,0.0,0.4,Bodikon
+Buckle Bunny,11,3,1.0,0.6,1.0,0.4,Trailer Park Princess
+Buffalo Style,16,2,0.9,0.6,1.0,0.2,Dadcore
+Burlesque,7,2,1.0,1.0,1.0,1.8,""
+Cabincore,11,2,0.5,0.5,1.0,0.0,Forestpunk
+Cacareco Girl,11,2,0.7,0.5,0.5,1.8,Sanriocore
+Café Aesthetic,12,2,1.0,0.5,1.0,2.2,Maid
+Candy Sleaze,25,4,0.8,0.75,1.0,2.0,Dopamine Dressing
+Candycore,19,3,1.0,0.6,1.0,1.0,Kawaii
+Casino,17,2,1.0,1.0,1.0,0.0,""
+Casuals,9,1,1.0,1.0,1.0,0.0,""
+Catholic Mexican Girl,9,1,1.0,1.0,1.0,0.6,""
+Cherry Emoji Twitter,14,2,1.0,1.0,1.0,3.4,""
+Chic Modernist,17,2,1.0,1.0,1.0,1.8,""
+Chicago Drill,10,1,0.2,0.0,1.0,0.0,Blokecore
+Chinese New Year,23,3,1.0,1.0,1.0,1.0,""
+Chinoiserie,14,2,1.0,1.0,1.0,0.2,""
+Choco Girl,9,1,1.0,1.0,1.0,1.0,""
+Cholombiano,9,1,1.0,1.0,1.0,0.6,""
+Christian Girl Autumn,20,3,0.7333,0.3333,1.0,1.2,Plazacore
+Christmas,103,15,0.9333,0.9333,0.9333,1.0,Winter Aesthetic
+Cinnamon Girl,19,3,0.9333,0.1333,0.3333,1.0,Vanilla Girl
+Cleancore,77,11,1.0,0.6364,0.9091,4.0,Soft Grunge
+Clowncore,141,19,0.8,0.6737,0.8421,3.0,Nordic Twee
+Club Kids,17,2,1.0,0.5,1.0,0.6,New Romantic
+Coastal Grandmother,14,2,0.9,0.5,1.0,1.0,Beach Day
+Coquette,103,15,0.8133,0.1333,0.1333,6.0,Morute
+Corpcore,18,2,1.0,1.0,1.0,0.4,""
+Corporate Goth,9,1,1.0,0.6,1.0,0.0,Gothabilly
+Corporate Grunge,81,12,0.9,0.7167,0.5833,3.0,Surf Crush
+Cottagecore,53,8,0.625,0.275,0.625,2.8,Wartime Austerity
+Country,8,1,0.8,0.0,1.0,0.0,Trailer Park Princess
+Cozy Gamer,11,2,1.0,1.0,1.0,0.0,""
+Cozycore,19,3,1.0,0.6667,1.0,1.0,Lovecore
+Craftcore,19,3,0.3333,0.2,0.6667,0.0,Clowncore
+Crowcore,18,3,1.0,0.5333,0.6667,0.2,Whimsy Twee
+Cryptidcore,26,4,1.0,0.55,1.0,1.2,B-Movie Horror
+Cult Party Kei,9,1,1.0,1.0,1.0,0.2,""
+Cumbiero,9,1,1.0,1.0,1.0,1.0,""
+Cuntry,9,1,1.0,1.0,0.0,0.2,""
+Cutecore,28,4,1.0,0.8,1.0,3.2,Animecore
+Cyber Angel,21,3,0.7333,0.1333,0.3333,0.8,Fallen Angel
+Cyber Ghetto,23,3,0.3333,0.2,0.0,1.2,Neo-Y2K
+Cyber Grunge,10,1,0.0,0.0,0.0,0.6,Hyperpop
+Cyber Stylin',38,5,1.0,0.88,1.0,0.6,Animecore
+Cyberbabes,12,2,1.0,0.5,1.0,0.4,Japanese Horror Game Protagonist
+Cybergoth,17,2,1.0,0.5,1.0,0.4,Goth Punk
+Cyberprep,13,2,0.7,0.5,1.0,1.2,Lunarpunk
+Cyberpunk,24,3,1.0,0.6667,1.0,0.6,Techwear
+Cybersigilism,14,2,1.0,0.5,1.0,0.0,Neoperreo
+Cybertwee,14,2,1.0,1.0,1.0,1.4,""
+Dadcore,39,6,0.9,0.3333,0.6667,2.0,Poverty Chic
+Danish Pastel,22,4,0.9,0.5,1.0,1.0,Kawaii
+Dark Academia,55,8,0.75,0.3,0.375,5.6,"Bon Chic, Bon Genre"
+Dark Cabaret,11,2,1.0,0.0,1.0,1.0,Burlesque
+Dark Circus,12,2,1.0,0.6,0.5,0.0,Magician
+Dark Fantasy,16,2,0.5,0.1,1.0,2.2,Ghostcore
+Dark Naturalism,14,2,1.0,0.5,1.0,0.2,Gloomcore
+Dark Nautical,11,2,0.5,0.4,0.5,0.0,Coastal Grandmother
+Darkest Academia,12,2,0.5,0.5,0.5,3.8,Light Academia
+Decora,9,1,1.0,1.0,1.0,3.4,""
+Delicate Sweet,25,4,0.95,0.5,1.0,0.6,Waif
+Desi Romantic Academia,9,1,1.0,1.0,1.0,0.0,""
+Dieselpunk,16,2,1.0,0.9,1.0,2.4,Steampunk
+Diner,14,2,1.0,0.7,1.0,0.0,Vintage Americana
+Disco,13,2,0.5,0.5,0.5,0.8,Funk
+Dollcore,10,2,0.5,0.0,0.5,0.0,Girly Kei
+Dollette,19,3,1.0,0.3333,0.6667,2.0,2014 Girly
+Dolly Girl,9,1,1.0,1.0,1.0,1.0,""
+Dolly Kei,7,1,1.0,1.0,1.0,1.0,""
+Dopamine Dressing,9,1,1.0,0.0,1.0,0.8,Art Hoe
+Draincore,23,3,0.6667,0.3333,0.3333,0.0,Hyperpop
+Dreamy Indie Girlhood,19,3,1.0,0.3333,1.0,0.8,Cottagecore
+Dungeon Synth,11,2,1.0,0.6,1.0,1.0,Goth
+Dunhuang Feng,19,3,1.0,0.3333,1.0,2.0,Shenxian-fu
+E-Boy,13,3,0.6667,0.3333,0.6667,0.8,Roadman
+E-Girl,16,2,1.0,0.7,1.0,0.0,Femboy
+Earthy Black Girl,16,2,0.6,0.5,0.5,2.0,Afrofuturism
+Edwardian,19,3,0.6667,0.4,1.0,0.0,Victorian
+Electroclash,14,2,0.5,0.5,0.5,0.6,Industrial
+Emo,23,4,0.85,0.65,0.75,0.6,Gurokawa
+Ethereal,39,6,0.8,0.6,0.6667,3.4,Romantic Academia
+Ethno-Chic,11,2,1.0,0.7,1.0,1.2,Tropicabana
+Euphoria,14,2,1.0,1.0,1.0,0.0,""
+Fairy Grunge,19,3,1.0,0.6667,0.6667,0.0,Gloomcore
+Fairy Kei,49,7,1.0,0.6571,0.8571,3.4,Tweencore
+Fairycore,18,2,1.0,0.4,0.5,1.4,Ethereal
+Fallen Angel,17,2,0.5,0.5,0.5,2.2,Gloomcore
+Fantasy,12,2,0.5,0.1,0.5,0.2,Naturecore
+Fantasy Astronomy,16,2,0.8,0.5,0.5,0.0,""
+Farmer's Daughter,13,2,1.0,0.3,1.0,0.0,Boho-Chic
+Femboy,14,2,1.0,0.3,1.0,1.6,Poppare
+Femme Fatale,11,3,0.6667,0.3333,0.6667,0.0,Sadgirl
+Feralcore,10,1,1.0,0.0,1.0,1.0,Bastardcore
+Fjortis,14,2,0.7,0.5,1.0,1.8,Après-ski
+Flapper,12,2,1.0,0.4,1.0,0.0,Wartime Austerity
+Flat Design,32,5,1.0,0.88,1.0,1.0,Gen X Soft Club
+Flogger,9,1,1.0,0.8,1.0,1.2,Indie Sleaze
+Flower Power,28,4,1.0,0.55,1.0,1.2,Psychedelia
+Forestpunk,11,2,0.1,0.0,0.0,1.6,Rainforest Chic
+Frazzled English Woman,14,2,1.0,0.3,1.0,1.0,Sloanie
+French Girl,17,2,0.7,0.1,0.5,0.0,Art Academia
+French Girly,10,2,0.5,0.1,0.5,0.0,Y3K
+Funk,11,2,0.5,0.5,0.5,1.0,Pacific Punk Wave
+Futurism,12,2,0.5,0.5,1.0,0.0,Art Deco
+Galaxy Print,16,2,1.0,0.5,1.0,0.2,Jejemon
+Garçonne,9,1,0.8,0.0,1.0,0.4,Art Deco
+Geek Chic,9,1,1.0,1.0,1.0,0.8,""
+Gen X Soft Club,37,6,0.7667,0.5,0.5,2.2,Corporate Grunge
+Genderless Kei,11,2,0.5,0.2,1.0,0.6,Decora
+Ghostcore,18,2,1.0,0.5,1.0,2.0,Starrflesh
+Gibson Girl,10,2,1.0,1.0,1.0,0.0,""
+Girly Kei,33,5,0.96,0.8,0.8,2.0,Mote Kei
+Glam Rock,8,1,1.0,1.0,1.0,0.0,""
+Glitchcore,14,2,1.0,0.5,1.0,0.0,Magical Girl
+Gloomcore,33,7,0.6286,0.5714,0.7143,4.0,Darkest Academia
+Goblincore,14,2,1.0,0.5,1.0,0.2,Cottagecore
+Gorpcore,12,0,,,,0.4,""
+Goth,45,6,0.5667,0.5,0.6667,3.4,Horror Punk
+Goth Punk,12,2,1.0,0.8,1.0,2.0,Gothic Lolita
+Gothabilly,38,5,0.8,0.8,0.6,4.6,Vampire
+Gothic Belly Dance,11,2,0.8,0.5,1.0,0.0,Avant Apocalypse
+Gothic Lolita,8,1,1.0,0.0,1.0,0.4,Dolly Kei
+Graffiti Pop,19,3,1.0,1.0,1.0,1.8,""
+Grandmacore,9,1,1.0,1.0,1.0,0.8,""
+Grandmillennial,11,2,1.0,0.9,1.0,0.6,Chinoiserie
+Granola,13,2,0.9,0.5,0.5,3.0,Boho-Chic
+Green Academia,15,3,1.0,0.8667,1.0,1.8,Goblincore
+Grocery Girl Fall,9,1,1.0,0.4,1.0,0.2,Grandmillennial
+Groovival,41,6,1.0,0.4667,0.5,5.4,Tweencore
+Grunge,34,5,0.68,0.52,0.4,0.0,Biker
+Guido,11,2,1.0,0.3,0.5,2.0,Fjortis
+Guochao,16,2,1.0,0.5,1.0,0.8,Chinese New Year
+Gurokawa,18,2,0.6,0.5,0.5,1.2,Clowncore
+Gutter Punk,13,2,0.5,0.5,0.5,0.8,Afropunk
+Gyaru,19,3,1.0,1.0,1.0,0.8,""
+Gyaruo,32,4,0.75,0.75,1.0,0.6,Tecktonik
+Hadeko,8,1,1.0,0.0,1.0,0.0,Clowncore
+Hair Metal,48,7,1.0,0.8571,1.0,2.2,Rocker Grrl Diva
+Halloween,36,5,1.0,0.76,1.0,0.4,Autumn Aesthetic
+Han-Yang Zhezhong,8,1,1.0,1.0,1.0,0.0,""
+Haunted Mound,11,2,0.9,0.4,0.5,1.0,Cryptidcore
+Health Goth,10,2,1.0,0.9,1.0,0.2,Cyberprep
+Hedi Boy,11,2,1.0,0.6,1.0,1.0,Antwerp Six
+Heisei Retro,16,2,1.0,1.0,1.0,0.0,""
+Hellenic,19,4,1.0,0.55,1.0,2.8,Romanticism
+Herki,9,1,1.0,1.0,1.0,0.6,""
+Heroin Chic,9,1,0.0,0.0,0.0,0.0,Hedi Boy
+High School Dream,16,2,1.0,1.0,1.0,0.0,""
+Hime Gyaru,13,2,1.0,1.0,1.0,1.0,""
+Himekaji,11,2,0.6,0.5,1.0,0.0,Girly Kei
+Hip-Hop,14,2,1.0,0.2,1.0,0.2,Bling Era
+Hippie Goth,22,3,1.0,1.0,1.0,2.6,""
+Hipster,36,5,0.76,0.6,0.4,2.8,Urbancore
+Holosexual,14,2,1.0,0.7,1.0,0.0,Cybertwee
+Honeycore,14,2,1.0,1.0,1.0,0.0,""
+Horror,13,2,0.5,0.5,1.0,3.6,Haunted Mound
+Horror Punk,11,2,1.0,0.5,1.0,1.2,Metalhead
+Hot Rod,9,1,0.8,0.0,0.0,0.4,Vintage Americana
+Hyperpop,29,8,0.875,0.25,0.375,2.4,Goth Punk
+Incelcore,15,2,1.0,0.7,0.5,0.2,PMC Ryodan
+Indie,24,4,0.75,0.5,0.75,2.4,Madchester
+Indie Kid,15,2,1.0,0.5,0.5,1.4,Candycore
+Indie Sleaze,20,4,0.9,0.6,1.0,0.6,Club Kids
+Industrial,43,6,1.0,0.9667,1.0,2.6,Soviet Chic
+Japanese Horror Game Protagonist,14,2,1.0,1.0,1.0,1.8,""
+Japanese Ivy Style,11,2,1.0,1.0,1.0,0.4,""
+Jejemon,23,3,0.6667,0.6667,0.6667,1.0,Flogger
+Jirai Kei,22,3,0.3333,0.0,0.3333,0.0,Olderbrothercore
+Jojifuku,19,3,0.6667,0.6667,1.0,0.0,Amekaji
+Junglist,12,2,0.5,0.5,0.5,0.6,Skater
+Junkpunk,14,2,1.0,0.3,1.0,0.8,Whimsicraft
+Kandi Raver,15,2,1.0,1.0,1.0,0.2,""
+Karasu Zoku,7,1,1.0,1.0,1.0,0.0,""
+Kawaii,75,12,0.9667,0.45,0.9167,6.0,Babycore
+Kawaii Gamer,19,3,1.0,1.0,1.0,1.0,""
+Keller Synth,14,2,1.0,0.5,1.0,1.8,Neofolk
+Key West Kitten,26,4,0.95,0.1,0.75,2.2,Beach Day
+Kinderwhore,11,2,1.0,0.6,0.5,0.4,Mote Kei
+Knightcore,21,3,0.7333,0.0,0.3333,1.2,Romanticism
+Korean Cozy Beige,7,1,0.8,0.0,1.0,0.0,Café Aesthetic
+Krocha,10,2,1.0,1.0,1.0,0.4,""
+Kuromicore,12,2,1.0,1.0,1.0,0.0,""
+LOLcore,11,2,0.5,0.0,0.5,0.8,Space Age
+Larme Kei,15,2,0.5,0.0,0.5,0.4,Mote Kei
+Light Academia,17,2,0.7,0.5,0.5,1.0,Coquette
+Living Doll,11,2,0.7,0.5,1.0,0.0,Waif
+Lovecore,19,3,1.0,1.0,1.0,0.6,""
+Lulicore,11,2,0.5,0.5,0.5,0.0,Plazacore
+Lumberjack,9,1,1.0,0.2,1.0,0.0,Dadcore
+Lunarpunk,15,2,1.0,1.0,1.0,1.0,""
+Mad Scientist,27,4,0.75,0.75,0.75,0.0,Horror
+Madchester,11,2,1.0,1.0,1.0,1.0,""
+Mafia Aesthetic,25,4,0.75,0.25,0.5,1.2,Hellenic
+Magical Girl,23,3,1.0,0.6667,1.0,1.6,Seapunk
+Magician,10,1,1.0,1.0,1.0,1.2,""
+Maid,31,4,1.0,0.85,1.0,1.4,Girly Kei
+Mall Ninja,12,2,0.5,0.5,0.5,0.0,Post-Grunge Maximalism
+Mallgoth,12,2,0.8,0.5,1.0,1.0,Trap Metal
+Mandrake,9,1,0.0,0.0,0.0,0.0,Cumbiero
+Marshmallow Girl,7,1,0.0,0.0,0.0,0.0,Hime Gyaru
+McBling,41,6,1.0,0.3667,0.6667,5.0,Candy Sleaze
+Medicalcore,10,1,1.0,1.0,1.0,1.0,""
+Medieval Fantasy,10,1,1.0,0.8,1.0,0.0,Knightcore
+Medievalcore,23,3,1.0,1.0,1.0,0.6,""
+Memphis Lite,34,5,0.8,0.6,0.6,2.4,Pacific Punk Wave
+Mermaidcore,18,3,0.4,0.3333,0.6667,0.6,Ethereal
+Messy French Girl,8,1,1.0,1.0,1.0,0.0,""
+Metalhead,11,2,1.0,0.4,1.0,0.8,Biker
+Metrosexual,9,1,1.0,1.0,1.0,2.2,""
+Mid-Century Medieval,25,4,1.0,0.9,0.5,0.4,Memphis Lite
+Milipili,24,4,0.85,0.5,0.75,1.8,McBling
+Military Chic,9,1,1.0,1.0,1.0,0.0,""
+Millennium Disco,33,5,0.76,0.32,0.6,0.8,Gen X Soft Club
+Millennium Orientalism,25,4,1.0,0.95,1.0,2.0,Dunhuang Feng
+Minimalism,18,2,1.0,1.0,0.5,0.2,""
+Mizuiro,39,6,1.0,1.0,1.0,0.0,""
+Mochette,34,5,1.0,0.68,0.6,2.6,Morute
+Mod,9,1,1.0,1.0,1.0,0.2,""
+Mori Kei,11,2,1.0,0.6,0.5,1.2,Gorpcore
+Morute,30,6,0.8333,0.5,0.5,3.8,Trailer Park Princess
+Mote Kei,10,2,0.4,0.1,0.5,2.8,Bodikon
+Movida Madrileña,14,2,0.9,0.4,0.5,0.0,Goth
+Naturecore,18,2,0.6,0.0,0.5,1.0,Gloomcore
+Nautical,17,2,0.5,0.5,0.5,0.4,Tropical
+Neko,19,3,1.0,0.3333,1.0,0.0,Kawaii Gamer
+Neo-Chinese Style,15,2,1.0,1.0,1.0,0.0,""
+Neo-Y2K,21,3,1.0,0.6,1.0,3.8,Bubblegum Bling
+Neoclassicism,16,2,1.0,0.9,1.0,2.8,Victorian
+Neofolk,11,2,0.6,0.0,1.0,1.8,Keller Synth
+Neoperreo,14,2,0.0,0.0,0.0,1.0,Guido
+Nerdcore,10,2,0.6,0.5,1.0,0.0,Bootleg Aesthetic
+New Beat,11,2,0.1,0.0,0.0,0.0,Neofolk
+New Look,11,2,1.0,1.0,1.0,0.0,""
+New Partisans,9,1,1.0,1.0,1.0,0.0,""
+New Romantic,14,2,1.0,1.0,1.0,1.6,""
+Nordic Twee,26,4,0.85,0.65,1.0,1.8,Superflat Pop
+Northern Soul,11,2,0.9,0.5,0.5,0.0,Sharpies
+Northerness,18,2,0.8,0.0,0.5,1.0,Christmas
+Nu-Goth,19,3,1.0,0.9333,1.0,1.8,Biker
+Nu-Metal,31,4,0.75,0.4,0.5,1.0,Corporate Grunge
+Nyashka,21,3,1.0,0.4667,1.0,0.6,Nu-Goth
+Nymphet,21,3,0.5333,0.0,0.6667,0.2,Cherry Emoji Twitter
+Office Siren,14,2,1.0,1.0,1.0,0.0,""
+Oi! Skinhead,9,1,1.0,0.0,1.0,0.0,Skinhead
+Oktoberfest,9,1,1.0,1.0,1.0,0.0,""
+Old Hollywood,9,1,1.0,1.0,1.0,0.0,""
+Olderbrothercore,31,5,0.92,0.4,0.6,2.4,Poster Gal
+Oshare Kei,9,1,1.0,0.8,1.0,0.0,Visual Kei
+Ostalgie,9,1,1.0,0.8,1.0,0.0,Twee
+PMC Ryodan,7,1,0.0,0.0,0.0,1.0,Soft Grunge
+Pacific Punk Wave,35,5,1.0,0.72,1.0,3.0,Memphis Lite
+Palewave,7,1,1.0,1.0,1.0,0.2,""
+Paninaro,9,1,1.0,0.6,1.0,0.0,Indie
+Parisian Apaches,11,2,1.0,1.0,1.0,0.0,""
+Parisian Girly,23,3,1.0,1.0,1.0,0.0,""
+Partille-Johnny,9,1,1.0,1.0,1.0,0.0,""
+Party Rock,9,1,1.0,1.0,1.0,0.0,""
+Pastel Goth,15,2,1.0,0.2,1.0,0.0,Gyaru
+Pastel Grunge,7,1,1.0,0.0,0.0,0.0,Cybertwee
+Paty de SP,30,4,1.0,0.65,1.0,0.0,Milipili
+Peach Girl,11,2,1.0,0.6,1.0,0.0,Cinnamon Girl
+Peacock Revolution,22,5,1.0,1.0,1.0,0.4,""
+Pen & Pixel,11,2,1.0,0.7,1.0,0.0,Bling Era
+Performative Male,9,1,0.4,0.0,1.0,0.6,Metrosexual
+Pianocore,23,3,1.0,1.0,1.0,1.0,""
+Picniccore,17,2,1.0,1.0,1.0,0.4,""
+Pin-up,14,2,1.0,0.7,1.0,0.0,Gothabilly
+Pink Parisian,14,2,1.0,0.5,0.5,0.2,Pink Princess
+Pink Pilates Princess,18,2,1.0,1.0,1.0,0.0,""
+Pink Princess,26,4,0.35,0.25,0.5,1.0,Coquette
+Piratecore,7,1,1.0,0.4,0.0,0.2,Dieselpunk
+Plaguecore,7,1,0.0,0.0,0.0,0.2,Darkest Academia
+Playground Prep,7,1,0.0,0.0,0.0,0.0,Tropicabana
+Plazacore,9,1,1.0,0.0,1.0,3.0,"Bon Chic, Bon Genre"
+Pop Art,10,1,1.0,0.6,1.0,0.0,Sadgirl
+Poppare,14,2,1.0,1.0,0.5,1.4,""
+Post-Grunge Maximalism,28,4,1.0,1.0,1.0,4.2,""
+Poster Gal,24,3,1.0,0.7333,1.0,1.6,Scene
+Poverty Chic,12,1,1.0,1.0,1.0,1.0,""
+Power Dressing,9,1,1.0,0.0,1.0,1.0,Bodikon
+Preacher's Daughter,17,2,0.5,0.0,0.0,0.2,Granola
+Preppy,10,2,0.0,0.0,0.0,0.0,Boujee
+Psychedelia,24,4,1.0,0.6,0.75,0.8,Weimar Cabaret
+Punk,19,3,1.0,0.6667,1.0,1.6,Gutter Punk
+Puppygirl,12,2,1.0,1.0,1.0,0.2,""
+Qianxi Feng,16,2,1.0,1.0,1.0,1.0,""
+Qin and Han Dynasties,21,3,1.0,0.6667,1.0,0.0,Tang Dynasty
+Qingleng Feng,9,1,1.0,1.0,1.0,0.0,""
+Quinqui,9,1,1.0,0.0,1.0,1.4,Indie
+Rainforest Chic,24,4,1.0,0.8,1.0,1.2,Safari Chic
+Rave,32,5,0.8,0.4,1.0,1.6,Acid House
+Raygun Gothic,18,2,1.0,0.1,1.0,1.0,Retrofuturism
+Recession Pop,16,2,1.0,0.0,1.0,0.6,Space Age
+Regencycore,12,2,1.0,1.0,1.0,1.0,""
+Renaissance Revival,60,8,0.85,0.55,0.625,1.4,Knightcore
+Retro Gamer,14,2,1.0,1.0,1.0,0.0,""
+Retrofuturism,14,2,1.0,1.0,1.0,1.0,""
+Rivethead,14,2,1.0,0.1,1.0,0.8,Gothabilly
+Roadman,13,2,1.0,1.0,1.0,0.8,""
+Roaring Twenties,17,2,1.0,1.0,1.0,0.0,""
+Rocker Grrl Diva,9,1,1.0,0.0,1.0,1.8,Groovival
+Rockstar GF,10,2,0.5,0.5,0.5,0.0,Mafia Aesthetic
+Rococo,115,16,1.0,0.6375,0.9375,4.0,Spanish Golden Age
+Rokku,16,2,1.0,1.0,1.0,0.2,""
+Romantic Academia,18,2,0.6,0.5,1.0,1.0,""
+Romantic Goth,16,2,0.5,0.5,0.5,0.2,Hippie Goth
+Romantic Italian,12,2,0.6,0.0,0.0,1.2,Rococo
+Romanticism,23,4,0.95,0.65,0.75,2.2,Rococo
+Royalcore,44,7,1.0,0.6857,0.8571,1.6,Dark Academia
+Rustic,10,2,1.0,1.0,1.0,0.0,""
+Sadboi,21,3,0.9333,0.6667,1.0,0.6,Sadgirl
+Sadgirl,23,3,1.0,0.7333,1.0,4.0,Soft Grunge
+Safari Chic,12,2,1.0,1.0,1.0,0.8,""
+Saint Patrick's Day,9,1,1.0,1.0,1.0,0.0,""
+Sanriocore,17,2,1.0,0.2,1.0,0.8,Babycore
+Scandi Girl Winter,9,1,1.0,0.8,1.0,0.0,Cinnamon Girl
+Scene,55,8,1.0,0.625,0.875,1.8,Tweencore
+Seapunk,17,3,1.0,0.6,1.0,2.8,Vaporwave
+Sharpies,11,2,1.0,1.0,1.0,1.2,""
+Shenxian-fu,13,2,1.0,0.5,1.0,2.0,Dunhuang Feng
+Shibuya Punk,36,5,1.0,1.0,1.0,1.6,""
+Shibuya-Kei,14,2,1.0,0.7,1.0,0.0,Pacific Punk Wave
+Shoujo Girl,9,1,1.0,0.0,1.0,0.0,""
+Shuimo Feng,16,2,1.0,0.5,1.0,0.0,Guochao
+Skater,19,3,1.0,1.0,1.0,1.8,""
+Skhothane,9,1,1.0,1.0,1.0,0.0,""
+Skinhead,10,2,0.5,0.4,0.5,1.0,Feralcore
+Slavic Doll,11,2,1.0,0.5,1.0,0.2,Antwerp Six
+Slimepunk,12,2,1.0,0.5,1.0,1.2,Vaporwave
+Sloanie,12,2,1.0,0.5,1.0,1.0,2000s Preppy
+Soft Boy,11,2,1.0,0.5,1.0,0.0,Bloomcore
+Soft Countriana,14,2,0.2,0.0,1.0,0.6,Memphis Lite
+Soft Girl,17,2,0.5,0.2,0.5,4.4,Kawaii
+Soft Grunge,84,12,0.75,0.4,0.5,3.6,Sadgirl
+Solarpunk,14,2,1.0,1.0,1.0,0.4,""
+Song Dynasty,49,7,1.0,1.0,1.0,1.0,""
+Sots Art,15,2,1.0,1.0,1.0,0.0,""
+Soviet Chic,24,4,1.0,0.95,1.0,0.2,Indie
+Soviet Nostalgia,9,1,0.0,0.0,0.0,0.2,Dark Academia
+Space Age,15,2,0.0,0.0,0.0,2.0,Raygun Gothic
+Space Cowgirl,14,2,1.0,1.0,1.0,0.0,""
+Spacecore,16,2,1.0,0.5,1.0,1.0,Ethereal
+Spanish Golden Age,28,4,1.0,0.7,1.0,2.2,Neoclassicism
+Sprezzatura,11,2,1.0,0.9,1.0,0.0,Metrosexual
+Spring Aesthetic,8,1,0.0,0.0,1.0,0.0,""
+Stargirl,8,1,1.0,1.0,1.0,2.0,""
+Starrflesh,19,3,0.8667,0.6667,0.6667,3.0,Cleancore
+Steampunk,21,3,0.9333,0.6667,1.0,0.2,Dieselpunk
+Strawberry Girl,13,2,1.0,0.7,1.0,0.0,Cherry Emoji Twitter
+Strega,15,2,0.5,0.2,0.5,1.0,Gothabilly
+Succubus Chic,13,2,1.0,1.0,1.0,0.0,""
+Summer Matsuri,9,1,1.0,1.0,1.0,0.0,""
+Superflat Pop,91,13,0.9385,0.7538,0.8462,4.8,Neo-Y2K
+Surf Crush,54,8,1.0,0.75,0.875,2.2,Tropicalcore
+Swag,9,1,1.0,0.0,1.0,0.0,Bling Era
+Sweet Lolita,8,1,1.0,0.0,1.0,0.4,Fairy Kei
+Swenkas,17,2,1.0,1.0,1.0,0.0,""
+Takenokozoku,8,1,1.0,0.2,1.0,0.0,Cholombiano
+Tang Dynasty,22,3,0.8667,0.4,1.0,1.0,Song Dynasty
+Tango,10,2,1.0,1.0,1.0,0.4,""
+Taqwacore,11,2,1.0,0.7,1.0,0.0,Tecktonik
+Techwear,18,3,1.0,0.6667,1.0,1.0,Yabi
+Tecktonik,12,2,0.5,0.5,0.5,1.8,Post-Grunge Maximalism
+Teenpunk,11,2,0.5,0.5,0.5,0.0,Nu-Metal
+Tenniscore,9,1,1.0,1.0,1.0,0.0,""
+Thai Modern,9,1,0.0,0.0,0.0,0.0,Danish Pastel
+That Girl,9,1,1.0,1.0,1.0,0.0,""
+Thought Daughter,11,2,0.5,0.5,0.5,1.0,Coquette
+Tomato Girl Summer,9,1,1.0,1.0,1.0,0.0,""
+Too Cool,9,1,1.0,1.0,1.0,0.0,""
+Trailer Park Princess,52,8,1.0,0.775,0.625,5.0,Morute
+Trap Metal,22,3,1.0,0.6,1.0,0.6,Emo
+Tropicabana,37,5,1.0,0.8,1.0,3.0,Groovival
+Tropical,33,4,1.0,0.25,0.75,6.4,Ethno-Chic
+Tropicalcore,14,2,1.0,0.7,1.0,1.0,Key West Kitten
+Trxsh,20,3,0.6667,0.1333,1.0,0.6,Dark Fantasy
+Tudor,15,2,0.5,0.4,0.5,0.0,Dark Academia
+Tumbette,9,1,0.8,0.0,0.0,1.2,Genderless Kei
+Twee,19,3,0.8,0.4,0.6667,1.8,Wartime Austerity
+Tweencore,25,4,0.75,0.7,0.75,2.4,Cutecore
+Twilightcore,24,3,0.8,0.6667,0.6667,1.0,Herki
+UK Garage,11,2,0.5,0.0,0.5,0.0,Bling Era
+Uchuu Kei,22,3,0.5333,0.0,0.6667,0.8,Fairy Kei
+Udoli,7,1,0.8,0.2,1.0,0.0,Nu-Goth
+Ultras,17,2,1.0,1.0,1.0,0.0,""
+Unicorn Trend,16,2,1.0,1.0,1.0,0.6,""
+UrBling,37,5,1.0,0.6,0.8,1.6,Post-Grunge Maximalism
+Urbancore,21,3,1.0,0.8,1.0,1.6,Gen X Soft Club
+VSCO Girl,14,2,1.0,0.2,1.0,0.0,Tropical
+Vacation Dadcore,32,5,0.8,0.56,0.8,0.0,Cleancore
+Vampire,14,2,1.0,0.8,1.0,2.4,Mafia Aesthetic
+Vanilla Girl,11,2,1.0,1.0,1.0,2.0,""
+Vaporwave,28,4,1.0,0.85,1.0,2.0,Seapunk
+Venetian Carnival,13,2,1.0,1.0,1.0,0.0,""
+Victorian,48,8,0.875,0.65,0.875,4.6,Rococo
+Victorian Goth,9,1,1.0,1.0,1.0,0.0,""
+Vintage Americana,14,4,1.0,0.55,1.0,1.6,Coquette
+Visual Kei,81,8,1.0,0.575,0.5,0.2,Hair Metal
+Waif,66,10,0.9,0.68,0.8,2.4,Thought Daughter
+Wartime Austerity,14,2,1.0,0.5,1.0,3.4,Dolly Girl
+Wei and Jin Dynasties,1,0,,,,0.0,""
+Weimar Cabaret,11,2,1.0,0.5,1.0,0.6,Dark Cabaret
+Welwitschia Goth,32,5,1.0,0.76,0.8,0.8,Mallgoth
+Werewolf,29,4,0.65,0.25,0.75,0.8,Ghostcore
+Western,21,3,1.0,1.0,1.0,0.2,""
+Whimsicraft,18,2,0.0,0.0,0.0,1.0,Groovival
+Whimsigothic,25,4,1.0,0.65,0.5,0.6,Darkest Academia
+Whimsy Twee,25,4,1.0,0.7,0.75,2.2,Picniccore
+Winter Aesthetic,11,2,0.5,0.5,0.5,1.0,Chic Modernist
+Winter Bimbo,7,1,1.0,1.0,1.0,0.8,""
+Wishcore,25,4,1.0,0.2,1.0,0.0,Cacareco Girl
+Witch House,12,2,1.0,0.8,1.0,1.8,Nu-Goth
+Witchcore,30,4,0.8,0.15,0.75,0.2,Vampire
+Wixa,9,1,1.0,1.0,1.0,0.0,""
+Wizard,18,3,0.6667,0.3333,0.6667,0.0,Starrflesh
+Wonderland,24,4,0.5,0.5,0.5,0.4,Rococo
+Wonyoungism,19,3,1.0,1.0,1.0,0.4,""
+Wuxia,24,3,0.9333,0.6667,1.0,0.2,Solarpunk
+Y2K,102,14,0.9286,0.6714,0.8571,3.2,Olderbrothercore
+Y3K,39,6,0.9,0.8333,0.8333,3.4,Stargirl
+Yabi,11,2,0.8,0.5,1.0,1.8,Candy Sleaze
+Yallternative,17,2,0.5,0.0,0.5,0.0,Hippie Goth
+Yami Kawaii,18,3,0.6667,0.1333,1.0,0.4,Medicalcore
+Yugo-Nostalgia,14,2,0.9,0.5,0.5,0.0,Yé-yé
+Yuppie,11,2,0.5,0.0,0.0,0.0,Power Dressing
+Yé-yé,25,4,1.0,0.75,1.0,0.6,Flower Power
+Zen-X,21,3,1.0,1.0,1.0,0.0,""
